@@ -1,0 +1,21 @@
+CREATE TABLE user (
+    user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    username varchar(30) UNIQUE,
+    password varchar(30),
+    phone VARCHAR(20) UNIQUE, -- Changed to VARCHAR
+    email VARCHAR(50) UNIQUE,
+    profile_id INT,
+    active BOOLEAN DEFAULT TRUE,
+	FOREIGN KEY (profile_id) REFERENCES user_profile(profile_id)
+);
+
+INSERT INTO user (first_name, last_name, username, password, phone, email, profile_id) VALUES ("Frankie", "Lee", "flee", "wx", "98431863", "flee@gmail.com", 1), ("Keith", "Thu", "mkt", "thuthu", "96864135", "mkt@gmail.com", 1)
+
+CREATE TABLE user_profile (
+	profile_id INT PRIMARY KEY,
+    profile_name varchar(50)
+)
+
+INSERT INTO user_profile (profile_id, profile_name) VALUES (1, "Network Administrator"), (2, "Management")

@@ -1,0 +1,80 @@
+class User:
+    def __init__(self, first_name, last_name, username, password, phone, email, profile_id, active):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.username = username
+        self.password = password
+        self.phone = phone
+        self.email = email
+        self.profile_id = profile_id
+        self.active = active
+        
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+    
+    def __repr__(self):
+        return f"{self.first_name} {self.last_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+    
+    def get_first_name(self):
+        return self.first_name
+    
+    def get_last_name(self):
+        return self.last_name
+    
+    def get_username(self):
+        return self.username
+    
+    def get_password(self):
+        return self.password
+    
+    def get_phone(self):
+        return self.phone
+    
+    def get_email(self):
+        return self.email
+    
+    def get_profile_id(self):
+        return self.profile_id
+    
+    def get_active(self):
+        return self.active
+    
+    def set_first_name(self, first_name):
+        self.first_name = first_name
+        
+    def set_last_name(self, last_name):
+        self.last_name = last_name
+        
+    def set_username(self, username):
+        self.username = username
+        
+    def set_password(self, password):
+        self.password = password
+        
+    def set_phone(self, phone):
+        self.phone = phone
+        
+    def set_email(self, email):
+        self.email = email
+        
+    def set_active(self, active):
+        self.active = active
+        
+    def to_dict(self):
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'username': self.username,
+            'password': self.password,
+            'phone': self.phone,
+            'email': self.email,
+            'profile_id': self.profile_id,
+            'active': self.active
+        }
+        
+    def from_dict(dict):
+        return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
+    
+    
+    
+    
