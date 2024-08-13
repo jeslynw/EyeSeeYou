@@ -79,6 +79,25 @@ class User:
     def from_dict(dict):
         return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
     
+    def authenticate(username, password):
+        query = "SELECT * FROM user WHERE username = %s AND password = %s"
+        values = (username, password)
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute(query, values)
+            result = cursor.fetchone()
+            if result:
+                return User(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+            else:
+                return None
+        except:
+            print("Error authenticating user")
+            return None
+        finally:
+            cursor.close()
+            conn.close()
+    
     def update_user(self, first_name, last_name, username, password, phone, email):        
         query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE username = %s"
         values = (first_name, last_name, username, password, phone, email)
