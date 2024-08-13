@@ -1,3 +1,7 @@
+import dbAccess as db
+
+conn = db.get_connection()
+
 class User:
     def __init__(self, first_name, last_name, username, password, phone, email, profile_id, active):
         self.first_name = first_name
@@ -75,6 +79,18 @@ class User:
     def from_dict(dict):
         return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
     
-    
-    
-    
+    def update_user(self, first_name, last_name, username, password, phone, email):        
+        query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE username = %s"
+        values = (first_name, last_name, username, password, phone, email)
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute(query, values)
+            conn.commit()
+            return True
+        except:
+            print("Error updating user")
+            return False
+        finally:
+            cursor.close()
+            conn.close()
