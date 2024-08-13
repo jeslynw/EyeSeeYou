@@ -6,8 +6,7 @@ import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 export default function App() {
   return (
     <div>
-      {/* uncomment accordingly depends on which page you want to access */}
-
+      <LoginUI />
       {/* <UpdateAccountDetailsUI /> */}
       <ViewAccountDetailsUI />
     </div>
