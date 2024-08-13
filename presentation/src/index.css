@@ -2,16 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @import url('https://fonts.googleapis.com/css2?family=Limelight&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins');
+
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+@layer components {
+  .colorBox {
+    @apply z-10 brightness-110 transition-all duration-2000 ease-in-out relative m-0.5 bg-[#1d1d1d];
+  }
+
+  .colorBox:hover {
+    @apply bg-[#2d3b41] duration-0;
+  }
+  
+  .btn-custom {
+    background: linear-gradient(to right, #014aa9, #098cd8, #014aa9, #014aa9, #098cd8, #014aa9);
+    background-size: 250%;
+    background-position: left;
+  }
+
+  .btn-custom:hover span {
+    background-position: right;
+  }
+}
+
+@keyframes animBack {
+  0% { top: -60px; }
+  100% { top: 120%; }
+}
+
+@layer utilities {
+  .animate-animBack {
+    animation: animBack 6s linear infinite;
+  }
+}
+
