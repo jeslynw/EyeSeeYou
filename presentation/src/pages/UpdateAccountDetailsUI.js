@@ -1,11 +1,22 @@
 import React, { useState } from "react";
 
 function UpdateAccountDetailsUI() {
-  const [fullName, setFullName] = useState("getFullName(){}");
-  const [username, setUsername] = useState("getUsername(){}");
-  const [email, setEmail] = useState("getEmail(){}");
-  const [phone, setPhone] = useState("getPhoneNumber(){}");
-  const [password, setPassword] = useState("getPassword(){}");
+  const user = {
+    getFullName: () => "James Cook",
+    getUsername: () => "jcook",
+    getEmail: () => "jamescook@gmail.com",
+    getPhone: () => "91234567",
+    getPassword: () => "password",
+    getOrganization: () => "Lazada",
+    getType: () => "Network Administrator",
+    getPlan: () => "Premium Plan",
+  };
+
+  const [fullName, setFullName] = useState(user.getFullName());
+  const [username, setUsername] = useState(user.getUsername());
+  const [email, setEmail] = useState(user.getEmail());
+  const [phone, setPhone] = useState(user.getPhone());
+  const [password, setPassword] = useState(user.getPassword());
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
@@ -162,7 +173,7 @@ function UpdateAccountDetailsUI() {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label
                 className="block text-sm font-medium mb-1"
                 htmlFor="organization"
@@ -202,6 +213,44 @@ function UpdateAccountDetailsUI() {
                 value="getPlan(){}"
                 disabled
               />
+            </div> */}
+            <div>
+              <label
+                className="block text-sm font-medium mb-1"
+                htmlFor="organization"
+              >
+                Organization
+              </label>
+              <label
+                className="block text-sm font-medium mb-4"
+                htmlFor="organizationValue"
+              >
+                {user.getOrganization()}
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="type">
+                Type
+              </label>
+              <label
+                className="block text-sm font-medium mb-4"
+                htmlFor="typeValue"
+              >
+                {user.getType()}
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="plan">
+                Plan
+              </label>
+              <label
+                className="block text-sm font-medium mb-4"
+                htmlFor="planValue"
+              >
+                {user.getPlan()}
+              </label>
             </div>
           </div>
         </div>

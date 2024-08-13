@@ -1,8 +1,15 @@
 // import logo from './logo.svg';
 import "./App.css";
+import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
+import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 
-function App() {
-  return <div className="App text-7xl text-yellow-600">Helloss</div>;
+export default function App() {
+  return (
+    <div>
+      {/* uncomment accordingly depends on which page you want to access */}
+
+      {/* <UpdateAccountDetailsUI /> */}
+      <ViewAccountDetailsUI />
+    </div>
+  );
 }
-
-export default App;
