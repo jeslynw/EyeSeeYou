@@ -1,16 +1,15 @@
 // import logo from './logo.svg';
 import "./App.css";
-import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
+import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 
-function App() {
+export default function App() {
   return (
     <div>
-      {/* uncomment accordingly to open the page */}
-      <ViewAccountDetailsUI />
+      {/* uncomment accordingly depends on which page you want to access */}
+
       {/* <UpdateAccountDetailsUI /> */}
+      <ViewAccountDetailsUI />
     </div>
   );
 }
-
-export default App;
