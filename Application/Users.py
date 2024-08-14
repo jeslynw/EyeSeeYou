@@ -1,6 +1,7 @@
 import dbAccess as db
 
 conn = db.get_connection()
+app = db.app
 
 class User:
     def __init__(self, first_name, last_name, username, password, phone, email, profile_id, active):
@@ -88,12 +89,12 @@ class User:
             cursor.execute(query, values)
             result = cursor.fetchone()
             if result:
-                return User(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+                return True
             else:
-                return None
+                return False
         except:
             print("Error authenticating user")
-            return None
+            return False
         finally:
             cursor.close()
             conn.close()
