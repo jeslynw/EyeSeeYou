@@ -34,7 +34,7 @@ CREATE TABLE `user` (
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `username` varchar(30) DEFAULT NULL,
-  `password` varchar(30) DEFAULT NULL,
+  `password` varchar(60) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `profile_id` int(11) DEFAULT NULL,
@@ -46,8 +46,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `first_name`, `last_name`, `username`, `password`, `phone`, `email`, `profile_id`, `active`) VALUES
-(1, 'Frankie', 'Lee', 'flee', 'wx', '98431863', 'flee@gmail.com', 1, 1),
-(2, 'Keith', 'Thu', 'mkt', 'thuthu', '96864135', 'mkt@gmail.com', 1, 1);
+(1, 'Frankie', 'Lee', 'flee', '$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS', '98431863', 'flee@gmail.com', 1, 1),
+(2, 'Keith', 'Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 1, 1);
 
 -- --------------------------------------------------------
 

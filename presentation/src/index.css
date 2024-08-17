@@ -13,7 +13,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
+  font-family: "Poppins", sans-serif;
 }
 
 code {
@@ -251,6 +251,9 @@ code {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
   }
+
+
+
 }
 
 @keyframes animBack {

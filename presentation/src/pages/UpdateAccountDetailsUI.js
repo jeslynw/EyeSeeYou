@@ -98,8 +98,7 @@ function UpdateAccountDetailsUI() {
     <div className={darkMode ? 'dark' : ''}>
       <Header />
 
-      <div className="flex flex-col bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0 h-screen">
-
+      <div className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0" style={{ minHeight: 'calc(100vh - 60px)' }}>
         {/* NOTE: edit the form action attribute to handle where the data being submitted*/}
         <form action="">
           {/* account details text */}
@@ -108,7 +107,7 @@ function UpdateAccountDetailsUI() {
           </div>
 
           {/* NOTE: having trouble adjusting the width on this line below, rmb to test the dynamic part as well. */}
-          <div className="bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white items-center rounded-xl shadow-xl w-full px-6 py-4 ">
+          <div className="bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white items-center rounded-xl shadow-lg dark:shadow-[#353535]  w-full px-6 py-4 ">
             <p className="text-xl mt-5 mb-8">Personal Information</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
               <div>
@@ -209,6 +208,9 @@ function UpdateAccountDetailsUI() {
             />
           </div>
         </form>
+
+        <div className="pb-10"></div>
+
       </div>
     </div>
   );

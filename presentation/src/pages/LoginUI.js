@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
+import axios from 'axios'
 import '../App.css';
 import '../index.css';
 
@@ -66,18 +67,24 @@ function LoginUI() {
   }
 
   // handle login button
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault(); // Prevent form submission
 
-      // validation
-    if (username !== 'hi' || password !== 'hi'){
+    try {
+      const response = await axios.post('/login', {
+        username,
+        password
+      });
+
+      if (response.status === 200) {
+        alert('Login successful');
+      } else {
+        displayErrorMessage();
+      }
+    } catch (error) {
+      console.error('An error occurred', error);
       displayErrorMessage()
-    }
-    else{
-      setError('');
-    }
-  
-  }
+    }};
 
   function displayErrorMessage(){
     setError("Incorrect username or password");

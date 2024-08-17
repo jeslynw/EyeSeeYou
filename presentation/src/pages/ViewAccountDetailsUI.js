@@ -36,17 +36,16 @@ function ViewAccountDetailsUI() {
 
   function displayAccountDetails(){
     return (
-      <div className={darkMode ? 'dark' : ''}>
+      <div className={`${darkMode ? 'dark' : ''}`}>
         <Header />
       
-        <div className="flex flex-col bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0 h-screen">
+        <div className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0" style={{ minHeight: 'calc(100vh - 60px)' }}>
           {/* account details text */}
           <div className="flex w-full justify-between  items-center mt-4 mb-4">
             <p className="text-2xl">ACCOUNT DETAILS</p>
           </div>
 
-          {/* bg-transparent border-2 border-[414141] bg-gray-800*/}
-          <div className="bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white items-center rounded-xl shadow-xl w-full px-6 py-4 ">
+          <div className="bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white items-center rounded-xl shadow-lg dark:shadow-[#353535] w-full px-6 py-4 ">
             {/* edit button */}
             <div className="flex float-end">
               <button onClick={navigateEditButton} className="flex items-center h-9 pl-4 pr-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md">
@@ -114,6 +113,9 @@ function ViewAccountDetailsUI() {
               </div>
             </div>
           </div>
+
+          <div className="pb-10"></div>
+          
         </div>
       </div>
    ) 
