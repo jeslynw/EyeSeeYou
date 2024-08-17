@@ -77,7 +77,9 @@ function LoginUI() {
       });
 
       if (response.status === 200) {
-        alert('Login successful');
+        // alert('Login successful');
+        // Redirect user to dashboard attempt hahahah
+        window.location.href = '/dashboard';
       } else {
         displayErrorMessage();
       }

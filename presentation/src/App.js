@@ -19,8 +19,8 @@ function App() {
       <div className="App">
           <Sidebar />
           <Routes>
-              <Route path="/login" element={<LoginUI />} />
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<LoginUI />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/loginhistory" element={<LogInHistory />} />
               <Route path="/events" element={<Events />} />
