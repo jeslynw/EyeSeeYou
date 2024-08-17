@@ -113,7 +113,7 @@ function UpdateAccountDetailsUI() {
               <div>
                 <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Full Name</p>
                 <input
-                  className="w-full px-3 py-2 mb-4 bg-[#374157] dark:bg-[#374157] rounded-md text-white text-sm focus:ring-1 focus:ring-[#004aad]"
+                  className="w-full px-3 py-2 mb-4 bg-[#374157] rounded-md text-white text-sm focus:ring-1 focus:ring-[#004aad]"
                   type="text"
                   id="fullname"
                   value={fullname}

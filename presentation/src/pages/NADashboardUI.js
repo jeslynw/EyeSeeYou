@@ -19,9 +19,9 @@ function NADashboardUI() {
 
             <div className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12">
                 {/* Dashboard text and current date and time */}
-                <div className="flex flex-col md:flex-row justify-between items-center mt-4 mb-4">
+                <div className="flex justify-between items-center mt-4 mb-4">
                     <p className="text-2xl">DASHBOARD</p>
-                    <p className="text-sm md:text-base">{currentDate}</p>
+                    <p className="text-base">{currentDate}</p>
                 </div>
 
                 <div className="w-full">
@@ -34,7 +34,7 @@ function NADashboardUI() {
 
                                 {/* Left side: Network status and total alerts */}
                                 <div className="flex flex-col md:block">
-                                    <div className="flex items-center pl-5">
+                                    <div className="flex items-center md:pl-5">
                                         <svg className="w-11 h-11 text-[#51ff2e]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z" clipRule="evenodd"/>
                                         </svg>  
@@ -43,7 +43,7 @@ function NADashboardUI() {
                                             <p className="text-lg font-medium">Good</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center pl-5 pt-4 ">
+                                    <div className="flex items-center md:pl-5 pt-4 ">
                                         <svg className="w-11 h-11 text-[#ff1f1fea]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM6 6a1 1 0 0 1-.707-.293l-1-1a1 1 0 0 1 1.414-1.414l1 1A1 1 0 0 1 6 6Zm-2 4H3a1 1 0 0 1 0-2h1a1 1 0 1 1 0 2Zm14-4a1 1 0 0 1-.707-1.707l1-1a1 1 0 1 1 1.414 1.414l-1 1A1 1 0 0 1 18 6Zm3 4h-1a1 1 0 1 1 0-2h1a1 1 0 1 1 0 2ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
                                         </svg>
