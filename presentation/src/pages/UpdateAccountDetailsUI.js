@@ -257,7 +257,7 @@ function UpdateAccountDetailsUI() {
 
         <div className="w-full max-w-3xl flex justify-end mt-4 gap-4">
           <button className="px-4 py-2 bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none">
-            Cancel
+            <a href="/viewProfile">Cancel</a>
           </button>
           <input
             type="submit"

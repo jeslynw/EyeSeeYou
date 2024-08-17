@@ -1,4 +1,6 @@
 import React from "react";
+import SvgIcon from "@mui/material/SvgIcon";
+import EditIcon from "@mui/icons-material/Edit";
 
 function ViewAccountDetailsUI() {
   const user = {
@@ -19,7 +21,12 @@ function ViewAccountDetailsUI() {
       <div className="w-full max-w-3xl flex justify-between mt-4 gap-4">
         <h2 className="text-2xl font-semibold mb-4">ACCOUNT DETAILS</h2>
         <button className="px-4 py-2 bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none">
-          Edit (logo)
+          <a href="/editProfile">
+            <p>
+              Edit Profile
+              <SvgIcon sx={{ fontSize: 25 }} component={EditIcon} />
+            </p>
+          </a>
         </button>
       </div>
 

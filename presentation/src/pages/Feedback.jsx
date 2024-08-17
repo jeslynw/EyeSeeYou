@@ -31,7 +31,7 @@ function FeedbackPage() {
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1.5rem' }}>
           <textarea
-          className='border-2 border-black rounded-lg'
+          className='border-2 border-black rounded-lg text-black'
             id="feedback"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}

@@ -117,10 +117,10 @@ const Sidebar = () => {
                     
                     <li
                         className={
-                            location.pathname === "/profile" ? "active" : ""
+                            location.pathname === "/viewProfile" ? "active" : ""
                         }
                     >
-                        <a href="/profile">
+                        <a href="/viewProfile">
                         <SvgIcon sx={{ fontSize: 35 }} component={PersonRoundedIcon}/>
                         <p className="pl-3">
                         Profile
