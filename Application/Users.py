@@ -1,3 +1,4 @@
+import bcrypt
 import dbAccess as db
 
 conn = db.get_connection()
@@ -54,7 +55,8 @@ class User:
         self.username = username
         
     def set_password(self, password):
-        self.password = password
+        hash = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt())
+        self.password = hash.decode('utf-8')
         
     def set_phone(self, phone):
         self.phone = phone
@@ -81,19 +83,19 @@ class User:
         return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
     
     def authenticate(username, password):
-        query = "SELECT * FROM user WHERE username = %s AND password = %s"
-        values = (username, password)
+        query = "SELECT * FROM user WHERE username = %s"
+        values = (username,)
         cursor = conn.cursor()
         
         try:
             cursor.execute(query, values)
             result = cursor.fetchone()
-            if result:
+            if bcrypt.checkpw(password.encode('utf-8'), result[4].encode('utf-8')):
                 return True
             else:
                 return False
         except:
-            print("Error authenticating user")
+            print("Error user not registered")
             return False
         finally:
             cursor.close()
@@ -101,7 +103,8 @@ class User:
     
     def update_user(self, first_name, last_name, username, password, phone, email):        
         query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE username = %s"
-        values = (first_name, last_name, username, password, phone, email)
+        password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
+        values = (first_name, last_name, username, password, phone, email, username)
         cursor = conn.cursor()
         
         try:
