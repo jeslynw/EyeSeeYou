@@ -23,5 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 #backend
-Application/__pycache__/
-Application/env/
+/Application/__pycache__/
+/Application/env/
