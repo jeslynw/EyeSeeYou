@@ -20,7 +20,11 @@ module.exports = {
       },
       transitionDuration: {
         '2000': '2000ms',
-      }
+      },
+      backdropFilter: {
+        'none': 'none',
+        'blur': 'blur(4px)',
+      },
     },
     fontFamily: {
       SansitaSwashed: ["Sansita Swashed", "system-ui"],
