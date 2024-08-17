@@ -3,9 +3,9 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
+import axios from 'axios'
 import '../App.css';
 import '../index.css';
-import axios from 'axios'
 
 // image
 // import dog from '../images/dog.png'
@@ -114,7 +114,7 @@ function LoginUI() {
       
       
         {/* title & subtitle */}
-        <div className="w-full h-full max-h-full max-w-full px-8 lg:px-5 backdrop-blur-sm pointer-events-none">
+        <div className="w-full h-full max-h-full max-w-full px-8 lg:px-0 backdrop-blur-sm pointer-events-none">
           <div className="flex justify-center items-center text-center pointer-events-none">
             {/* h-[calc(100vh-100px)]  */}
             <div className='mt-14'>
@@ -127,8 +127,8 @@ function LoginUI() {
         </div>
 
         {/* a glimpse of chart, graph, etc */}
-        <div className='flex px-8 lg:px-5 justify-center backdrop-blur-sm'>
-          <div className='grid grid-cols-1 md:grid-cols-2 mt-24 gap-7'>
+        <div className='flex px-8 lg:px-0 justify-center backdrop-blur-sm pointer-events-none'>
+          <div className='grid grid-cols-1 md:grid-cols-2 mt-24 gap-7 w-max pointer-events-auto'>
             <HardcodeBarChart/>
             <HardCodePieChart/>
             <HardcodeHorizontalBarChart/>
@@ -138,10 +138,10 @@ function LoginUI() {
 
 
         {/* login section */}
-        <div ref={loginSection}  className='pt-32 px-8 lg:px-5 backdrop-blur-sm' >
+        <div ref={loginSection}  className='pt-32 px-8 lg:px-5 backdrop-blur-sm pointer-events-none' >
           <p className='flex justify-center text-center text-white text-3xl font-semibold'>Ready To Secure Your Network?</p>
-          <div className='flex w-full justify-center mt-14'>
-            <Card className="max-w-md w-full bg-transparent border border-[#4F4F4F]">
+          <div className='flex w-full justify-center mt-14 '>
+            <Card className="max-w-md w-full bg-transparent border border-[#4F4F4F] pointer-events-auto">
               <form className="flex flex-col gap-4" onSubmit={handleLogin}>
                 <div>
                   <div className="mb-2 block">
@@ -185,8 +185,6 @@ function LoginUI() {
         <div className='p-10 backdrop-blur-sm'></div>
 
         </div>
-        
-        
       </div>
     );
 }
