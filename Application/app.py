@@ -31,10 +31,11 @@ def token_required(func):
         return func(*args, **kwargs)
     return decorated
 
-@app.route('/authorise')
-@token_required
-def authorise():
-    return 'JWT verified' 
+#testing
+# @app.route('/authorise')
+# @token_required
+# def authorise():
+#     return 'JWT verified' 
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -61,7 +62,7 @@ def login():
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
-@app.route('/dashboard', methods=['GET'])
+@app.route('/nadashboard', methods=['GET'])
 @token_required
 def go_to_dashboard():
     current_user = get_jwt_identity()

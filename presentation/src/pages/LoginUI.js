@@ -79,7 +79,7 @@ function LoginUI() {
       if (response.status === 200) {
         // alert('Login successful');
         // Redirect user to dashboard attempt hahahah
-        window.location.href = '/dashboard';
+        window.location.href = '/nadashboard';
       } else {
         displayErrorMessage();
       }
