@@ -83,19 +83,25 @@ class User:
         return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
     
     def authenticate(username, password):
-        query = "SELECT * FROM user WHERE username = %s"
+        query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
         cursor = conn.cursor()
         
         try:
             cursor.execute(query, values)
             result = cursor.fetchone()
-            if bcrypt.checkpw(password.encode('utf-8'), result[4].encode('utf-8')):
+
+            if result is None:
+                raise Exception("Authentication failed: User is not registered")
+
+
+            if bcrypt.checkpw(password.encode('utf-8'), result.encode('utf-8')):
                 return True
             else:
-                return False
-        except:
-            print("Error user not registered")
+                raise Exception("Authentication failed: Incorrect password")
+            
+        except Exception as e:
+            print(f"Error: {e}")
             return False
         finally:
             cursor.close()
