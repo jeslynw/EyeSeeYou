@@ -83,6 +83,21 @@ class User:
     def from_dict(dict):
         return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
     
+    def get_details(username):
+        query = "SELECT * FROM user WHERE username = %s"
+        values = (username,)
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Get details: username={username}, no user found")
+                    return None
+                return User(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+        except Exception as e:
+            print(f"Get details error: {e}")
+            return None
+    
     def authenticate(username, password):
         query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
@@ -108,7 +123,6 @@ class User:
         except Exception as e:
             print.error(f"Authentication error: {e}")
             return False
-            
     
     def update_user(self, first_name, last_name, username, password, phone, email):        
         query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE username = %s"
@@ -122,8 +136,4 @@ class User:
             return True
         except:
             print("Error updating user")
-            
             return False
-        finally:
-            cursor.close()
-            conn.close()

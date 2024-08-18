@@ -8,8 +8,8 @@ import axios from "axios";
 
 function NADashboardUI() {
     //debugging for user
-    const access_token = localStorage.getItem('accesstoken');
-    const refresh_token = localStorage.getItem('refreshtoken');
+    const access_token = sessionStorage.getItem('accesstoken');
+    const refresh_token = sessionStorage.getItem('refreshtoken');
     
     if (access_token) {
         console.log('Access found:', access_token);

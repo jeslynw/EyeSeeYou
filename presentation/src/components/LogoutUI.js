@@ -11,6 +11,7 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 
 function LogoutUI({ openPopUp, setOpenPopUp, handleLogout }) {
+
   return (
     <div>
             <Dialog

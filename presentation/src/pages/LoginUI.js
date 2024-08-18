@@ -79,8 +79,8 @@ function LoginUI() {
         console.log("Login successful");
         console.log("access", response.data.token.access)
         console.log("refresh", response.data.token.refresh)
-        localStorage.setItem('accesstoken', response.data.token.access);
-        localStorage.setItem('refreshtoken', response.data.token.refresh);
+        sessionStorage.setItem('accesstoken', response.data.token.access);
+        sessionStorage.setItem('refreshtoken', response.data.token.refresh);
         redirectToDashboard()
       } else {
         console.log("response", response.status)
