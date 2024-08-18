@@ -86,6 +86,14 @@ def login():
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
+
+@app.route('/nadashboard', methods=['GET'])
+@token_required
+def go_to_dashboard():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
+
+
 @app.route('/viewaccountdetails', methods=['GET'])
 @token_required
 def view_account():
@@ -100,23 +108,12 @@ def view_account():
         }), 200
 
 
-@app.route('/nadashboard', methods=['GET'])
-@token_required
-def go_to_dashboard():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
-
-@app.route('/viewaccountdetails', methods=['GET'])
-@token_required
-def go_to_view_account():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
-
 @app.route('/updateaccountdetails', methods=['GET'])
 @token_required
 def go_to_update_account():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200 
+
 
 @app.route('/alerts', methods=['GET'])
 @token_required
@@ -124,17 +121,20 @@ def go_to_alerts():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200 
 
+
 @app.route('/loginhistory', methods=['GET'])
 @token_required
 def go_to_login_history():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
 
+
 @app.route('/events', methods=['GET'])
 @token_required
 def go_to_events():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200 
+
 
 @app.route('/feedback', methods=['GET'])
 @token_required
