@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 function Layout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Start with sidebar open
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Start with sidebar close
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

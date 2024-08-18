@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, JWTManager
 from Users import User
 import getKey as gk
+from flask_cors import CORS
 
 app = Flask(__name__)
 jwt = JWTManager(app)
@@ -36,37 +37,26 @@ def token_required(func):
 # @token_required
 # def authorise():
 #     return 'JWT verified' 
+CORS(app, origins=['http://localhost:3000'])
+
+# import logging
+
+# logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({"message": "Invalid request"}), 400
-    
-    username = data.get('username')
-    password = data.get('password')
-    
-    if User.authenticate(username, password):
-        # token = token_expiration(username)
-        
-        access_token = create_access_token(identity=username)
-        refresh_token = create_refresh_token(identity=username)
-        
-        return jsonify({'token': {
-                                "access" : access_token, 
-                                "refresh" : refresh_token
-                                }
-                        }
-                       ), 200
-    else:
-        return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
+    # try:
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
 
-@app.route('/nadashboard', methods=['GET'])
-@token_required
-def go_to_dashboard():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
+        if User.authenticate(username, password):
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return jsonify({"message": "Login failed"}), 401
+    # except Exception as e:
+    #     logging.error(f"An error occurred: {e}")
+    #     return jsonify({"error": "Internal server error"}), 500
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
