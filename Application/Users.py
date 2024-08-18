@@ -88,24 +88,23 @@ class User:
         values = (username,)
         
         try:
-            with db.get_connection() as conn:
-                with conn.cursor() as cursor:
-                    cursor.execute(query, values)
-                    result = cursor.fetchone()
-                    if result is None:
-                        print(f"Authenticate: username={username}, no user found")
-                        return False
-                    
-                    # Retrieve the stored hashed password
-                    stored_password = result[0]
-                    
-                    # Check if the provided password matches the stored hashed password
-                    if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
-                        print(f"Authenticate: username={username}, login successful")
-                        return True
-                    else:
-                        print(f"Authenticate: username={username}, incorrect password")
-                        return False
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Authenticate: username={username}, no user found")
+                    return False
+                
+                # Retrieve the stored hashed password
+                stored_password = result[0]
+                
+                # Check if the provided password matches the stored hashed password
+                if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+                    print(f"Authenticate: username={username}, login successful")
+                    return True
+                else:
+                    print(f"Authenticate: username={username}, incorrect password")
+                    return False
         except Exception as e:
             print.error(f"Authentication error: {e}")
             return False
@@ -123,6 +122,7 @@ class User:
             return True
         except:
             print("Error updating user")
+            
             return False
         finally:
             cursor.close()
