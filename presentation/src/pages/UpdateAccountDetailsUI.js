@@ -118,7 +118,7 @@ function UpdateAccountDetailsUI() {
                   id="fullname"
                   value={fullname}
                   onChange={handleInputChange}
-                  requireds
+                  required  
                 />
                 {errors.fullname && (
                   <p className="text-red-500 text-sm">{errors.fullname}</p>
