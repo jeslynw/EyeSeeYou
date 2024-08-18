@@ -18,24 +18,13 @@ import HardcodeHorizontalBarChart from '../components/HardcodeHorizontalBarChart
 import HardCodeRealtime from '../components/HardCodeRealtime';
 
 // flowbite
-import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Card, Label, TextInput } from "flowbite-react";
 
 
 function LoginUI() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-
-  // useEffect(() => {
-  //       const bgAnimation = document.getElementById('bgAnimation');
-  //       const numberOfColorBoxes = 400;
-      
-  //       for (let i = 0; i < numberOfColorBoxes; i++) {
-  //         const colorBox = document.createElement('div');
-  //         colorBox.classList.add('colorBox');
-  //         bgAnimation.append(colorBox);
-  //       }
-  //     }, []);
 
   // animated background
   useEffect(() => {
@@ -69,25 +58,41 @@ function LoginUI() {
   // handle login button
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent form submission
+    if (!username || !password){
+      displayErrorMessage();
+      return;
+    }
 
     try {
-      const response = await axios.post('/login', {
-        username,
-        password
+      console.log("username", username)
+      console.log("password", password)
+      const response = await axios.post('http://127.0.0.1:5000/login', {
+        username: username,
+        password: password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
-      if (response.status === 200) {
-        alert('Login successful');
+      if (response.status === 200 && response.data.message === "Login successful") {
+        console.log("Login successful");
+        redirectToDashboard()
       } else {
-        displayErrorMessage();
+        displayErrorMessage()
       }
     } catch (error) {
-      console.error('An error occurred', error);
-      displayErrorMessage()
-    }};
+      console.error('An error occurred:', error);
+      setError("Login failed. Please try again.");
+    }
+  };
 
   function displayErrorMessage(){
     setError("Incorrect username or password");
+  }
+
+  function redirectToDashboard(){
+    window.location.href = '/nadashboard'
   }
 
   return (
