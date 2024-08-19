@@ -5,9 +5,11 @@ import axios from "axios";
 // import check_token from "../auth.js";
 
 // import Sidebar from "../components/Sidebar";
+// import check_token from "../auth.js";
+
+// import Sidebar from "../components/Sidebar";
 
 function NADashboardUI() {
-  const { darkMode } = useTheme();
   //debugging for user
   const access_token = sessionStorage.getItem("accesstoken");
   const refresh_token = sessionStorage.getItem("refreshtoken");
