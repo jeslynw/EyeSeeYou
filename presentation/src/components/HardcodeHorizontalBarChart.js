@@ -13,6 +13,9 @@ class HardcodeHorizontalBarChart extends Component  {
                     background: '#272929', // Set the background color here
                     borderRadius: 20,
                     responsive: true,
+                    toolbar: {
+                        show: false, // Disables the entire toolbar, including the download option
+                      },
                 },
                 xaxis: {
                     categories: ['DDoS', 'Malware', 'Scanning', 'SQL Injection', 'Brute Force Attacks', 'XSS'],

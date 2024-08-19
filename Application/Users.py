@@ -1,5 +1,6 @@
 import bcrypt
 import dbAccess as db
+# import logging
 
 conn = db.get_connection()
 app = db.app
@@ -85,27 +86,30 @@ class User:
     def authenticate(username, password):
         query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
-        cursor = conn.cursor()
         
         try:
-            cursor.execute(query, values)
-            result = cursor.fetchone()
-
-            if result is None:
-                raise Exception("Authentication failed: User is not registered")
-
-
-            if bcrypt.checkpw(password.encode('utf-8'), result.encode('utf-8')):
-                return True
-            else:
-                raise Exception("Authentication failed: Incorrect password")
-            
+            with db.get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(query, values)
+                    result = cursor.fetchone()
+                    if result is None:
+                        print(f"Authenticate: username={username}, no user found")
+                        return False
+                    
+                    # Retrieve the stored hashed password
+                    stored_password = result[0]
+                    
+                    # Check if the provided password matches the stored hashed password
+                    if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+                        print(f"Authenticate: username={username}, login successful")
+                        return True
+                    else:
+                        print(f"Authenticate: username={username}, incorrect password")
+                        return False
         except Exception as e:
-            print(f"Error: {e}")
+            print.error(f"Authentication error: {e}")
             return False
-        finally:
-            cursor.close()
-            conn.close()
+            
     
     def update_user(self, first_name, last_name, username, password, phone, email):        
         query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE username = %s"

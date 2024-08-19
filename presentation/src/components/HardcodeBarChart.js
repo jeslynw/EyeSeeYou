@@ -9,6 +9,9 @@ class HardcodeBarChart extends Component  {
       options: {
         chart: {
           id: "basic-bar",
+          toolbar: {
+            show: false, // Disables the entire toolbar, including the download option
+          },
         },
         xaxis: {
           categories: ['Low', 'Medium', 'High', 'Critical'],

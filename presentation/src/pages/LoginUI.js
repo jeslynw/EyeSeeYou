@@ -3,9 +3,9 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
+import axios from 'axios'
 import '../App.css';
 import '../index.css';
-import axios from 'axios'
 
 // image
 // import dog from '../images/dog.png'
@@ -18,24 +18,13 @@ import HardcodeHorizontalBarChart from '../components/HardcodeHorizontalBarChart
 import HardCodeRealtime from '../components/HardCodeRealtime';
 
 // flowbite
-import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Card, Label, TextInput } from "flowbite-react";
 
 
 function LoginUI() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-
-  // useEffect(() => {
-  //       const bgAnimation = document.getElementById('bgAnimation');
-  //       const numberOfColorBoxes = 400;
-      
-  //       for (let i = 0; i < numberOfColorBoxes; i++) {
-  //         const colorBox = document.createElement('div');
-  //         colorBox.classList.add('colorBox');
-  //         bgAnimation.append(colorBox);
-  //       }
-  //     }, []);
 
   // animated background
   useEffect(() => {
@@ -69,25 +58,41 @@ function LoginUI() {
   // handle login button
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent form submission
+    if (!username || !password){
+      displayErrorMessage();
+      return;
+    }
 
     try {
-      const response = await axios.post('/login', {
-        username,
-        password
+      console.log("username", username)
+      console.log("password", password)
+      const response = await axios.post('http://127.0.0.1:5000/login', {
+        username: username,
+        password: password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
-      if (response.status === 200) {
-        alert('Login successful');
+      if (response.status === 200 && response.data.message === "Login successful") {
+        console.log("Login successful");
+        redirectToDashboard()
       } else {
-        displayErrorMessage();
+        displayErrorMessage()
       }
     } catch (error) {
-      console.error('An error occurred', error);
-      displayErrorMessage()
-    }};
+      console.error('An error occurred:', error);
+      setError("Login failed. Please try again.");
+    }
+  };
 
   function displayErrorMessage(){
     setError("Incorrect username or password");
+  }
+
+  function redirectToDashboard(){
+    window.location.href = '/nadashboard'
   }
 
   return (
@@ -114,7 +119,7 @@ function LoginUI() {
       
       
         {/* title & subtitle */}
-        <div className="w-full h-full max-h-full max-w-full px-8 lg:px-5 backdrop-blur-sm pointer-events-none">
+        <div className="w-full h-full max-h-full max-w-full px-8 lg:px-0 backdrop-blur-sm pointer-events-none">
           <div className="flex justify-center items-center text-center pointer-events-none">
             {/* h-[calc(100vh-100px)]  */}
             <div className='mt-14'>
@@ -127,8 +132,8 @@ function LoginUI() {
         </div>
 
         {/* a glimpse of chart, graph, etc */}
-        <div className='flex px-8 lg:px-5 justify-center backdrop-blur-sm'>
-          <div className='grid grid-cols-1 md:grid-cols-2 mt-24 gap-7'>
+        <div className='flex px-8 lg:px-0 justify-center backdrop-blur-sm pointer-events-none'>
+          <div className='grid grid-cols-1 md:grid-cols-2 mt-24 gap-7 w-max pointer-events-auto'>
             <HardcodeBarChart/>
             <HardCodePieChart/>
             <HardcodeHorizontalBarChart/>
@@ -138,10 +143,10 @@ function LoginUI() {
 
 
         {/* login section */}
-        <div ref={loginSection}  className='pt-32 px-8 lg:px-5 backdrop-blur-sm' >
+        <div ref={loginSection}  className='pt-32 px-8 lg:px-5 backdrop-blur-sm pointer-events-none' >
           <p className='flex justify-center text-center text-white text-3xl font-semibold'>Ready To Secure Your Network?</p>
-          <div className='flex w-full justify-center mt-14'>
-            <Card className="max-w-md w-full bg-transparent border border-[#4F4F4F]">
+          <div className='flex w-full justify-center mt-14 '>
+            <Card className="max-w-md w-full bg-transparent border border-[#4F4F4F] pointer-events-auto">
               <form className="flex flex-col gap-4" onSubmit={handleLogin}>
                 <div>
                   <div className="mb-2 block">
@@ -185,8 +190,6 @@ function LoginUI() {
         <div className='p-10 backdrop-blur-sm'></div>
 
         </div>
-        
-        
       </div>
     );
 }
