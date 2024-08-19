@@ -22,6 +22,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+**/package-lock.json
+**/package.json
+
 #backend
 Application/__pycache__
 Application/env
+
+#frontend
+presentation/src/styles/style.txt

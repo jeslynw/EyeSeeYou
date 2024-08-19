@@ -30,10 +30,9 @@ function ViewAccountDetailsUI() {
         </button>
       </div>
 
-      {/* NOTE: having trouble adjusting the width on this line below, rmb to test the dynamic part as well. */}
       <div className="bg-gray-800 text-white rounded-xl shadow-lg w-full max-w-3xl px-6 py-4 ">
         <h3 className="text-2xl font-semibold mb-8">Personal Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
           <div>
             <label
               className="block text-sm font-medium mb-1"
