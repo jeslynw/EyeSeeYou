@@ -33,6 +33,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
     // handle logout button
     const confirmLogout = () => {
+        sessionStorage.removeItem('accesstoken');
+        sessionStorage.removeItem('refreshtoken');
         console.log("Logging out...");
         setOpenPopUp(false);
         navigate('/');
