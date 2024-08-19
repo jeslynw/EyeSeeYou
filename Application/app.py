@@ -72,9 +72,9 @@ def login():
     
     if User.authenticate(username, password):
         # token = token_expiration(username)
-        
-        access_token = create_access_token(identity=username)
-        refresh_token = create_refresh_token(identity=username)
+        user_id = User.get_id(username)
+        access_token = create_access_token(identity=user_id)
+        refresh_token = create_refresh_token(identity=user_id)
         
         return jsonify({'message': 'Login successful',
                         'token': {
@@ -97,8 +97,8 @@ def go_to_dashboard():
 @app.route('/viewaccountdetails', methods=['GET'])
 @token_required
 def view_account():
-    username = get_jwt_identity()
-    current_user = User.get_details(username)
+    user_id = get_jwt_identity()
+    current_user = User.get_details(user_id)
     return jsonify({
         'first_name' : current_user.first_name,
         'last_name' : current_user.last_name,
@@ -110,9 +110,12 @@ def view_account():
 
 @app.route('/updateaccountdetails', methods=['GET'])
 @token_required
-def go_to_update_account():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
+def update_account():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    success = User.update_user(user_id, data.get('first_name'), data.get('last_name'), data.get('username'), data.get('password'), data.get('phone'), data.get('email'))
+    # return jsonify(logged_in_as=user_id), 200 
+    return jsonify(success), 200 
 
 
 @app.route('/alerts', methods=['GET'])
@@ -141,23 +144,6 @@ def go_to_events():
 def go_to_feedback():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200 
-
-
-
-# @app.route('/login', methods=['POST'])
-# def login():
-#     # try:
-#         data = request.get_json()
-#         username = data.get('username')
-#         password = data.get('password')
-
-#         if User.authenticate(username, password):
-#             return jsonify({"message": "Login successful"}), 200
-#         else:
-#             return jsonify({"message": "Login failed"}), 401
-#     # except Exception as e:
-#     #     logging.error(f"An error occurred: {e}")
-#     #     return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
