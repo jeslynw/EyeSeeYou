@@ -77,8 +77,14 @@ function LoginUI() {
 
       if (response.status === 200 && response.data.message === "Login successful") {
         console.log("Login successful");
+        console.log("access", response.data.token.access)
+        console.log("refresh", response.data.token.refresh)
+        sessionStorage.setItem('accesstoken', response.data.token.access);
+        sessionStorage.setItem('refreshtoken', response.data.token.refresh);
         redirectToDashboard()
       } else {
+        console.log("response", response.status)
+        console.log("response", response.data.message)
         displayErrorMessage()
       }
     } catch (error) {
