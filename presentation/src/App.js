@@ -10,6 +10,7 @@ import Alerts from "./pages/Alerts";
 import Events from "./pages/Events";
 import LogInHistory from "./pages/LogInHistory";
 import FeedbackPage from "./pages/Feedback";
+import TrendingAttacksUI from "./pages/TrendingAttacksUI";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/loginhistory" element={<LogInHistory />} />
             <Route path="/events" element={<Events />} />
             <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
           </Route>
         </Routes>
       </Router>   

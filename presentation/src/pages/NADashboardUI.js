@@ -23,7 +23,7 @@ function NADashboardUI() {
                     <p className="text-2xl">DASHBOARD</p>
                     <p className="text-base">{currentDate}</p>
                 </div>
-
+                
                 <div className="w-full">
                     {/* 1st row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
