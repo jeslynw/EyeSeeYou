@@ -6,7 +6,8 @@ conn = db.get_connection()
 app = db.app
 
 class User:
-    def __init__(self, first_name, last_name, username, password, phone, email, profile_id, active):
+    def __init__(self, id, first_name, last_name, username, password, phone, email, profile_id, active):
+        self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -21,6 +22,9 @@ class User:
     
     def __repr__(self):
         return f"{self.first_name} {self.last_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+    
+    def get_id(self):
+        return self.id
     
     def get_first_name(self):
         return self.first_name
@@ -82,39 +86,71 @@ class User:
         
     def from_dict(dict):
         return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
+
     
     def authenticate(username, password):
         query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
         
         try:
-            with db.get_connection() as conn:
-                with conn.cursor() as cursor:
-                    cursor.execute(query, values)
-                    result = cursor.fetchone()
-                    if result is None:
-                        print(f"Authenticate: username={username}, no user found")
-                        return False
-                    
-                    # Retrieve the stored hashed password
-                    stored_password = result[0]
-                    
-                    # Check if the provided password matches the stored hashed password
-                    if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
-                        print(f"Authenticate: username={username}, login successful")
-                        return True
-                    else:
-                        print(f"Authenticate: username={username}, incorrect password")
-                        return False
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Authenticate: username={username}, no user found")
+                    return False
+                
+                # Retrieve the stored hashed password
+                stored_password = result[0]
+                
+                # Check if the provided password matches the stored hashed password
+                if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+                    print(f"Authenticate: username={username}, login successful")
+                    return True
+                else:
+                    print(f"Authenticate: username={username}, incorrect password")
+                    return False
         except Exception as e:
             print.error(f"Authentication error: {e}")
             return False
-            
     
-    def update_user(self, first_name, last_name, username, password, phone, email):        
-        query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE username = %s"
+    
+    def get_id(username):
+        query = "SELECT user_id FROM user WHERE username = %s"
+        values = (username,)
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Get by id: username={username}, no user found")
+                    return None
+                return result[0]
+        except Exception as e:
+            print(f"Get by id error: {e}")
+            return None
+    
+    
+    def get_details(user_id):
+        query = "SELECT * FROM user WHERE user_id = %s"
+        values = (user_id,)
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Get details: username={user_id}, no user found")
+                    return None
+                return User(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+        except Exception as e:
+            print(f"Get details error: {e}")
+            return None
+    
+    
+    def update_user(self, user_id, first_name, last_name, username, password, phone, email):
+        query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
         password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
-        values = (first_name, last_name, username, password, phone, email, username)
+        values = (first_name, last_name, username, password, phone, email, username, user_id)
         cursor = conn.cursor()
         
         try:
@@ -124,6 +160,4 @@ class User:
         except:
             print("Error updating user")
             return False
-        finally:
-            cursor.close()
-            conn.close()
+        
