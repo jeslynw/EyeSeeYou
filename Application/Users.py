@@ -6,10 +6,9 @@ conn = db.get_connection()
 app = db.app
 
 class User:
-    def __init__(self, id, first_name, last_name, username, password, phone, email, profile_id, active):
+    def __init__(self, id, full_name, username, password, phone, email, profile_id, active):
         self.id = id
-        self.first_name = first_name
-        self.last_name = last_name
+        self.full_name = full_name
         self.username = username
         self.password = password
         self.phone = phone
@@ -18,19 +17,16 @@ class User:
         self.active = active
         
     def __str__(self):
-        return f"{self.first_name} {self.last_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
     
     def __repr__(self):
-        return f"{self.first_name} {self.last_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
     
     def get_id(self):
         return self.id
     
-    def get_first_name(self):
-        return self.first_name
-    
-    def get_last_name(self):
-        return self.last_name
+    def get_full_name(self):
+        return self.full_name
     
     def get_username(self):
         return self.username
@@ -50,11 +46,8 @@ class User:
     def get_active(self):
         return self.active
     
-    def set_first_name(self, first_name):
-        self.first_name = first_name
-        
-    def set_last_name(self, last_name):
-        self.last_name = last_name
+    def set_first_name(self, full_name):
+        self.full_name = full_name
         
     def set_username(self, username):
         self.username = username
@@ -74,8 +67,7 @@ class User:
         
     def to_dict(self):
         return {
-            'first_name': self.first_name,
-            'last_name': self.last_name,
+            'first_name': self.full_name,
             'username': self.username,
             'password': self.password,
             'phone': self.phone,
@@ -85,7 +77,7 @@ class User:
         }
         
     def from_dict(dict):
-        return User(dict['first_name'], dict['last_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
+        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
 
     
     def authenticate(username, password):
@@ -147,10 +139,10 @@ class User:
             return None
     
     
-    def update_user(self, user_id, first_name, last_name, username, password, phone, email):
-        query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
+    def update_user(self, user_id, full_name, username, password, phone, email):
+        query = "UPDATE user SET full_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
         password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
-        values = (first_name, last_name, username, password, phone, email, username, user_id)
+        values = (full_name, username, password, phone, email, username, user_id)
         cursor = conn.cursor()
         
         try:
