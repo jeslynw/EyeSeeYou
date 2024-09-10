@@ -6,11 +6,10 @@ import LoginUI from "./pages/LoginUI";
 import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
 import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 import NADashboardUI from "./pages/NADashboardUI";
-import NAAlerts from "./pages/ViewDetailedAlertsUI";
-import NAEvents from "./pages/ViewDetailedEventsUI";
-import NALogInHistory from "./pages/ViewLoginHistoryUI";
-import FeedbackPage from "./pages/FeedbackUI";
-import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
+import Alerts from "./pages/Alerts";
+import Events from "./pages/Events";
+import LogInHistory from "./pages/LogInHistory";
+import FeedbackPage from "./pages/Feedback";
 
 function App() {
   return (
@@ -22,11 +21,10 @@ function App() {
             <Route path="/nadashboard" element={<NADashboardUI />} />
             <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
             <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
-            <Route path="/naalerts" element={<NAAlerts />} />
-            <Route path="/naloginhistory" element={<NALogInHistory />} />
-            <Route path="/naevents" element={<NAEvents />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/loginhistory" element={<LogInHistory />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/feedback" element={<FeedbackPage />} />
-            <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
           </Route>
         </Routes>
       </Router>   
