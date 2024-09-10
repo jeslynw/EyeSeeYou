@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 12, 2024 at 09:10 AM
+-- Generation Time: Sep 10, 2024 at 09:15 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -26,18 +26,38 @@ USE `eyeseeyou`;
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `plan`
+--
+
+CREATE TABLE `plan` (
+  `plan_id` int(11) NOT NULL,
+  `plan_type` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `plan`
+--
+
+INSERT INTO `plan` (`plan_id`, `plan_type`) VALUES
+(1, 'Basic Plan'),
+(2, 'Premium Plan');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL,
-  `first_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
+  `full_name` varchar(100) DEFAULT NULL,
   `username` varchar(30) DEFAULT NULL,
-  `password` varchar(60) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
+  `organisation_name` varchar(100) DEFAULT NULL,
   `profile_id` int(11) DEFAULT NULL,
+  `plan_id` int(11) DEFAULT NULL,
   `active` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -45,9 +65,9 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `first_name`, `last_name`, `username`, `password`, `phone`, `email`, `profile_id`, `active`) VALUES
-(1, 'Frankie', 'Lee', 'flee', '$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS', '98431863', 'flee@gmail.com', 1, 1),
-(2, 'Keith', 'Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 1, 1);
+INSERT INTO `user` (`user_id`, `full_name`, `username`, `password`, `phone`, `email`, `organisation_name`, `profile_id`, `plan_id`, `active`) VALUES
+(1, 'Frankie Lee', 'flee', '$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS', '98431863', 'flee@gmail.com', 'Yishun Men', 1, 1, 1),
+(2, 'Keith Min Khant Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 'Burmese Monk', 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -73,6 +93,12 @@ INSERT INTO `user_profile` (`profile_id`, `profile_name`) VALUES
 --
 
 --
+-- Indexes for table `plan`
+--
+ALTER TABLE `plan`
+  ADD PRIMARY KEY (`plan_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -80,7 +106,8 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `phone` (`phone`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `profile_id` (`profile_id`);
+  ADD KEY `profile_id` (`profile_id`),
+  ADD KEY `plan_id` (`plan_id`);
 
 --
 -- Indexes for table `user_profile`
@@ -106,7 +133,8 @@ ALTER TABLE `user`
 -- Constraints for table `user`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`profile_id`) REFERENCES `user_profile` (`profile_id`);
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`profile_id`) REFERENCES `user_profile` (`profile_id`),
+  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`plan_id`) REFERENCES `plan` (`plan_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

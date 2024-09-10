@@ -1,21 +1,30 @@
-CREATE TABLE user (
-    user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    username varchar(30) UNIQUE,
-    password varchar(30),
-    phone VARCHAR(20) UNIQUE, -- Changed to VARCHAR
-    email VARCHAR(50) UNIQUE,
-    profile_id INT,
-    active BOOLEAN DEFAULT TRUE,
-	FOREIGN KEY (profile_id) REFERENCES user_profile(profile_id)
-);
-
-INSERT INTO user (first_name, last_name, username, password, phone, email, profile_id) VALUES ("Frankie", "Lee", "flee", "wx", "98431863", "flee@gmail.com", 1), ("Keith", "Thu", "mkt", "thuthu", "96864135", "mkt@gmail.com", 1)
-
 CREATE TABLE user_profile (
 	profile_id INT PRIMARY KEY,
     profile_name varchar(50)
-)
+);
 
-INSERT INTO user_profile (profile_id, profile_name) VALUES (1, "Network Administrator"), (2, "Management")
+INSERT INTO user_profile (profile_id, profile_name) VALUES (1, "Network Administrator"), (2, "Management");
+
+CREATE TABLE plan (
+	plan_id INT PRIMARY KEY,
+    plan_type varchar(50)
+);
+
+INSERT INTO plan (plan_id, plan_type) VALUES (1, "Basic Plan"), (2, "Premium Plan");
+
+CREATE TABLE user (
+    user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100),
+    username varchar(30) UNIQUE,
+    password varchar(255),
+    phone VARCHAR(20) UNIQUE, -- Changed to VARCHAR
+    email VARCHAR(50) UNIQUE,
+    organisation_name VARCHAR(100),
+    profile_id INT,
+    plan_id INT,
+    active BOOLEAN DEFAULT TRUE,
+	FOREIGN KEY (profile_id) REFERENCES user_profile(profile_id),
+    FOREIGN KEY (plan_id) REFERENCES plan(plan_id)
+);
+
+INSERT INTO user (full_name, username, password, phone, email, organisation_name, profile_id, plan_id) VALUES ("Frankie Lee", "flee", "$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS", "98431863", "flee@gmail.com", "Yishun Men", 1, 1), ("Keith Min Khant Thu", "mkt", "$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2", "96864135", "mkt@gmail.com", "Burmese Monk", 1, 2);
