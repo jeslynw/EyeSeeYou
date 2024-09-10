@@ -6,7 +6,7 @@ conn = db.get_connection()
 app = db.app
 
 class User:
-    def __init__(self, id, full_name, username, password, phone, email, organisation,profile_id, active):
+    def __init__(self, id, full_name, username, password, phone, email, organisation, profile_id, active, plan):
         self.id = id
         self.full_name = full_name
         self.username = username
@@ -16,12 +16,13 @@ class User:
         self.organisation = organisation
         self.profile_id = profile_id
         self.active = active
+        self.plan = plan
         
     def __str__(self):
-        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation} {self.profile_id} {self.active} {self.plan}"
     
     def __repr__(self):
-        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.profile_id} {self.active}"
+        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation} {self.profile_id} {self.active} {self.plan}"
     
     def get_id(self):
         return self.id
@@ -49,6 +50,9 @@ class User:
     
     def get_active(self):
         return self.active
+    
+    def get_plan(self):
+        return self.plan
     
     def set_first_name(self, full_name):
         self.full_name = full_name
@@ -78,11 +82,12 @@ class User:
             'email': self.email,
             'organisation': self.organisation,
             'profile_id': self.profile_id,
-            'active': self.active
+            'active': self.active,
+            'plan': self.plan
         }
         
     def from_dict(dict):
-        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['organisation'],dict['profile_id'], dict['active'])
+        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['organisation'],dict['profile_id'], dict['active'], dict['plan'])
 
     
     def authenticate(username, password):
@@ -138,7 +143,7 @@ class User:
                 if result is None:
                     print(f"Get details: username={user_id}, no user found")
                     return None
-                return User(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+                return User(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9])
         except Exception as e:
             print(f"Get details error: {e}")
             return None
