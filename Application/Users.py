@@ -75,7 +75,7 @@ class User:
         
     def to_dict(self):
         return {
-            'first_name': self.full_name,
+            'full_name': self.full_name,
             'username': self.username,
             'password': self.password,
             'phone': self.phone,
