@@ -52,7 +52,7 @@ function FeedbackPage() {
         </div>
        
         <div className='flex items-center justify-center'>
-          <form onSubmit={handleSubmit}>
+          <form action="">
             {/* Container */}
             <div className='w-full max-w-4xl bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white rounded-xl shadow-lg dark:shadow-[#353535]'>
               <div className='px-4 py-8 md:px-6 md:py-8 lg:px-10 lg:py-12'>
@@ -84,7 +84,7 @@ function FeedbackPage() {
 
             {/* Submit button */}
             <div className='flex justify-end mt-4'>
-              <button className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none" type="submit">
+              <button onClick={handleSubmit} className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none" type="submit">
                 Submit
               </button>
             </div>
