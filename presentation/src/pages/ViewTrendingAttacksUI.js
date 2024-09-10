@@ -1,10 +1,10 @@
 import React from 'react'
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
-import BreadcrumbsUI from '../components/BreadcrumbsUI';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { Link } from "react-router-dom";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 // import Typography from '@mui/material/Typography';
-// import Breadcrumbs from '@mui/material/Breadcrumbs';
-// import Link from '@mui/material/Link';
 
 function TrendingAttacksUI() {
     const { darkMode } = useTheme();
@@ -17,6 +17,11 @@ function TrendingAttacksUI() {
     // event.preventDefault();
     // console.info('You clicked a breadcrumb.');
 
+    const breadcrumbItems = [
+        {path: '/nadashboard', name:'Dashboard'},
+        {path: '/trendingattacks', name: "Trending Attacks"}
+    ]
+
     return (
         <div className={darkMode ? 'dark' : ''}>
             <Header />  
@@ -28,24 +33,21 @@ function TrendingAttacksUI() {
                     <p className="text-base">{currentDate}</p>
                 </div>
                 <div>
-                    <BreadcrumbsUI />
-                </div>
-                
-                {/* <div role="presentation" onClick={handleClick}>
-                    <Breadcrumbs aria-label="breadcrumb">
-                        <Link underline="hover" color="inherit" href="/">
-                        MUI
-                        </Link>
+                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
+                    {breadcrumbItems.map((item) => (
                         <Link
+                        className='text-[#000] dark:text-[#ffffff]'
+                        to = {item.path}
                         underline="hover"
+                        onClick = {item.onClick}
                         color="inherit"
-                        href="/material-ui/getting-started/installation/"
                         >
-                        Core
+                            <p>{item.name}</p>
                         </Link>
-                        <Typography color="text.primary">Breadcrumbs</Typography>
+                    
+                    ))}
                     </Breadcrumbs>
-                </div> */}
+                </div>
                 
                 <div className="py-2"></div>
 
