@@ -6,13 +6,14 @@ conn = db.get_connection()
 app = db.app
 
 class User:
-    def __init__(self, id, full_name, username, password, phone, email, profile_id, active):
+    def __init__(self, id, full_name, username, password, phone, email, organisation,profile_id, active):
         self.id = id
         self.full_name = full_name
         self.username = username
         self.password = password
         self.phone = phone
         self.email = email
+        self.organisation = organisation
         self.profile_id = profile_id
         self.active = active
         
@@ -39,6 +40,9 @@ class User:
     
     def get_email(self):
         return self.email
+    
+    def get_organisation(self):
+        return self.organisation
     
     def get_profile_id(self):
         return self.profile_id
@@ -72,12 +76,13 @@ class User:
             'password': self.password,
             'phone': self.phone,
             'email': self.email,
+            'organisation': self.organisation,
             'profile_id': self.profile_id,
             'active': self.active
         }
         
     def from_dict(dict):
-        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['profile_id'], dict['active'])
+        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['organisation'],dict['profile_id'], dict['active'])
 
     
     def authenticate(username, password):
