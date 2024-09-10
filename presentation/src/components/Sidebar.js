@@ -42,9 +42,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
     const navItems = [
         {path: '/nadashboard', name:'Dashboard', icon:DashboardOutlinedIcon},
-        {path: '/alerts', name:'Alerts', icon:NotificationsNoneOutlinedIcon},
-        {path: '/events', name:'Events', icon:TodayOutlinedIcon},
-        {path: '/loginhistory', name:'Log In History', icon:HistoryOutlinedIcon},
+        {path: '/naalerts', name:'Alerts', icon:NotificationsNoneOutlinedIcon},
+        {path: '/naevents', name:'Events', icon:TodayOutlinedIcon},
+        {path: '/naloginhistory', name:'Log In History', icon:HistoryOutlinedIcon},
         {path: '/viewaccountdetails', name:'Profile', icon:PersonRoundedIcon},
         {path: '/feedback', name:'Feedback', icon:RateReviewOutlinedIcon},
         {path: '#', name: 'Logout', icon: LogoutOutlinedIcon, onClick: openLogoutPopUp},
@@ -75,9 +75,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                     to={item.path}
                                     onClick={item.onClick}
                                     className={`flex items-center justify-start px-2 py-2 w-full h-12 rounded-xl cursor-pointer text-[20px] ${
-                                        location.pathname === item.path 
-                                        ? "bg-gray-300 dark:bg-gray-400 text-gray-800" 
-                                        : "hover:bg-gray-300 dark:hover:bg-gray-400  transition-colors duration-200"
+                                    location.pathname === item.path 
+                                    ? "bg-gray-300 dark:bg-gray-400 text-gray-800" 
+                                    : "hover:bg-gray-300 dark:hover:bg-gray-400  transition-colors duration-200"
                                     }`}
                                 >
                                     <span className="mr-2 mb-[4px] text-black dark:text-white">
