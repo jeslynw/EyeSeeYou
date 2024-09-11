@@ -6,30 +6,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ViewAccountDetailsUI() {
-
-  //debugging for user
-  const access_token = sessionStorage.getItem('accesstoken');
-  const refresh_token = sessionStorage.getItem('refreshtoken');
-  if (access_token) {
-      console.log('Access found:', access_token);
-      axios.get('http://127.0.0.1:5000/viewaccountdetails', {
-      headers: {
-          'Authorization': `Bearer ${access_token}`
-      }
-      })
-      .then(response => {
-      if (response.status === 200) {
-          const currentUser = response.data;
-          // console.log(`User: ${currentUser}`);
-      }
-      })
-      .catch(error => {
-      console.error('Error fetching user info:', error);
-      });
-  } else {
-      console.error('No token found. Please log in.');
-  }
-
   const { darkMode } = useTheme();
 
   // navigation button
@@ -38,25 +14,45 @@ function ViewAccountDetailsUI() {
     navigate('/updateaccountdetails');
   }
 
-  const [fullname, setFullname] = useState('James Cook');
-  const [username, setUsername] = useState('jcook');
-  const [email, setEmail] = useState('jamescook@gmail.com');
-  const [phone, setPhone] = useState('91234567');
-  const [password, setPassword] = useState('password');
-  const [organization, setOrganization] = useState('Lazada');
-  const [type, setType] = useState('Network Administrator');
-  const [plan, setPlan] = useState('Premium Plan');
+  const [fullname, setFullname] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [organisation, setOrganisation] = useState('');
+  const [type, setType] = useState('');
+  const [plan, setPlan] = useState('');
 
-  // const user = {
-  //   getFullName: () => "James Cook",
-  //   getUsername: () => "jcook",
-  //   getEmail: () => "jamescook@gmail.com",
-  //   getPhone: () => "91234567",
-  //   getPassword: () => "password",
-  //   getOrganization: () => "Lazada",
-  //   getType: () => "Network Administrator",
-  //   getPlan: () => "Premium Plan",
-  // };
+
+  //debugging for user
+  const access_token = sessionStorage.getItem('accesstoken');
+  const refresh_token = sessionStorage.getItem('refreshtoken');
+  if (access_token) {
+      console.log('Access found:', access_token);
+      axios.get('http://127.0.0.1:5000/viewaccountdetails', {
+      headers: {
+          'Authorization': `Bearer ${access_token}`,
+          'Content-Type': 'application/json'
+      }
+      })
+      .then(response => {
+      if (response.status === 200) {
+          const currentUser = response.data;
+          setFullname(currentUser.full_name)
+          setUsername(currentUser.username)
+          setEmail(currentUser.email)
+          setPhone(currentUser.phone)
+          setOrganisation(currentUser.organisation_name)
+          setType(currentUser.profile_name)
+          setPlan(currentUser.plan)
+      }
+      })
+      .catch(error => {
+      console.error('Error fetching user info:', error);
+      });
+  } else {
+      console.error('No token found. Please log in.');
+  }
 
   function displayAccountDetails(){
     return (
@@ -86,19 +82,6 @@ function ViewAccountDetailsUI() {
               <div>
                 <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Full Name</p>
                 <p className="block text-sm font-medium dark:font-normal mb-4">{fullname}</p>
-                {/* <label
-                  className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1"
-                  htmlFor="fullName"
-                >
-                  Full Name
-                </label>
-
-                <label
-                  className="block text-sm font-medium dark:font-normal mb-4"
-                  htmlFor="fullNameValue"
-                >
-                  {user.getFullName()}
-                </label> */}
               </div>
 
               <div>
@@ -118,12 +101,12 @@ function ViewAccountDetailsUI() {
 
               <div>
                 <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Password</p>
-                <p className="block text-sm font-medium dark:font-normal mb-4">{password}</p>
+                <p className="block text-sm font-medium dark:font-normal mb-4"></p>
               </div>
 
               <div>
-                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Organization</p>
-                <p className="block text-sm font-medium dark:font-normal mb-4">{organization}</p>
+                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Organisation</p>
+                <p className="block text-sm font-medium dark:font-normal mb-4">{organisation}</p>
               </div>
 
               <div>
