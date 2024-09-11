@@ -253,6 +253,186 @@ code {
   }
 
 
+/* glowing border */
+.glow-border {
+  position: relative;
+  padding: 2px; 
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  top: -2px; 
+  left: -2px; 
+  right: -2px; 
+  bottom: -2px; 
+  z-index: -1;
+  border-radius: inherit; /* Make sure it matches the border-radius of the element */
+  box-shadow: 0 0 25px #00bfffb7;
+}
+
+/* contact button for footer */
+.githubButton {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  position: relative;
+  /* overflow: hidden; */
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.githubContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  backdrop-filter: blur(0px);
+  letter-spacing: 0.8px;
+  border-radius: 10px;
+  transition: all 0.3s;
+  border: 1px solid rgba(156, 156, 156, 0.466);
+}
+
+.githubBG {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #1877f2;
+  /* z-index: -1; */
+  border-radius: 10px;
+  pointer-events: none;
+  transition: all 0.3s;
+}
+
+.githubButton:hover .githubBG {
+  transform: rotate(35deg);
+  transform-origin: bottom;
+}
+
+.githubButton:hover .githubContainer {
+  background-color: rgba(156, 156, 156, 0.466);
+  backdrop-filter: blur(4px);
+}
+
+
+.WAButton {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  position: relative;
+  /* overflow: hidden; */
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.WAContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  backdrop-filter: blur(0px);
+  letter-spacing: 0.8px;
+  border-radius: 10px;
+  transition: all 0.3s;
+  border: 1px solid rgba(156, 156, 156, 0.466);
+}
+
+.WABG {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #075e54;
+  /* z-index: -1; */
+  border-radius: 10px;
+  pointer-events: none;
+  transition: all 0.3s;
+}
+
+.WAButton:hover .WABG {
+  transform: rotate(35deg);
+  transform-origin: bottom;
+}
+
+.WAButton:hover .WAContainer {
+  background-color: rgba(156, 156, 156, 0.466);
+  backdrop-filter: blur(4px);
+}
+
+.emailButton {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  position: relative;
+  /* overflow: hidden; */
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.emailContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  backdrop-filter: blur(0px);
+  letter-spacing: 0.8px;
+  border-radius: 10px;
+  transition: all 0.3s;
+  border: 1px solid rgba(156, 156, 156, 0.466);
+}
+
+.emailBG {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #63a7ff;
+  /* z-index: -1; */
+  border-radius: 10px;
+  pointer-events: none;
+  transition: all 0.3s;
+}
+
+.emailButton:hover .emailBG {
+  transform: rotate(35deg);
+  transform-origin: bottom;
+}
+
+.emailButton:hover .emailContainer {
+  background-color: rgba(156, 156, 156, 0.466);
+  backdrop-filter: blur(4px);
+}
+
+
+
+
+
+
+
+
 
 }
 
