@@ -4,9 +4,13 @@ from datetime import datetime, timedelta, timezone
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, JWTManager, decode_token, verify_jwt_in_request
 from flask_jwt_extended.exceptions import JWTDecodeError
 from jwt import ExpiredSignatureError, InvalidTokenError
-from Users import User
 from flask_cors import CORS
 import getKey as gk
+
+# import file
+from Users import User
+from UserProfile import UserProfile
+
 
 app = Flask(__name__)
 jwt = JWTManager(app)
@@ -76,12 +80,14 @@ def login():
         access_token = create_access_token(identity=user_id)
         refresh_token = create_refresh_token(identity=user_id)
         
-        return jsonify({'message': 'Login successful',
-                        'token': {
-                                "access" : access_token, 
-                                "refresh" : refresh_token
-                                }
-                        }), 200
+        return jsonify(
+            {'message': 'Login successful',
+            'token': {
+                    "access" : access_token, 
+                    "refresh" : refresh_token
+                    }
+            }
+        ), 200
                        
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
@@ -100,14 +106,16 @@ def view_account():
     user_id = get_jwt_identity()
     current_user = User.get_details(user_id)
     return jsonify({
-        'full_name' : current_user.full_name,
-        'username' : current_user.username,
-        'password' : current_user.password,
-        'phone' : current_user.phone,
-        'email' : current_user.email,
-        'organisation' : current_user.organisation,
-        'plan' : current_user.plan
-        }), 200
+        'full_name': current_user['full_name'],
+        'username': current_user['username'],
+        'password': current_user['password'],
+        'phone': current_user['phone'],
+        'email': current_user['email'],
+        'organisation_name': current_user['organisation_name'],
+        'profile_id': current_user['profile_id'],
+        'plan': current_user['plan'],
+        'profile_name' : current_user['profile_name']
+    }), 200
 
 
 @app.route('/updateaccountdetails', methods=['GET'])
