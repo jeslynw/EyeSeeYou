@@ -100,11 +100,13 @@ def view_account():
     user_id = get_jwt_identity()
     current_user = User.get_details(user_id)
     return jsonify({
-        'first_name' : current_user.first_name,
-        'last_name' : current_user.last_name,
+        'full_name' : current_user.full_name,
         'username' : current_user.username,
+        'password' : current_user.password,
         'phone' : current_user.phone,
         'email' : current_user.email,
+        'organisation' : current_user.organisation,
+        'plan' : current_user.plan
         }), 200
 
 

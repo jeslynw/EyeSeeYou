@@ -47,7 +47,7 @@ class User:
     
     def get_profile_id(self):
         return self.profile_id
-    
+        
     def get_active(self):
         return self.active
     
