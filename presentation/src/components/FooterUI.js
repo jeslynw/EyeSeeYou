@@ -15,7 +15,7 @@ function FooterUI() {
               <img src={logo} alt="logo" className="w-12 h-10" />
               <p className="text-[25px] text-white font-SansitaSwashed ml-5">EyeSeeYou</p>
             </div>
-            <p className='mt-5 text-sm text-slate-500 text-left justify-stretch'>Your Network's First Line of Defense: Comprehensive <br/> Real-Time Monitoring, Instant Alerts, and Proactive <br/> Threat Detection to Keep You Secure Around the Clock</p>
+            <p className='mt-5 text-sm text-slate-500 text-left'>Your Network's First Line of Defense: Comprehensive <br/> Real-Time Monitoring, Instant Alerts, and Proactive <br/> Threat Detection to Keep You Secure Around the Clock</p>
             <div className=' flex mt-5'>
               <a href='#' to="route" target="_blank">
                 <button class="githubButton mr-4">
