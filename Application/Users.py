@@ -52,7 +52,7 @@ class User:
     def get_active(self):
         return self.active
 =======
->>>>>>> 52bf3ea299e3359c8a9fb4f4d02ba7851b79af10
+>>>>>>> 
     
     def get_plan(self):
         return self.plan
@@ -143,7 +143,6 @@ class User:
         except Exception as e:
             print(f"Get by id error: {e}")
             return None
-    
     
     def get_details(user_id):
         query = """
