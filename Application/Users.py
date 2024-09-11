@@ -6,23 +6,23 @@ conn = db.get_connection()
 app = db.app
 
 class User:
-    def __init__(self, id, full_name, username, password, phone, email, organisation, profile_id, active, plan):
+    def __init__(self, id, full_name, username, password, phone, email, organisation_name, profile_id, plan, active):
         self.id = id
         self.full_name = full_name
         self.username = username
         self.password = password
         self.phone = phone
         self.email = email
-        self.organisation = organisation
+        self.organisation_name = organisation_name
         self.profile_id = profile_id
-        self.active = active
         self.plan = plan
+        self.active = active
         
     def __str__(self):
-        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation} {self.profile_id} {self.active} {self.plan}"
+        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation_name} {self.profile_id} {self.plan} {self.active}"
     
     def __repr__(self):
-        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation} {self.profile_id} {self.active} {self.plan}"
+        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation_name} {self.profile_id} {self.plan} {self.active}"
     
     def get_id(self):
         return self.id
@@ -48,15 +48,15 @@ class User:
     def get_profile_id(self):
         return self.profile_id
     
-    def get_active(self):
-        return self.active
-    
     def get_plan(self):
         return self.plan
     
-    def set_first_name(self, full_name):
+    def get_active(self):
+        return self.active
+    
+    def set_full_name(self, full_name):
         self.full_name = full_name
-        
+
     def set_username(self, username):
         self.username = username
         
@@ -69,6 +69,12 @@ class User:
         
     def set_email(self, email):
         self.email = email
+    
+    def set_organisation_name(self, organisation_name):
+        self.organisation_name = organisation_name
+
+    def set_plan(self, plan):
+        self.plan = plan
         
     def set_active(self, active):
         self.active = active
@@ -80,14 +86,14 @@ class User:
             'password': self.password,
             'phone': self.phone,
             'email': self.email,
-            'organisation': self.organisation,
+            'organisation_name': self.organisation_name,
             'profile_id': self.profile_id,
-            'active': self.active,
-            'plan': self.plan
+            'plan': self.plan,
+            'active': self.active
         }
         
     def from_dict(dict):
-        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['organisation'],dict['profile_id'], dict['active'], dict['plan'])
+        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['organisation_name'], dict['profile_id'],  dict['plan'], dict['active'])
 
     
     def authenticate(username, password):
@@ -132,9 +138,14 @@ class User:
             print(f"Get by id error: {e}")
             return None
     
-    
     def get_details(user_id):
-        query = "SELECT * FROM user WHERE user_id = %s"
+        query = """
+                SELECT u.user_id, u.full_name, u.username, u.password, u.phone, u.email, u.organisation_name, u.profile_id, u.plan_id, p.profile_name
+                FROM user u
+                JOIN user_profile p ON u.profile_id = p.profile_id
+                WHERE u.user_id = %s
+                """
+                
         values = (user_id,)
         try:
             with conn.cursor() as cursor:
@@ -143,14 +154,28 @@ class User:
                 if result is None:
                     print(f"Get details: username={user_id}, no user found")
                     return None
-                return User(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9])
+                
+                # print(f"User found: {result}")  # Debugging output
+
+                return {
+                        'user_id': result[0],
+                        'full_name': result[1],
+                        'username': result[2],
+                        'password': result[3],
+                        'phone': result[4],
+                        'email': result[5],
+                        'organisation_name': result[6],
+                        'profile_id': result[7],
+                        'plan': result[8],
+                        'profile_name': result[9]
+                }
         except Exception as e:
             print(f"Get details error: {e}")
             return None
     
     
     def update_user(self, user_id, full_name, username, password, phone, email):
-        query = "UPDATE user SET full_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
+        query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
         password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
         values = (full_name, username, password, phone, email, username, user_id)
         cursor = conn.cursor()
