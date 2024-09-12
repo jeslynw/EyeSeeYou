@@ -23,6 +23,7 @@ function NADashboardUI() {
         if (response.status === 200) {
             const currentUser = response.data.logged_in_as;
             console.log(`User: ${currentUser}`);
+            sessionStorage.setItem('user_id', currentUser);
         }
         })
         .catch(error => {
