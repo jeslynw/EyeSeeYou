@@ -34,9 +34,36 @@ function FeedbackPage() {
   const [value, setValue] = React.useState(0);
 
   const [feedback, setFeedback] = useState("");
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Feedback submitted:", feedback);
+
+    const feedbackData = {
+      user_id: sessionStorage.getItem("user_id"),
+      // user_id: '1',
+      rating: value,
+      review: feedback,
+    };
+
+    axios
+      .post("http://127.0.0.1:5000/feedback", feedbackData, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data.message);
+        //clear fields and log(or show) result
+        setFeedback("");
+        setValue(0);
+        console.log("Rating submitted:", value);
+        console.log("Review submitted:", feedback);
+      })
+      .catch((error) => {
+        console.error("Error submitting feedback:", error);
+      });
+
+    // console.log('Feedback submitted:', feedback);
   };
 
   return (

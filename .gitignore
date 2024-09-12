@@ -25,7 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 #backend
-Application/__pycache__
+**/__pycache__
 Application/env
 Application/api_secret.txt
 

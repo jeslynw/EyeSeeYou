@@ -3,7 +3,7 @@ import dbAccess as db
 # import logging
 
 conn = db.get_connection()
-app = db.app
+# app = db.app
 
 class User:
     def __init__(self, id, full_name, username, password, phone, email, organisation_name, profile_id, plan, active):
