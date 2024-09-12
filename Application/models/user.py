@@ -2,7 +2,8 @@ import bcrypt
 import dbAccess as db
 # import logging
 
-app = db.app
+conn = db.get_connection()
+# app = db.app
 
 class User:
     def __init__(self, id, full_name, username, password, phone, email, organisation_name, profile_id, plan, active):
@@ -98,7 +99,7 @@ class User:
     def authenticate(username, password):
         query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
-        conn = db.get_connection()
+        
         try:
             with conn.cursor() as cursor:
                 cursor.execute(query, values)
@@ -120,15 +121,11 @@ class User:
         except Exception as e:
             print.error(f"Authentication error: {e}")
             return False
-        finally:
-            if conn:
-                conn.close()
     
     
     def get_id(username):
         query = "SELECT user_id FROM user WHERE username = %s"
         values = (username,)
-        conn = db.get_connection()
         try:
             with conn.cursor() as cursor:
                 cursor.execute(query, values)
@@ -140,9 +137,6 @@ class User:
         except Exception as e:
             print(f"Get by id error: {e}")
             return None
-        finally:
-            if conn:
-                conn.close()
     
     def get_details(user_id):
         query = """
@@ -153,7 +147,6 @@ class User:
                 """
                 
         values = (user_id,)
-        conn = db.get_connection()
         try:
             with conn.cursor() as cursor:
                 cursor.execute(query, values)
@@ -179,21 +172,12 @@ class User:
         except Exception as e:
             print(f"Get details error: {e}")
             return None
-        finally:
-            if conn:
-                conn.close()
     
     
-    def update_user(user_id, full_name, username, password, phone, email):
-        if password == '':
-            query = "UPDATE user SET full_name = %s, username = %s, phone = %s, email = %s WHERE user_id = %s"
-            values = (full_name, username, phone, email, user_id)
-        else:
-            query = "UPDATE user SET full_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
-            password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
-            values = (full_name, username, password, phone, email, user_id)
-        
-        conn = db.get_connection()
+    def update_user(self, user_id, full_name, username, password, phone, email):
+        query = "UPDATE user SET first_name = %s, last_name = %s, username = %s, password = %s, phone = %s, email = %s WHERE user_id = %s"
+        password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
+        values = (full_name, username, password, phone, email, username, user_id)
         cursor = conn.cursor()
         
         try:
@@ -203,6 +187,4 @@ class User:
         except:
             print("Error updating user")
             return False
-        finally:
-            if conn:
-                conn.close()
+        

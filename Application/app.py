@@ -8,8 +8,14 @@ from flask_cors import CORS
 import getKey as gk
 
 # import file
-from Users import User
-from UserProfile import UserProfile
+from models.user import User
+from models.user_profile import UserProfile
+
+import dbAccess as db
+import pymysql
+
+from auth_decorators import token_required
+from routes.FeedbackApp import feedback_bp
 
 
 app = Flask(__name__)
@@ -40,29 +46,24 @@ app.config['SECRET_KEY'] = getkey()
 #     return decorated
 
 
-def token_required(func):
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        token = None
-        if 'Authorization' in request.headers:
-            auth_header = request.headers['Authorization']
-            if auth_header.startswith('Bearer '):
-                token = auth_header[7:]
-        else:
-            return jsonify({'message': 'Token is missing!'}), 401
-        
-        try:
-            # data = decode_token(token, app.config['SECRET_KEY'])
-            verify_jwt_in_request()
-            current_user = get_jwt_identity()
-        except ExpiredSignatureError:
-            return jsonify({'message': 'Token expired'}), 403
-        except InvalidTokenError as e:
-            return jsonify({'message': 'Invalid token'}), 403
-        
-        return func(*args, **kwargs)
-    return decorated
 
+@app.route('/data', methods=['GET'])
+def get_data():
+    
+    query = "SELECT * FROM user"
+    
+    conn = db.get_connection()
+    cursor = conn.cursor()
+    try:    
+        cursor.execute(query)
+        data = cursor.fetchall()
+    except pymysql.connect.Error as err:
+        print(err)
+        return jsonify({"error": "Error in fetching data"})
+    finally:
+        cursor.close()
+        conn.close()
+    return jsonify(data)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -154,11 +155,7 @@ def go_to_events():
     return jsonify(logged_in_as=current_user), 200 
 
 
-@app.route('/feedback', methods=['GET'])
-@token_required
-def go_to_feedback():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
+app.register_blueprint(feedback_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
