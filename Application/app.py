@@ -118,13 +118,18 @@ def view_account():
     }), 200
 
 
-@app.route('/updateaccountdetails${username}', methods=['GET'])
+@app.route('/updateaccountdetails', methods=['POST'])
 @token_required
 def update_account():
     user_id = get_jwt_identity()
     data = request.get_json()
-    success = User.update_user(user_id, data.get('first_name'), data.get('last_name'), data.get('username'), data.get('password'), data.get('phone'), data.get('email'))
-    # return jsonify(logged_in_as=user_id), 200 
+    success = User.update_user(
+        user_id, 
+        data.get('full_name'), 
+        data.get('username'), 
+        data.get('password'), 
+        data.get('phone'),
+        data.get('email'))
     return jsonify(success), 200 
 
 

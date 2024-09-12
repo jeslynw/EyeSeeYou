@@ -4,6 +4,7 @@ import { useTheme } from "../components/ThemeProvider";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import axios from "axios";
 // import Typography from '@mui/material/Typography';
 
 function TrendingAttacksUI() {

@@ -107,12 +107,12 @@ function UpdateAccountDetailsUI() {
     }
 
     try{
-      axios.post(`http://127.0.0.1:5000/updateaccountdetails/${username}`,{
-        "fullname": fullname,
+      axios.post(`http://127.0.0.1:5000/updateaccountdetails`,{
+        "full_name": fullname,
         "username": username,
+        "password": password,
         "email": email,
-        "phone": phone,
-        "password": password
+        "phone": phone
       },{
         headers: {
           'Authorization': `Bearer ${access_token}`,
