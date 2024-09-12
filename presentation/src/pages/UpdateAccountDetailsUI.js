@@ -3,32 +3,9 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useEffect } from "react";
 
 function UpdateAccountDetailsUI() {
-
-  //debugging for user
-  const access_token = sessionStorage.getItem('accesstoken');
-  const refresh_token = sessionStorage.getItem('refreshtoken');
-  if (access_token) {
-      console.log('Access found:', access_token);
-      axios.get('http://127.0.0.1:5000/updateaccountdetails', {
-      headers: {
-          'Authorization': `Bearer ${access_token}`
-      }
-      })
-      .then(response => {
-      if (response.status === 200) {
-          const currentUser = response.data.logged_in_as;
-          console.log(`User: ${currentUser}`);
-      }
-      })
-      .catch(error => {
-      console.error('Error fetching user info:', error);
-      });
-  } else {
-      console.error('No token found. Please log in.');
-  }
-
   const { darkMode } = useTheme();
 
   // navigation button
@@ -37,87 +14,141 @@ function UpdateAccountDetailsUI() {
     navigate("/viewaccountdetails");
   };
 
-  const [fullname, setFullname] = useState("James Cook");
-  const [username, setUsername] = useState("jcook");
-  const [email, setEmail] = useState("jamescook@gmail.com");
-  const [phone, setPhone] = useState("91234567");
-  const [password, setPassword] = useState("password");
-  const [organization, setOrganization] = useState("Lazada");
-  const [type, setType] = useState("Network Administrator");
-  const [plan, setPlan] = useState("Premium Plan");
+  const [fullname, setFullname] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [organisation, setOrganisation] = useState("");
+  const [type, setType] = useState("");
+  const [plan, setPlan] = useState("");
+  const [error, setError] = useState({});
+  const [formFilled, setFormFilled] = useState("");
 
-  // const user = {
-  //   getFullName: () => "James Cook",
-  //   getUsername: () => "jcook",
-  //   getEmail: () => "jamescook@gmail.com",
-  //   getPhone: () => "91234567",
-  //   getPassword: () => "password",
-  //   getOrganization: () => "Lazada",
-  //   getType: () => "Network Administrator",
-  //   getPlan: () => "Premium Plan",
-  // };
+  //debugging for user
+  // const access_token = sessionStorage.getItem('accesstoken');
+  // const refresh_token = sessionStorage.getItem('refreshtoken');
+  // if (access_token) {
+  //     console.log('Access found:', access_token);
+  //     axios.get('http://127.0.0.1:5000/updateaccountdetails', {
+  //     headers: {
+  //         'Authorization': `Bearer ${access_token}`,
+  //         'Content-Type': 'application/json'
+  //     }
+  //     })
+  //     .then(response => {
+  //     if (response.status === 200) {
+  //         const currentUser = response.data.logged_in_as;
+  //         console.log(`User: ${currentUser}`);
+  //     }
+  //     })
+  //     .catch(error => {
+  //     console.error('Error fetching user info:', error);
+  //     });
+  // } else {
+  //     console.error('No token found. Please log in.');
+  // }
 
-  // const [fullName, setFullName] = useState(user.getFullName());
-  // const [username, setUsername] = useState(user.getUsername());
-  // const [email, setEmail] = useState(user.getEmail());
-  // const [phone, setPhone] = useState(user.getPhone());
-  // const [password, setPassword] = useState(user.getPassword());
-  const [errors, setErrors] = useState({});
+  const access_token = sessionStorage.getItem("accesstoken");
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-
-    switch (id) {
-      case "fullname":
-        setFullname(value);
-        break;
-
-      case "username":
-        setUsername(value);
-        break;
-
-      case "email":
-        setEmail(value);
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          setErrors((prev) => ({ ...prev, email: "Invalid email address." }));
-        } else {
-          setErrors((prev) => ({ ...prev, email: "" }));
-        }
-        break;
-
-      case "phone":
-        setPhone(value);
-        // const phoneRegex = /^\d{8}$/;
-        // if (!phoneRegex.test(value)) {
-        //   setErrors((prev) => ({
-        //     ...prev,
-        //     phone: "Invalid phone number.",
-        //   }));
-        // } else {
-        //   setErrors((prev) => ({ ...prev, phone: "" }));
-        // }
-        break;
-
-      // if noneed regex for password then can remove commented part below.
-
-      case "password":
-        setPassword(value);
-        //   const pwRegex = /^{8}}$/; // change regex here
-        //   if (!pwRegex.test(value)) {
-        //     setErrors((prev) => ({
-        //       ...prev,
-        //       password: "Password cannot be empty.",
-        //     }));
-        //   } else {
-        //     setErrors((prev) => ({ ...prev, password: "" }));
-        //   }
-        break;
-
-      default:
-        break;
+  useEffect(() => {
+    if (access_token) {
+      console.log("Access found:", access_token);
+      axios
+        .get("http://127.0.0.1:5000/viewaccountdetails", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            const currentUser = response.data;
+            setFullname(currentUser.full_name);
+            setUsername(currentUser.username);
+            setEmail(currentUser.email);
+            setPhone(currentUser.phone);
+            setOrganisation(currentUser.organisation_name);
+            setType(currentUser.profile_name);
+            setPlan(currentUser.plan);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user info:", error);
+        });
+    } else {
+      console.error("No token found. Please log in.");
     }
-  };
+  }, [access_token]);
+
+  useEffect(() => {
+    if (formFilled) {
+      // Reset formFilled after validation
+      setFormFilled(false);
+    }
+  }, [formFilled]);
+
+  // Handle submit
+  function validatesAccountDetails(event) {
+    event.preventDefault();
+    setFormFilled(true);
+
+    // Check if all fields are filled
+    if (!fullname || !username || !email || !phone) {
+      setError("Please enter the required fields.");
+      return;
+    }
+
+    // Check if the phone number is in number format
+    if (!/^\d+$/.test(phone)) {
+      setError("Please enter only numbers in the phone number field.");
+      return;
+    }
+
+    try {
+      axios
+        .post(
+          `http://127.0.0.1:5000/updateaccountdetails/${username}`,
+          {
+            fullname: fullname,
+            username: username,
+            email: email,
+            phone: phone,
+            password: password,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Account details updated successfully:", response.data);
+          if (response.data) {
+            displaySuccessMessage();
+          } else {
+            displayErrorMessage();
+            console.log(error, "Credentials not updated!");
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+          displayErrorMessage();
+        });
+    } catch (error) {
+      setError("An error occurred during the update process.");
+    }
+  }
+
+  function displayErrorMessage() {
+    setError("Account details not updated!");
+  }
+
+  function displaySuccessMessage() {
+    setError("");
+    navigateToAccountDetails();
+  }
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -128,7 +159,7 @@ function UpdateAccountDetailsUI() {
         style={{ minHeight: "calc(100vh - 60px)" }}
       >
         {/* NOTE: edit the form action attribute to handle where the data being submitted*/}
-        <form action="">
+        <form action="{handleSubmit}">
           {/* account details text */}
           <div className="flex w-full justify-between  items-center mt-4 mb-4">
             <p className="text-2xl">ACCOUNT DETAILS</p>
@@ -147,11 +178,11 @@ function UpdateAccountDetailsUI() {
                   type="text"
                   id="fullname"
                   value={fullname}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFullname(e.target.value)}
                   required
                 />
-                {errors.fullname && (
-                  <p className="text-red-500 text-sm">{errors.fullname}</p>
+                {error.fullname && (
+                  <p className="text-red-500 text-sm">{error.fullname}</p>
                 )}
               </div>
 
@@ -164,7 +195,7 @@ function UpdateAccountDetailsUI() {
                   type="text"
                   id="username"
                   value={username}
-                  onChange={handleInputChange}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
@@ -178,11 +209,11 @@ function UpdateAccountDetailsUI() {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={handleInputChange}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
+                {error.email && (
+                  <p className="text-red-500 text-sm">{error.email}</p>
                 )}
               </div>
 
@@ -195,12 +226,9 @@ function UpdateAccountDetailsUI() {
                   type="number"
                   id="phone"
                   value={phone}
-                  onChange={handleInputChange}
+                  onChange={(e) => setPhone(e.target.value)}
                   required
                 />
-                {/* {errors.phone && (
-                  <p className="text-red-500 text-sm">{errors.phone}</p>
-                )} */}
               </div>
 
               <div>
@@ -212,17 +240,17 @@ function UpdateAccountDetailsUI() {
                   type="password"
                   id="password"
                   value={password}
-                  onChange={handleInputChange}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
 
               <div>
                 <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">
-                  Organization
+                  Organisation
                 </p>
                 <p className="block text-sm font-medium dark:font-normal mb-4 py-2">
-                  {organization}
+                  {organisation}
                 </p>
               </div>
 
@@ -257,7 +285,7 @@ function UpdateAccountDetailsUI() {
               type="submit"
               className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
               value="Save Changes"
-              onClick={navigateToAccountDetails}
+              onClick={validatesAccountDetails}
             />
           </div>
         </form>

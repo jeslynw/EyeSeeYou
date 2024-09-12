@@ -2,9 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
-// import check_token from "../auth.js";
-
-// import Sidebar from "../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 // import check_token from "../auth.js";
 
 // import Sidebar from "../components/Sidebar";
@@ -37,6 +35,12 @@ function NADashboardUI() {
 
   const { darkMode } = useTheme();
 
+  // navigation button
+  const navigate = useNavigate();
+  const navigateTAButton = () => {
+    navigate("/trendingattacks");
+  };
+
   // current date
   const date = new Date();
   const showDate =
@@ -62,10 +66,10 @@ function NADashboardUI() {
             {/* Alerts Overview */}
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
               <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
-              <div className="flex flex-col md:flex-row bg-[#efe8ff] dark:bg-[#252525] rounded-xl py-4 items-center">
+              <div className="flex justify-between flex-col md:flex-row bg-[#efe8ff] dark:bg-[#252525] rounded-xl p-4 items-center">
                 {/* Left side: Network status and total alerts */}
                 <div className="flex flex-col md:block">
-                  <div className="flex items-center md:pl-5">
+                  <div className="flex items-center">
                     <svg
                       className="w-11 h-11 text-[#51ff2e]"
                       aria-hidden="true"
@@ -86,7 +90,7 @@ function NADashboardUI() {
                       <p className="text-lg font-medium">Good</p>
                     </div>
                   </div>
-                  <div className="flex items-center md:pl-5 pt-4 ">
+                  <div className="flex items-center md: pt-5 ">
                     <svg
                       className="w-11 h-11 text-[#ff1f1fea]"
                       aria-hidden="true"
@@ -223,7 +227,15 @@ function NADashboardUI() {
             </div>
 
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">Trending Attacks</p>
+              <div className="flex justify-between">
+                <p className="pb-3 text-sm md:text-base">Trending Attacks</p>
+                <button
+                  onClick={navigateTAButton}
+                  className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-[#444] rounded-md"
+                >
+                  View All
+                </button>
+              </div>
               <div className="h-56"></div>
             </div>
           </div>
