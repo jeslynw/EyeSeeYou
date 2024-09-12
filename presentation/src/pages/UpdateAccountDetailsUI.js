@@ -63,6 +63,8 @@ function UpdateAccountDetailsUI() {
         .then((response) => {
           if (response.status === 200) {
             const currentUser = response.data;
+            const user_id = response.data.logged_in_as;
+            console.log(`User: ${user_id}`);
             setFullname(currentUser.full_name)
             setUsername(currentUser.username);
             setEmail(currentUser.email);

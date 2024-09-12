@@ -118,7 +118,7 @@ def view_account():
     }), 200
 
 
-@app.route('/updateaccountdetails', methods=['GET'])
+@app.route('/updateaccountdetails${username}', methods=['GET'])
 @token_required
 def update_account():
     user_id = get_jwt_identity()

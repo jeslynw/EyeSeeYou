@@ -7,6 +7,30 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 // import Typography from '@mui/material/Typography';
 
 function TrendingAttacksUI() {
+
+    //debugging for user
+    const access_token = sessionStorage.getItem('accesstoken');
+    const refresh_token = sessionStorage.getItem('refreshtoken');
+    if (access_token) {
+        console.log('Access found:', access_token);
+        axios.get('http://127.0.0.1:5000/loginhistory', {
+        headers: {
+            'Authorization': `Bearer ${access_token}`
+        }
+        })
+        .then(response => {
+        if (response.status === 200) {
+              const user_id = response.data.logged_in_as;
+              console.log(`User: ${user_id}`);
+        }
+        })
+        .catch(error => {
+        console.error('Error fetching user info:', error);
+        });
+    } else {
+        console.error('No token found. Please log in.');
+    }
+
     const { darkMode } = useTheme();
 
     // current date
