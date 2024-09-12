@@ -115,7 +115,8 @@ def view_account():
         'organisation_name': current_user['organisation_name'],
         'profile_id': current_user['profile_id'],
         'plan': current_user['plan'],
-        'profile_name' : current_user['profile_name']
+        'profile_name' : current_user['profile_name'],
+        'plan_type' : current_user['plan_type']
     }), 200
 
 

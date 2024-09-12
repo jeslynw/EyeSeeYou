@@ -21,7 +21,7 @@ function ViewAccountDetailsUI() {
   const [password, setPassword] = useState('');
   const [organisation, setOrganisation] = useState('');
   const [type, setType] = useState('');
-  const [plan, setPlan] = useState('');
+  const [plan_type, setPlan] = useState('');
 
 
   //debugging for user
@@ -46,7 +46,7 @@ function ViewAccountDetailsUI() {
           setPhone(currentUser.phone)
           setOrganisation(currentUser.organisation_name)
           setType(currentUser.profile_name)
-          setPlan(currentUser.plan)
+          setPlan(currentUser.plan_type)
       }
       })
       .catch(error => {
@@ -118,7 +118,7 @@ function ViewAccountDetailsUI() {
 
               <div>
                 <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Plan</p>
-                <p className="block text-sm font-medium dark:font-normal mb-4">{plan}</p>
+                <p className="block text-sm font-medium dark:font-normal mb-4">{plan_type}</p>
               </div>
             </div>
           </div>
