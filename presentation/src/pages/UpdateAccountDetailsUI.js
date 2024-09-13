@@ -21,7 +21,7 @@ function UpdateAccountDetailsUI() {
   const [password, setPassword] = useState('');
   const [organisation, setOrganisation] = useState('');
   const [type, setType] = useState('');
-  const [plan, setPlan] = useState('');
+  const [plan_type, setPlan] = useState('');
   const [error, setError] = useState({});
   const [formFilled, setFormFilled] = useState('');
 
@@ -63,13 +63,15 @@ function UpdateAccountDetailsUI() {
         .then((response) => {
           if (response.status === 200) {
             const currentUser = response.data;
+            const user_id = response.data.logged_in_as;
+            console.log(`User: ${user_id}`);
             setFullname(currentUser.full_name)
             setUsername(currentUser.username);
             setEmail(currentUser.email);
             setPhone(currentUser.phone);
             setOrganisation(currentUser.organisation_name)
             setType(currentUser.profile_name)
-            setPlan(currentUser.plan)
+            setPlan(currentUser.plan_type)
           }
         })
         .catch((error) => {
@@ -105,12 +107,12 @@ function UpdateAccountDetailsUI() {
     }
 
     try{
-      axios.post(`http://127.0.0.1:5000/updateaccountdetails/${username}`,{
-        "fullname": fullname,
+      axios.post(`http://127.0.0.1:5000/updateaccountdetails`,{
+        "full_name": fullname,
         "username": username,
+        "password": password,
         "email": email,
-        "phone": phone,
-        "password": password
+        "phone": phone
       },{
         headers: {
           'Authorization': `Bearer ${access_token}`,
@@ -239,7 +241,7 @@ function displaySuccessMessage(){
 
               <div>
                 <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Plan</p>
-                <p className="block text-sm font-medium dark:font-normal mb-4 py-2">{plan}</p>
+                <p className="block text-sm font-medium dark:font-normal mb-4 py-2">{plan_type}</p>
               </div>
             </div>
           </div>
