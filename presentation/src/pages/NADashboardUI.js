@@ -18,24 +18,29 @@ function NADashboardUI() {
     if (access_token) {
         console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/nadashboard', {
-        headers: {
-            'Authorization': `Bearer ${access_token}`
-        }
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
         })
         .then(response => {
-        if (response.status === 200) {
-            const user_id = response.data.logged_in_as;
-            console.log(`User: ${user_id}`);
-            sessionStorage.setItem('user_id', user_id);
-        }
+            if (response.status === 200) {
+                const user_id = response.data.logged_in_as;
+                console.log(`User: ${user_id}`);
+                sessionStorage.setItem('user_id', user_id);
+    
+                const trendingAttacks = response.data.trending_attacks;
+                console.log('Trending Attacks:');
+                trendingAttacks.forEach(attack => {
+                    console.log(`Source IP: ${attack.source_address}, Destination IP: ${attack.destination_address}`);
+                });
+            }
         })
         .catch(error => {
-        console.error('Error fetching user info:', error);
+            console.error('Error fetching user info:', error);
         });
     } else {
         console.error('No token found. Please log in.');
     }
-
     const { darkMode } = useTheme();
 
     // navigation button
@@ -43,24 +48,25 @@ function NADashboardUI() {
     const navigateTAButton = () => {
         navigate('/trendingattacks');
     }
-
     // live time and date
-    const [currentDate, setCurrentDate] = useState('');
-    useEffect(() => {
-      const updateTime = () => {
-      const date = new Date();
-      const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-      const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
-                       date.getMinutes().toString().padStart(2, '0') + ':' + 
-                       date.getSeconds().toString().padStart(2, '0');
-      const updatedDateTime = showDate + ' , ' + showTime;
-      setCurrentDate(updatedDateTime);
-    };
+//     const [currentDate, setCurrentDate] = useState('');
+//     useEffect(() => {
+//         const updateTime = () => {
+//         const date = new Date();
+//         const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+//         const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
+//                             date.getMinutes().toString().padStart(2, '0') + ':' + 
+//                             date.getSeconds().toString().padStart(2, '0');
+//         const updatedDateTime = showDate + ' , ' + showTime;
+//         setCurrentDate(updatedDateTime);
 
-    updateTime();
-    const timerId = setInterval(updateTime, 1000);
-    return () => clearInterval(timerId);
-  }, []);
+//         };
+
+//         updateTime();
+
+//         const timerId = setInterval(updateTime, 1000);
+//         return () => clearInterval(timerId);
+//   }, []);
 
 
     return (
@@ -71,7 +77,7 @@ function NADashboardUI() {
                 {/* Dashboard text and current date and time */}
                 <div className="flex justify-between items-center mt-4 mb-4">
                     <p className="text-2xl">DASHBOARD</p>
-                    <p className="text-base">{currentDate}</p>
+                    {/* <p className="text-base">{currentDate}</p> */}
                 </div>
 
                 <div className="w-full">
@@ -182,7 +188,7 @@ function NADashboardUI() {
                             </button>
                             </div>
                             <div className="h-56">
-                            
+                                
                             </div>
                         </div>  
                     </div>

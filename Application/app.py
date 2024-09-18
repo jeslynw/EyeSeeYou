@@ -16,6 +16,7 @@ import pymysql
 
 from auth_decorators import token_required
 from routes.FeedbackApp import feedback_bp
+from routes.NADashboardApp import nadashboard_bp
 
 
 app = Flask(__name__)
@@ -94,13 +95,6 @@ def login():
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
 
-@app.route('/nadashboard', methods=['GET'])
-@token_required
-def go_to_dashboard():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
-
-
 @app.route('/viewaccountdetails', methods=['GET'])
 @token_required
 def view_account():
@@ -157,6 +151,7 @@ def go_to_events():
 
 
 app.register_blueprint(feedback_bp)
+app.register_blueprint(nadashboard_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
