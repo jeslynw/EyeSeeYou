@@ -62,6 +62,9 @@ useEffect(() => {
             } else {
                 setError('No data available');
             }
+
+            const temp = response.data.alert_classes;
+            console.log("Alert classes:", temp);
         })
         .catch(error => {
             console.error('Error fetching threat info:', error);
