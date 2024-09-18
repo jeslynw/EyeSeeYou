@@ -1,8 +1,11 @@
 import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 // import check_token from "../auth.js";
 
 // import Sidebar from "../components/Sidebar";
@@ -22,9 +25,9 @@ function NADashboardUI() {
       })
       .then((response) => {
         if (response.status === 200) {
-          const currentUser = response.data.logged_in_as;
-          console.log(`User: ${currentUser}`);
-          sessionStorage.setItem("user_id", currentUser);
+            const user_id = response.data.logged_in_as;
+            console.log(`User: ${user_id}`);
+            sessionStorage.setItem('user_id', user_id);
         }
       })
       .catch((error) => {
@@ -42,13 +45,24 @@ function NADashboardUI() {
     navigate("/trendingattacks");
   };
 
-  // current date
-  const date = new Date();
-  const showDate =
-    date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-  const showTime =
-    date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-  const currentDate = showDate + " , " + showTime;
+    // live time and date
+    const [currentDate, setCurrentDate] = useState('');
+    useEffect(() => {
+      const updateTime = () => {
+      const date = new Date();
+      const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+      const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
+                       date.getMinutes().toString().padStart(2, '0') + ':' + 
+                       date.getSeconds().toString().padStart(2, '0');
+      const updatedDateTime = showDate + ' , ' + showTime;
+      setCurrentDate(updatedDateTime);
+    };
+
+    updateTime();
+    const timerId = setInterval(updateTime, 1000);
+    return () => clearInterval(timerId);
+  }, []);
+
 
   return (
     <div className={darkMode ? "dark" : ""}>

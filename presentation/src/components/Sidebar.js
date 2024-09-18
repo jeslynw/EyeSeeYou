@@ -40,60 +40,128 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         navigate('/');
     };
 
-    const navItems = [
-        {path: '/nadashboard', name:'Dashboard', icon:DashboardOutlinedIcon},
-        {path: '/naalerts', name:'Alerts', icon:NotificationsNoneOutlinedIcon},
-        {path: '/naevents', name:'Events', icon:TodayOutlinedIcon},
-        {path: '/naloginhistory', name:'Log In History', icon:HistoryOutlinedIcon},
-        {path: '/viewaccountdetails', name:'Profile', icon:PersonRoundedIcon},
-        {path: '/feedback', name:'Feedback', icon:RateReviewOutlinedIcon},
-        {path: '#', name: 'Logout', icon: LogoutOutlinedIcon, onClick: openLogoutPopUp},
-    ]
+    // const navItems = [
+    //     {path: '/nadashboard', name:'Dashboard', icon:DashboardOutlinedIcon},
+    //     {path: '/naalerts', name:'Alerts', icon:NotificationsNoneOutlinedIcon},
+    //     {path: '/naevents', name:'Events', icon:TodayOutlinedIcon},
+    //     {path: '/naloginhistory', name:'Log In History', icon:HistoryOutlinedIcon}, 
+    //     {path: '/viewaccountdetails', name:'Profile', icon:PersonRoundedIcon},
+    //     {path: '/feedback', name:'Feedback', icon:RateReviewOutlinedIcon},
+    //     {path: '#', name: 'Logout', icon: LogoutOutlinedIcon, onClick: openLogoutPopUp},
+    // ]
+
+      // Navigation items for top
+      const navItemsTop = [
+        { path: "/nadashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
+        { path: "/naalerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
+        { path: "/naevents", name: "Events", icon: TodayOutlinedIcon },
+        { path: "/naloginhistory", name: "Log In History", icon: HistoryOutlinedIcon },
+    ];
+
+    // Navigation items for bottom
+    const navItemsBottom = [
+        { path: "/viewaccountdetails", name: "Profile", icon: PersonRoundedIcon },
+        { path: "/feedback", name: "Feedback", icon: RateReviewOutlinedIcon },
+        { path: "#", name: "Logout", icon: LogoutOutlinedIcon, onClick: openLogoutPopUp },
+    ];
 
     return (
-        <div className={darkMode ? 'dark' : ''}>
-            <div className={`fixed top-0 left-0 h-screen transition-all duration-300 bg-[#f4f4f4] dark:bg-[#262626] z-[1000] border-r-2  dark:border-r-[#414141] ${isOpen ? 'w-[235px]' : 'w-[65px]'}`}>                
-                {/* hamburger & logo title */}
+        <div className={darkMode ? "dark" : ""}>
+            <div className={`fixed top-0 left-0 h-screen transition-all duration-300 bg-[#f4f4f4] dark:bg-[#262626] z-[1000] border-r-2 dark:border-r-[#414141] ${
+                isOpen ? "w-[235px]" : "w-[65px]"
+            } flex flex-col`}>
+                {/* Header with logo and toggle button */}
                 <div className="flex items-center justify-between h-[60px] px-4 border-b-2 border-b-[#dddddd] dark:border-b-[#414141]">
                     {isOpen && (
                         <>
-                            <img src={darkMode? logo : logo2} alt="logo" className="w-10 h-8" />
-                            <h1 className="text-xl font-SansitaSwashed text-black dark:text-white cursor-default">EyeSeeYou</h1>
+                            <img src={darkMode ? logo : logo2} alt="logo" className="w-10 h-8" />
+                            <h1 className="text-xl font-SansitaSwashed text-black dark:text-white cursor-default">
+                                EyeSeeYou
+                            </h1>
                         </>
                     )}
-                    <button onClick={toggleSidebar} className="px-1 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        {isOpen ? <CloseIcon className="text-black dark:text-white"/> : <MenuIcon className="text-black dark:text-white"/>}
+                    <button
+                        onClick={toggleSidebar}
+                        className="px-1 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+                    >
+                        {isOpen ? (
+                            <CloseIcon className="text-black dark:text-white" />
+                        ) : (
+                            <MenuIcon className="text-black dark:text-white" />
+                        )}
                     </button>
                 </div>
 
-                {/* navitems */}
-                <div className="contentsContainer px-3 mt-4">
-                    <ul className="flex flex-col items-start justify-between list-none p-0 m-0">
-                        {navItems.map((item) => (
-                            <li key={item.name} className="w-full my-2">
-                                <Link
-                                    to={item.path}
-                                    onClick={item.onClick}
-                                    className={`flex items-center justify-start px-2 py-2 w-full h-12 rounded-xl cursor-pointer text-[20px] ${
-                                    location.pathname === item.path 
-                                    ? "bg-gray-300 dark:bg-gray-400 text-gray-800" 
-                                    : "hover:bg-gray-300 dark:hover:bg-gray-400  transition-colors duration-200"
-                                    }`}
-                                >
-                                    <span className="mr-2 mb-[4px] text-black dark:text-white">
-                                        <SvgIcon sx={{ fontSize: 22 }} component={item.icon}/>
-                                    </span>
-                                    <p className={`ml-3 text-base transition-opacity duration-300 text-black dark:text-white ${isOpen ? 'opacity-100' : 'opacity-0'}`}>{item.name}</p>
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
+                {/* Main content area with flex layout */}
+                <div className="flex flex-col justify-between flex-grow overflow-y-auto">
+                    {/* Top navigation items */}
+                    <div className="px-3 mt-4">
+                        <ul className="flex flex-col items-start list-none p-0 m-0">
+                            {navItemsTop.map((item) => (
+                                <li key={item.name} className="w-full my-2">
+                                    <Link
+                                        to={item.path}
+                                        className={`flex items-center px-2 py-2 h-12 rounded-xl cursor-pointer text-[20px] ${
+                                            location.pathname === item.path
+                                                ? "bg-gray-300 dark:bg-gray-400 text-gray-800"
+                                                : "hover:bg-gray-300 dark:hover:bg-gray-400 transition-colors duration-200"
+                                        }`}
+                                        style={{
+                                            maxWidth: isOpen ? "100%" : "65px",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        <span className="mr-2 mb-[4px] text-black dark:text-white">
+                                            <SvgIcon sx={{ fontSize: 22 }} component={item.icon} />
+                                        </span>
+                                        {isOpen && (
+                                            <p className="ml-3 text-base text-black dark:text-white">
+                                                {item.name}
+                                            </p>
+                                        )}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Bottom navigation items */}
+                    <div className="px-3 mb-4">
+                        <ul className="flex flex-col items-start list-none p-0 m-0">
+                            {navItemsBottom.map((item) => (
+                                <li key={item.name} className="w-full my-2">
+                                    <Link
+                                        to={item.path}
+                                        onClick={item.onClick}
+                                        className={`flex items-center px-2 py-2 h-12 rounded-xl cursor-pointer text-[20px] ${
+                                            location.pathname === item.path
+                                                ? "bg-gray-300 dark:bg-gray-400 text-gray-800"
+                                                : "hover:bg-gray-300 dark:hover:bg-gray-400 transition-colors duration-200"
+                                        }`}
+                                        style={{
+                                            maxWidth: isOpen ? "100%" : "65px",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        <span className="mr-2 mb-[4px] text-black dark:text-white">
+                                            <SvgIcon sx={{ fontSize: 22 }} component={item.icon} />
+                                        </span>
+                                        {isOpen && (
+                                            <p className="ml-3 text-base text-black dark:text-white">
+                                                {item.name}
+                                            </p>
+                                        )}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
 
-                <LogoutUI 
-                    openPopUp={openPopUp} 
-                    setOpenPopUp={setOpenPopUp} 
-                    handleLogout={confirmLogout} 
+                <LogoutUI
+                    openPopUp={openPopUp}
+                    setOpenPopUp={setOpenPopUp}
+                    handleLogout={confirmLogout}
                 />
             </div>
         </div>

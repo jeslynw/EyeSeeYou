@@ -14,14 +14,15 @@ function ViewAccountDetailsUI() {
     navigate("/updateaccountdetails");
   };
 
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [organisation, setOrganisation] = useState("");
-  const [type, setType] = useState("");
-  const [plan, setPlan] = useState("");
+  const [fullname, setFullname] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [organisation, setOrganisation] = useState('');
+  const [type, setType] = useState('');
+  const [plan_type, setPlan] = useState('');
+
 
   //debugging for user
   const access_token = sessionStorage.getItem("accesstoken");
@@ -38,14 +39,16 @@ function ViewAccountDetailsUI() {
       .then((response) => {
         if (response.status === 200) {
           const currentUser = response.data;
-          setFullname(currentUser.full_name);
-          setUsername(currentUser.username);
-          setEmail(currentUser.email);
-          setPhone(currentUser.phone);
-          setOrganisation(currentUser.organisation_name);
-          setType(currentUser.profile_name);
-          setPlan(currentUser.plan);
-        }
+          const user_id = response.data.logged_in_as;
+          console.log(`User: ${user_id}`);
+          setFullname(currentUser.full_name)
+          setUsername(currentUser.username)
+          setEmail(currentUser.email)
+          setPhone(currentUser.phone)
+          setOrganisation(currentUser.organisation_name)
+          setType(currentUser.profile_name)
+          setPlan(currentUser.plan_type)
+      }
       })
       .catch((error) => {
         console.error("Error fetching user info:", error);
@@ -161,12 +164,8 @@ function ViewAccountDetailsUI() {
               </div>
 
               <div>
-                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">
-                  Plan
-                </p>
-                <p className="block text-sm font-medium dark:font-normal mb-4">
-                  {plan}
-                </p>
+                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Plan</p>
+                <p className="block text-sm font-medium dark:font-normal mb-4">{plan_type}</p>
               </div>
             </div>
           </div>

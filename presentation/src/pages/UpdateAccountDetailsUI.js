@@ -14,14 +14,14 @@ function UpdateAccountDetailsUI() {
     navigate("/viewaccountdetails");
   };
 
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [organisation, setOrganisation] = useState("");
-  const [type, setType] = useState("");
-  const [plan, setPlan] = useState("");
+  const [fullname, setFullname] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [organisation, setOrganisation] = useState('');
+  const [type, setType] = useState('');
+  const [plan_type, setPlan] = useState('');
   const [error, setError] = useState({});
   const [formFilled, setFormFilled] = useState("");
 
@@ -64,13 +64,15 @@ function UpdateAccountDetailsUI() {
         .then((response) => {
           if (response.status === 200) {
             const currentUser = response.data;
-            setFullname(currentUser.full_name);
+            const user_id = response.data.logged_in_as;
+            console.log(`User: ${user_id}`);
+            setFullname(currentUser.full_name)
             setUsername(currentUser.username);
             setEmail(currentUser.email);
             setPhone(currentUser.phone);
-            setOrganisation(currentUser.organisation_name);
-            setType(currentUser.profile_name);
-            setPlan(currentUser.plan);
+            setOrganisation(currentUser.organisation_name)
+            setType(currentUser.profile_name)
+            setPlan(currentUser.plan_type)
           }
         })
         .catch((error) => {
@@ -105,27 +107,22 @@ function UpdateAccountDetailsUI() {
       return;
     }
 
-    try {
-      axios
-        .post(
-          `http://127.0.0.1:5000/updateaccountdetails/${username}`,
-          {
-            fullname: fullname,
-            username: username,
-            email: email,
-            phone: phone,
-            password: password,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          console.log("Account details updated successfully:", response.data);
-          if (response.data) {
+    try{
+      axios.post(`http://127.0.0.1:5000/updateaccountdetails`,{
+        "full_name": fullname,
+        "username": username,
+        "password": password,
+        "email": email,
+        "phone": phone
+      },{
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((response) => {
+        console.log('Account details updated successfully:', response.data);
+        if (response.data) {
             displaySuccessMessage();
           } else {
             displayErrorMessage();
@@ -264,26 +261,19 @@ function UpdateAccountDetailsUI() {
               </div>
 
               <div>
-                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">
-                  Plan
-                </p>
-                <p className="block text-sm font-medium dark:font-normal mb-4 py-2">
-                  {plan}
-                </p>
+                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Plan</p>
+                <p className="block text-sm font-medium dark:font-normal mb-4 py-2">{plan_type}</p>
               </div>
             </div>
           </div>
 
           <div className="w-full flex justify-end mt-4 gap-4">
-            <button
-              onClick={navigateToAccountDetails}
-              className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none"
-            >
+            <button onClick={navigateToAccountDetails} className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none cursor-pointer">
               Cancel
             </button>
             <input
               type="submit"
-              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
               value="Save Changes"
               onClick={validatesAccountDetails}
             />

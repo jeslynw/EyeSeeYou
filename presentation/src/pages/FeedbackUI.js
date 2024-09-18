@@ -17,11 +17,11 @@ function FeedbackPage() {
           Authorization: `Bearer ${access_token}`,
         },
       })
-      .then((response) => {
-        if (response.status === 200) {
-          const currentUser = response.data.logged_in_as;
-          console.log(`User: ${currentUser}`);
-        }
+      .then(response => {
+      if (response.status === 200) {
+            const user_id = response.data.logged_in_as;
+            console.log(`User: ${user_id}`);
+      }
       })
       .catch((error) => {
         console.error("Error fetching user info:", error);

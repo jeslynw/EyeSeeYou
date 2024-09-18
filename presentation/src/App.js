@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider";
 import Layout from "./components/Layout";
+import LandingPage from "./pages/LandingPage";
 import LoginUI from "./pages/LoginUI";
 import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
 import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
@@ -17,7 +18,8 @@ function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginUI />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/loginUI" element={<LoginUI />} />
           <Route element={<Layout />}>
             <Route path="/nadashboard" element={<NADashboardUI />} />
             <Route

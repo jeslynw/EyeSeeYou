@@ -1,4 +1,6 @@
 import React from 'react'
+import { useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
@@ -7,42 +9,54 @@ import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 function NAEvents() {
-
   //debugging for user
-  const access_token = sessionStorage.getItem('accesstoken');
-  const refresh_token = sessionStorage.getItem('refreshtoken');
-  if (access_token) {
-      console.log('Access found:', access_token);
-      axios.get('http://127.0.0.1:5000/events', {
-      headers: {
-          'Authorization': `Bearer ${access_token}`
-      }
-      })
-      .then(response => {
-      if (response.status === 200) {
-          const currentUser = response.data.logged_in_as;
-          console.log(`User: ${currentUser}`);
-      }
-      })
-      .catch(error => {
-      console.error('Error fetching user info:', error);
-      });
-  } else {
-      console.error('No token found. Please log in.');
-  }
+    const access_token = sessionStorage.getItem('accesstoken');
+    const refresh_token = sessionStorage.getItem('refreshtoken');
+    if (access_token) {
+        console.log('Access found:', access_token);
+        axios.get('http://127.0.0.1:5000/events', {
+        headers: {
+            'Authorization': `Bearer ${access_token}`
+        }
+        })
+        .then(response => {
+        if (response.status === 200) {
+                const user_id = response.data.logged_in_as;
+                console.log(`User: ${user_id}`);
+        }
+        })
+        .catch(error => {
+        console.error('Error fetching user info:', error);
+        });
+    } else {
+        console.error('No token found. Please log in.');
+    }
 
-  const { darkMode } = useTheme();
+    const { darkMode } = useTheme();
 
-  // current date
-  const date = new Date();
-  const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-  const showTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-  const currentDate = showDate + ' , ' + showTime
+    // live time and date
+    const [currentDate, setCurrentDate] = useState('');
+    useEffect(() => {
+        const updateTime = () => {
+        const date = new Date();
+        const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+        const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
+                        date.getMinutes().toString().padStart(2, '0') + ':' + 
+                        date.getSeconds().toString().padStart(2, '0');
+        const updatedDateTime = showDate + ' , ' + showTime;
+        setCurrentDate(updatedDateTime);
+    };
 
-  const breadcrumbItems = [
-    {path: '/nadashboard', name:'Dashboard'},
-    {path: '/events', name: "Events"}
-  ]
+    updateTime();
+    const timerId = setInterval(updateTime, 1000);
+    return () => clearInterval(timerId);
+    }, []);
+    
+
+    const breadcrumbItems = [
+        {path: '/nadashboard', name:'Dashboard'},
+        {path: '/naevents', name: "Events"}
+    ]
 
   return (
     <div className={darkMode ? 'dark' : ''}>
