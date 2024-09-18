@@ -5,42 +5,14 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import TopThreatSrc from "../components/TopThreatSrc";
+import TopThreatDest from "../components/TopThreatDest";
 
 // import check_token from "../auth.js";
 
 // import Sidebar from "../components/Sidebar";
 
 function NADashboardUI() {
-    //debugging for user
-    const access_token = sessionStorage.getItem('accesstoken');
-    const refresh_token = sessionStorage.getItem('refreshtoken');
-    
-    if (access_token) {
-        console.log('Access found:', access_token);
-        axios.get('http://127.0.0.1:5000/nadashboard', {
-            headers: {
-                'Authorization': `Bearer ${access_token}`
-            }
-        })
-        .then(response => {
-            if (response.status === 200) {
-                const user_id = response.data.logged_in_as;
-                console.log(`User: ${user_id}`);
-                sessionStorage.setItem('user_id', user_id);
-    
-                const trendingAttacks = response.data.trending_attacks;
-                console.log('Trending Attacks:');
-                trendingAttacks.forEach(attack => {
-                    console.log(`Source IP: ${attack.source_address}, Destination IP: ${attack.destination_address}`);
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching user info:', error);
-        });
-    } else {
-        console.error('No token found. Please log in.');
-    }
     const { darkMode } = useTheme();
 
     // navigation button
@@ -49,24 +21,58 @@ function NADashboardUI() {
         navigate('/trendingattacks');
     }
     // live time and date
-//     const [currentDate, setCurrentDate] = useState('');
-//     useEffect(() => {
-//         const updateTime = () => {
-//         const date = new Date();
-//         const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-//         const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
-//                             date.getMinutes().toString().padStart(2, '0') + ':' + 
-//                             date.getSeconds().toString().padStart(2, '0');
-//         const updatedDateTime = showDate + ' , ' + showTime;
-//         setCurrentDate(updatedDateTime);
+    const [currentDate, setCurrentDate] = useState('');
+    useEffect(() => {
+        const updateTime = () => {
+        const date = new Date();
+        const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+        const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
+                            date.getMinutes().toString().padStart(2, '0') + ':' + 
+                            date.getSeconds().toString().padStart(2, '0');
+        const updatedDateTime = showDate + ' , ' + showTime;
+        setCurrentDate(updatedDateTime);
 
-//         };
+        };
 
-//         updateTime();
+        updateTime();
 
-//         const timerId = setInterval(updateTime, 1000);
-//         return () => clearInterval(timerId);
-//   }, []);
+        const timerId = setInterval(updateTime, 1000);
+        return () => clearInterval(timerId);
+  }, []);
+
+
+// getting the top threat sources and destination ip address
+const [threatSrc, setThreatSrc] = useState([]);
+const [threatDest, setThreatDest] = useState([]);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+    const access_token = sessionStorage.getItem('accesstoken');
+
+    const fetchData = () => {
+        axios.get('http://127.0.0.1:5000/nadashboard', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(response => {
+            if (response.status === 200) {
+                setThreatSrc(response.data.top_threat_src || []);
+                setThreatDest(response.data.top_threat_dest || []);
+            } else {
+                setError('No data available');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching threat info:', error);
+            setError('Error fetching data');
+        });
+    } 
+    fetchData(); // Initial fetch
+    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+}, []);
 
 
     return (
@@ -77,7 +83,7 @@ function NADashboardUI() {
                 {/* Dashboard text and current date and time */}
                 <div className="flex justify-between items-center mt-4 mb-4">
                     <p className="text-2xl">DASHBOARD</p>
-                    {/* <p className="text-base">{currentDate}</p> */}
+                    <p className="text-base">{currentDate}</p>
                 </div>
 
                 <div className="w-full">
@@ -147,14 +153,6 @@ function NADashboardUI() {
                                             </p>
                                         </div>
                                     </div>
-
-                                    {/* Amount Column */}
-                                    {/* <div className="flex flex-col items-center pl-3 mt-4 md:mt-0">
-                                        <p className="text-lg">10</p>
-                                        <p className="text-lg mt-1">10</p>
-                                        <p className="text-lg mt-1">10</p>
-                                        <p className="text-lg mt-1">10</p>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -200,14 +198,14 @@ function NADashboardUI() {
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
                             <div className="h-56">
-
+                                <TopThreatSrc threats={threatSrc} error={error}/>
                             </div>
                         </div>
 
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Top Threat Destination</p>
                             <div className="h-56">
-
+                                <TopThreatDest threats={threatDest} error={error} />
                             </div>
                         </div>  
                     </div>

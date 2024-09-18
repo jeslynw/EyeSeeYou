@@ -8,34 +8,55 @@ from auth_decorators import token_required
 
 nadashboard_bp = Blueprint('nadashboard', __name__)
 
+# top source ip address
 @nadashboard_bp.route('/nadashboard', methods=['GET'])
 @token_required
-def viewDashboard():
+def getTopThreatSrcAndDest():
     if request.method == 'GET':
         current_user = get_jwt_identity()
-        alerts = getTopThreatSrcAndDest()
+    
+        top_threat_src = topThreatSrc()
+        top_threat_dest = topThreatDest()
 
-        topThreatSrcAndDest = []
-        for alert in alerts:
-            topThreatSrcAndDest.append({
-                "source_address": alert[0],
-                "destination_address": alert[1]
-            })
+        topThreatSrcList = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
+        topThreatDestList = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
 
         return jsonify({
             "logged_in_as": current_user,
-            "trending_src_and_dest": topThreatSrcAndDest
+            "top_threat_src": topThreatSrcList,
+            "top_threat_dest": topThreatDestList
         }), 200
     
 
-def getTopThreatSrcAndDest():
-    query = """SELECT src_addr, dst_addr, COUNT(src_addr), src_port
+def topThreatSrc():
+    query = """SELECT src_addr, COUNT(src_addr)
                 FROM alerts
                 WHERE src_port IS NOT NULL
-                GROUP BY src_addr, dst_addr
+                GROUP BY src_addr
                 ORDER BY COUNT(src_addr) DESC
                 LIMIT 5"""
-    
+
+    conn = db.get_connection()
+    cursor = conn.cursor()
+    try:    
+        cursor.execute(query)
+        data = cursor.fetchall()
+        return data
+    except pymysql.connect.Error as err:
+        print(err)
+        return jsonify({"error": "Error in fetching data"})
+    finally:
+        cursor.close()
+        conn.close()
+
+def topThreatDest():
+    query = """SELECT dst_addr, COUNT(dst_addr)
+                FROM alerts
+                WHERE src_port IS NOT NULL
+                GROUP BY dst_addr
+                ORDER BY COUNT(dst_addr) DESC
+                LIMIT 5"""
+
     conn = db.get_connection()
     cursor = conn.cursor()
     try:    
