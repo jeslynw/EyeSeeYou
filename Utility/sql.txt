@@ -28,3 +28,25 @@ CREATE TABLE user (
 );
 
 INSERT INTO user (full_name, username, password, phone, email, organisation_name, profile_id, plan_id) VALUES ("Frankie Lee", "flee", "$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS", "98431863", "flee@gmail.com", "Yishun Men", 1, 1), ("Keith Min Khant Thu", "mkt", "$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2", "96864135", "mkt@gmail.com", "Burmese Monk", 1, 2);
+
+
+CREATE table alerts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    timestamp varchar(50),
+    pkt_num BIGINT,
+    protocol varchar(30),
+    pkt_gen varchar(30),
+    pkt_len INT,
+    direction varchar(10),
+    src_addr varchar(50),
+    src_port INT,
+    dst_addr varchar(50),
+    dst_port INT,
+    service varchar(50),
+    rule varchar(30),
+    priority INT,
+    class varchar(100),
+    action varchar(20),
+    b64_data TEXT,
+    status ENUM('Resolved','Open') NOT NULL DEFAULT 'Open'
+);

@@ -247,12 +247,12 @@ function displaySuccessMessage(){
           </div>
 
           <div className="w-full flex justify-end mt-4 gap-4">
-            <button onClick={navigateToAccountDetails} className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none">
+            <button onClick={navigateToAccountDetails} className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none cursor-pointer">
               Cancel
             </button>
             <input
               type="submit"
-              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
               value="Save Changes"
               onClick={validatesAccountDetails}
             />
