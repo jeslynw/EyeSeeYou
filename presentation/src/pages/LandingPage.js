@@ -18,6 +18,7 @@ import HardCodePieChart from '../components/HardCodePieChart.js';
 import HardcodeHorizontalBarChart from '../components/HardcodeHorizontalBarChart.js';
 import HardCodeRealtime from '../components/HardCodeRealtime.js';
 import PricingPlan from '../components/PricingPlan.js';
+import FeedbackContainer from '../components/FeedbackContainer.js';
 
 function LandingPage() {
   // navigation button
@@ -114,9 +115,9 @@ function LandingPage() {
 
 
         {/* without animated background */}
-        <div className='bg-[#1d1d1d] backdrop-blur-sm '>
+        <div className='backdrop-blur-sm bg-[#1d1d1d]'>
           {/* impact */}
-          <div  className='grid grid-cols-5 text-white px-8 lg:px-5 h-36 lg:h-44 items-center border-y-4 border-transparent glow-border rounded-lg'> 
+          <div  className='grid grid-cols-5 bg-[#0D1821] text-white px-8 lg:px-5 h-36 lg:h-44 items-center border-y-4 border-transparent glow-border rounded-lg'> 
             {dataImpact[0].amount.map((amount, index) => (
               <div key={index} className='text-white text-center'>
                 <p className='flex lg:text-4xl text-3xl justify-center text-[#26baff]'>{amount}</p>
@@ -128,7 +129,7 @@ function LandingPage() {
           <div className='mt-36 pointer-events-none'></div>
 
           {/* features */}
-          <div className=' text-white px-8 lg:px-5'> 
+          <div className='text-white px-8 lg:px-5'> 
             <p className='flex justify-center text-center text-white text-3xl font-semibold'>Explore The Power Behind Network Security</p>
 
             <div className='mt-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-12 gap-6'>
@@ -184,7 +185,12 @@ function LandingPage() {
             </div>
           </div>
 
-          <div className='mt-36 pointer-events-none'></div>
+          <div className='pt-16 pointer-events-none'></div>
+
+          {/* User feedback */}
+          <FeedbackContainer />
+
+          <div className='pt-16 pointer-events-none'></div>
 
           {/* pricing plan */}
           <section id='pricingPlan'>
