@@ -48,8 +48,10 @@ function NADashboardUI() {
     const [error, setError] = useState(null);
     const [trendAttackCategory, setTrendAttackCategory] = useState([]);
     const [trendAttackData, setTrendAttackData] = useState([]);
-    console.log("trendAttackCategory:", trendAttackCategory);
-    console.log("trendAttackData:", trendAttackData);
+    // console.log("trendAttackCategory:", trendAttackCategory);
+    // console.log("trendAttackData:", trendAttackData);
+    // console.log(threatSrc)
+    // console.log(threatDest)
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
