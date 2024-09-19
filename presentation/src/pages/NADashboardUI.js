@@ -25,9 +25,9 @@ function NADashboardUI() {
       })
       .then((response) => {
         if (response.status === 200) {
-            const user_id = response.data.logged_in_as;
-            console.log(`User: ${user_id}`);
-            sessionStorage.setItem('user_id', user_id);
+          const user_id = response.data.logged_in_as;
+          console.log(`User: ${user_id}`);
+          sessionStorage.setItem("user_id", user_id);
         }
       })
       .catch((error) => {
@@ -45,24 +45,113 @@ function NADashboardUI() {
     navigate("/trendingattacks");
   };
 
-    // live time and date
-    const [currentDate, setCurrentDate] = useState('');
-    useEffect(() => {
-      const updateTime = () => {
+  // live time and date
+  const [currentDate, setCurrentDate] = useState("");
+  useEffect(() => {
+    const updateTime = () => {
       const date = new Date();
-      const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-      const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
-                       date.getMinutes().toString().padStart(2, '0') + ':' + 
-                       date.getSeconds().toString().padStart(2, '0');
-      const updatedDateTime = showDate + ' , ' + showTime;
+      const showDate =
+        date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+      const showTime =
+        date.getHours().toString().padStart(2, "0") +
+        ":" +
+        date.getMinutes().toString().padStart(2, "0") +
+        ":" +
+        date.getSeconds().toString().padStart(2, "0");
+      const updatedDateTime = showDate + " , " + showTime;
       setCurrentDate(updatedDateTime);
     };
-
     updateTime();
     const timerId = setInterval(updateTime, 1000);
     return () => clearInterval(timerId);
   }, []);
 
+  // alert counts -- placeholder
+  const critical = 10;
+  const high = 50;
+  const medium = 1;
+  const low = 1;
+
+  // Weighting factors: give more weight to critical and high
+  const weightCritical = 1;
+  const weightHigh = 0.8;
+  const weightMedium = 0.5;
+  const weightLow = 0.3;
+
+  // Calculate weighted network
+  const severity =
+    parseFloat((
+      critical * weightCritical +
+      high * weightHigh +
+      medium * weightMedium +
+      low * weightLow).toFixed(2));
+
+
+  let networkStatus;
+  let emoji;
+
+  // change network status and emoji face depends on the network health
+  if (severity <= 10) {
+    networkStatus = "Good";
+    // green smile emoji
+    emoji = (
+      <svg
+        className="w-11 h-11 text-[#51ff2e]"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fillRule="evenodd"
+          d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  } else if (severity <= 30) {
+    networkStatus = "Moderate";
+    // moderate emoji
+    emoji = (
+      <svg
+        className="w-11 h-11 text-yellow-400"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fillRule="evenodd"
+          d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  } else {
+    networkStatus = "Bad";
+    // red smile emoji
+    emoji = (
+      <svg
+        className="w-11 h-11 text-[#FF5733]"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fillRule="evenodd"
+          d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -72,7 +161,7 @@ function NADashboardUI() {
         {/* Dashboard text and current date and time */}
         <div className="flex justify-between items-center mt-4 mb-4">
           <p className="text-2xl">DASHBOARD</p>
-          <p className="text-base">as of {currentDate}</p>
+          <p className="text-base">{currentDate}</p>
         </div>
 
         <div className="w-full">
@@ -85,27 +174,14 @@ function NADashboardUI() {
                 {/* Left side: Network status and total alerts */}
                 <div className="flex flex-col md:block">
                   <div className="flex items-center">
-                    <svg
-                      className="w-11 h-11 text-[#51ff2e]"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    {emoji}
                     <div className="ml-4">
                       <p className="text-xs">Network Status</p>
-                      <p className="text-lg font-medium">Good</p>
+                      <p className="text-lg font-medium">{networkStatus}</p>
                     </div>
                   </div>
                   <div className="flex items-center md: pt-5 ">
+                    {/* alerts icon */}
                     <svg
                       className="w-11 h-11 text-[#ff1f1fea]"
                       aria-hidden="true"
@@ -119,7 +195,7 @@ function NADashboardUI() {
                     </svg>
                     <div className="ml-4">
                       <p className="text-xs">Total Alerts</p>
-                      <p className="text-lg font-medium">12</p>
+                      <p className="text-lg font-medium">{critical + high + medium + low}</p>
                     </div>
                   </div>
                 </div>
@@ -145,7 +221,7 @@ function NADashboardUI() {
                       </svg>
                       <p className="ml-2 text-sm">
                         Critical
-                        <span className="pl-[20px]">10</span>
+                        <span className="pl-[20px]">{critical}</span>
                       </p>
                     </div>
 
@@ -165,7 +241,7 @@ function NADashboardUI() {
                         />
                       </svg>
                       <p className="ml-2 text-sm">
-                        High <span className="pl-[34px]">10</span>
+                        High <span className="pl-[34px]">{high}</span>
                       </p>
                     </div>
 
@@ -185,7 +261,7 @@ function NADashboardUI() {
                         />
                       </svg>
                       <p className="ml-2 text-sm">
-                        Medium <span className="pl-[9px]">10</span>
+                        Medium <span className="pl-[9px]">{medium}</span>
                       </p>
                     </div>
 
@@ -205,7 +281,7 @@ function NADashboardUI() {
                         />
                       </svg>
                       <p className="ml-2 text-sm">
-                        Low <span className="pl-[39px]">10</span>
+                        Low <span className="pl-[39px]">{low}</span>
                       </p>
                     </div>
                   </div>
@@ -223,6 +299,7 @@ function NADashboardUI() {
 
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
               <p className="text-sm md:text-base">Alerts Over Time</p>
+              {/* <iframe src="http://localhost:5601/app/dashboards#/view/b8b80800-740d-11ef-9738-0708712fa299?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A20000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))" height="450" width="400"></iframe> */}
             </div>
 
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
