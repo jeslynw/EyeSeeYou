@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import TopThreatSrc from "../components/TopThreatSrc";
+import TopThreatDest from "../components/TopThreatDest";
 
 // import check_token from "../auth.js";
 
@@ -44,27 +46,65 @@ function NADashboardUI() {
   const navigateTAButton = () => {
     navigate("/trendingattacks");
   };
-
   // live time and date
   const [currentDate, setCurrentDate] = useState("");
   useEffect(() => {
-    const updateTime = () => {
-      const date = new Date();
-      const showDate =
+      const updateTime = () => {
+        const date = new Date();
+        const showDate =
         date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-      const showTime =
+        const showTime =
         date.getHours().toString().padStart(2, "0") +
-        ":" +
+             ":" +
         date.getMinutes().toString().padStart(2, "0") +
-        ":" +
+             ":" +
         date.getSeconds().toString().padStart(2, "0");
-      const updatedDateTime = showDate + " , " + showTime;
-      setCurrentDate(updatedDateTime);
-    };
-    updateTime();
-    const timerId = setInterval(updateTime, 1000);
-    return () => clearInterval(timerId);
+        const updatedDateTime = showDate + " , " + showTime;
+        setCurrentDate(updatedDateTime);
+
+        };
+        updateTime();
+
+        const timerId = setInterval(updateTime, 1000);
+        return () => clearInterval(timerId);
   }, []);
+
+
+// getting the top threat sources and destination ip address
+const [threatSrc, setThreatSrc] = useState([]);
+const [threatDest, setThreatDest] = useState([]);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+    const access_token = sessionStorage.getItem('accesstoken');
+
+    const fetchData = () => {
+        axios.get('http://127.0.0.1:5000/nadashboard', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(response => {
+            if (response.status === 200) {
+                setThreatSrc(response.data.top_threat_src || []);
+                setThreatDest(response.data.top_threat_dest || []);
+            } else {
+                setError('No data available');
+            }
+
+            const temp = response.data.alert_classes;
+            console.log("Alert classes:", temp);
+        })
+        .catch(error => {
+            console.error('Error fetching threat info:', error);
+            setError('Error fetching data');
+        });
+    } 
+    fetchData(); // Initial fetch
+    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+}, []);
 
   // alert counts -- placeholder
   const critical = 10;
@@ -334,20 +374,22 @@ function NADashboardUI() {
 
           <div className="py-2"></div>
 
-          {/* 3rd row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
-              <div className="h-56"></div>
-            </div>
+                    {/* 3rd row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+                            <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
+                            <div className="h-56">
+                                <TopThreatSrc threats={threatSrc} error={error}/>
+                            </div>
+                        </div>
 
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">
-                Top Threat Destination
-              </p>
-              <div className="h-56"></div>
-            </div>
-          </div>
+                        <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+                            <p className="pb-3 text-sm md:text-base">Top Threat Destination</p>
+                            <div className="h-56">
+                                <TopThreatDest threats={threatDest} error={error} />
+                            </div>
+                        </div>  
+                    </div>
 
           <div className="py-2"></div>
 

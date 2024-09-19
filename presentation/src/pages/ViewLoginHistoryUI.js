@@ -8,6 +8,8 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
+import LoginHistoryTable from '../components/LoginHistoryTable';
+
 function NALogInHistory() {
     //debugging for user
     const access_token = sessionStorage.getItem('accesstoken');
@@ -59,10 +61,9 @@ function NALogInHistory() {
   ]
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div className={`${darkMode ? 'dark' : ''}  overflow-y-hidden h-screen`}>
         <Header />  
-        <div className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12">
-            
+        <div className="flex flex-col bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12">
             <div className="flex justify-between items-center mt-4 mb-4">
                 <p className="text-2xl">LOG IN HISTORY</p>
                 <p className="text-base">{currentDate}</p>
@@ -90,8 +91,8 @@ function NALogInHistory() {
                 {/* User Logs */}
                 <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                     <p className="pb-3 text-sm md:text-base">User Logs</p>
-                    <div className="h-80">
-
+                    <div className="h-[415px]">
+                        <LoginHistoryTable className="mt-10"/>
                     </div>
                 </div>
             </div>
