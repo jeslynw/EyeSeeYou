@@ -17,16 +17,37 @@ def getTopThreatSrcAndDest():
     
         top_threat_src = topThreatSrc()
         top_threat_dest = topThreatDest()
+        alert_classes = AlertClass()
 
         topThreatSrcList = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
         topThreatDestList = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
+        alertClassList = [{"class": row[0]} for row in alert_classes]
 
         return jsonify({
             "logged_in_as": current_user,
             "top_threat_src": topThreatSrcList,
-            "top_threat_dest": topThreatDestList
+            "top_threat_dest": topThreatDestList,
+            "alert_classes": alertClassList
         }), 200
     
+def AlertClass():
+    query = """SELECT class
+                FROM alerts
+                WHERE class NOT IN ('none')
+                GROUP BY class"""
+
+    conn = db.get_connection()
+    cursor = conn.cursor()
+    try:    
+        cursor.execute(query)
+        data = cursor.fetchall()
+        return data
+    except pymysql.connect.Error as err:
+        print(err)
+        return jsonify({"error": "Error in fetching data"})
+    finally:
+        cursor.close()
+        conn.close()
 
 def topThreatSrc():
     query = """SELECT src_addr, COUNT(src_addr)
