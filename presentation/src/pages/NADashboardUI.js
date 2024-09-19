@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import TopThreatSrc from "../components/TopThreatSrc";
 import TopThreatDest from "../components/TopThreatDest";
+import TrendingAttacks from "../components/TrendingAttacks";
 
 // import check_token from "../auth.js";
 
@@ -41,41 +42,57 @@ function NADashboardUI() {
   }, []);
 
 
-// getting the top threat sources and destination ip address
-const [threatSrc, setThreatSrc] = useState([]);
-const [threatDest, setThreatDest] = useState([]);
-const [error, setError] = useState(null);
+    // getting the top threat sources and destination ip address
+    const [threatSrc, setThreatSrc] = useState([]);
+    const [threatDest, setThreatDest] = useState([]);
+    const [error, setError] = useState(null);
+    const [trendAttackCategory, setTrendAttackCategory] = useState([]);
+    const [trendAttackData, setTrendAttackData] = useState([]);
+    console.log("trendAttackCategory:", trendAttackCategory);
+    console.log("trendAttackData:", trendAttackData);
 
-useEffect(() => {
-    const access_token = sessionStorage.getItem('accesstoken');
+    useEffect(() => {
+        const access_token = sessionStorage.getItem('accesstoken');
 
-    const fetchData = () => {
-        axios.get('http://127.0.0.1:5000/nadashboard', {
-            headers: {
-                'Authorization': `Bearer ${access_token}`
-            }
-        })
-        .then(response => {
-            if (response.status === 200) {
-                setThreatSrc(response.data.top_threat_src || []);
-                setThreatDest(response.data.top_threat_dest || []);
-            } else {
-                setError('No data available');
-            }
+        const fetchData = () => {
+            axios.get('http://127.0.0.1:5000/nadashboard', {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    //  trending attacks data
+                    const alertClasses = response.data.trending_attacks.map(alert => alert.class);
+                    const classCounts = response.data.trending_attacks.map(alert => alert.count);
+                    const sortedData = alertClasses.map((c, i) => ({ class: c, count: classCounts[i] })).sort((a, b) => b.count - a.count);
+                    const sortedCategories = sortedData.map(d => d.class);
+                    const sortedSeriesData = sortedData.map(d => d.count);
+                    setTrendAttackCategory(sortedCategories);
+                    setTrendAttackData([{ data: sortedSeriesData }]);
 
-            const temp = response.data.alert_classes;
-            console.log("Alert classes:", temp);
-        })
-        .catch(error => {
-            console.error('Error fetching threat info:', error);
-            setError('Error fetching data');
-        });
-    } 
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
 
-    return () => clearInterval(interval);
-}, []);
+
+                    // top threat src and dest ip address
+                    setThreatSrc(response.data.top_threat_src || []);
+                    setThreatDest(response.data.top_threat_dest || []);
+                } else {
+                    setError('No data available');
+                }
+
+                const temp = response.data.alert_classes;
+                console.log("Alert classes:", temp);
+            })
+            .catch(error => {
+                console.error('Error fetching threat info:', error);
+                setError('Error fetching data');
+            });
+        } 
+        fetchData(); // Initial fetch
+        const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
 
     return (
@@ -189,7 +206,7 @@ useEffect(() => {
                             </button>
                             </div>
                             <div className="h-56">
-                                
+                                <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={500} height={230} />
                             </div>
                         </div>  
                     </div>
@@ -225,7 +242,7 @@ useEffect(() => {
                 </div>
 
                 <div className='p-10'></div>
-
+        
             </div>
         </div>
     );
