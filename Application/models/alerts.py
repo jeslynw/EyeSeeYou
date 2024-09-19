@@ -85,3 +85,6 @@ class Alerts:
         finally:
             if conn:
                 conn.close()
+
+    
+Alerts.get_low_priority()
