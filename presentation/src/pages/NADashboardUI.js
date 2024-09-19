@@ -142,8 +142,8 @@ function NADashboardUI() {
 
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="text-sm md:text-base">Alerts Over Time</p>
+                            <iframe src="http://localhost:5601/app/dashboards#/view/192995c0-740c-11ef-b531-93a452c5fb45?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A20000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" className="border-0 rounded-xl" height="420" width="360" frameborder="0" scrolling="no"></iframe>
                         </div>
-
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="text-sm md:text-base">Alerts</p>
                         </div>
