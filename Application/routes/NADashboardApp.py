@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 import pymysql
+from models.alerts import Alerts
 import dbAccess as db
 
 from flask_jwt_extended import get_jwt_identity
@@ -15,6 +16,7 @@ def getTopThreatSrcAndDest():
     if request.method == 'GET':
         current_user = get_jwt_identity()
     
+        overview = alert_overview()
         top_threat_src = topThreatSrc()
         top_threat_dest = topThreatDest()
         alert_classes = AlertClass()
@@ -30,6 +32,21 @@ def getTopThreatSrcAndDest():
             "alert_classes": alertClassList
         }), 200
     
+
+def alert_overview():
+    a = Alerts()
+    crit = a.get_critical_priority()
+    high = a.get_high_priority()
+    med = a.get_medium_priority()
+    low = a.get_low_priority()
+
+    return {
+        "critical" : crit,
+        "high" : high,
+        "med" : med,
+        "low" : low
+    }
+
 def AlertClass():
     query = """SELECT class
                 FROM alerts
@@ -48,6 +65,7 @@ def AlertClass():
     finally:
         cursor.close()
         conn.close()
+
 
 def topThreatSrc():
     query = """SELECT src_addr, COUNT(src_addr)
