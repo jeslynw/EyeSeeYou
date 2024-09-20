@@ -200,16 +200,16 @@ function NADashboardUI() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
-                            <div className="h-max pb-4">
-                            <iframe src="http://localhost:5601/app/dashboards#/view/811a7cb0-7715-11ef-a5fb-e755f6ca9b2d?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-3h%2Cto%3Anow))&hide-filter-bar=true" 
-                            height="300" width="760" scrolling="no" frameborder="0"></iframe>
+                            <div className="pb-4">
+                                <iframe src="http://localhost:5601/app/dashboards#/view/811a7cb0-7715-11ef-a5fb-e755f6ca9b2d?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-3h%2Cto%3Anow))&hide-filter-bar=true" 
+                                height="300" width="760" scrolling="no" frameborder="0"></iframe>
                                 {/* <TopThreatSrc threats={threatSrc} error={error}/> */}
                             </div>
                         </div>
 
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Top Threat Destination</p>
-                            <div className="h-56">
+                            <div className="pb-4">
                                 {/* <TopThreatDest threats={threatDest} error={error} /> */}
                                 <iframe src="http://localhost:5601/app/dashboards#/view/dd61c3e0-7722-11ef-a5fb-e755f6ca9b2d?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-3h%2Cto%3Anow))&hide-filter-bar=true" 
                                 height="300" width="760" scrolling="no" frameborder="0"></iframe>
