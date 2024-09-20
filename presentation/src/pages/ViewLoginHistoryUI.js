@@ -61,7 +61,7 @@ function NALogInHistory() {
   ]
 
   return (
-    <div className={`${darkMode ? 'dark' : ''}  overflow-y-hidden h-screen`}>
+    <div className={`${darkMode ? 'dark' : ''}   h-screen`}>
         <Header />  
         <div className="flex flex-col bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12">
             <div className="flex justify-between items-center mt-4 mb-4">
@@ -72,7 +72,7 @@ function NALogInHistory() {
                 <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
                 {breadcrumbItems.map((item) => (
                       <Link
-                      className='text-[#000] dark:text-[#ffffff]'
+                      className='text-[#413c3c9d] dark:text-[#ffffff79] text-sm font-light'
                       to = {item.path}
                       underline="hover"
                       onClick = {item.onClick}

@@ -8,10 +8,26 @@ import { useNavigate } from "react-router-dom";
 import TopThreatSrc from "../components/TopThreatSrc";
 import TopThreatDest from "../components/TopThreatDest";
 import TrendingAttacks from "../components/TrendingAttacks";
+import RecentAlertsTable from "../components/RecentAlertsTable";
 
 // import check_token from "../auth.js";
 
 // import Sidebar from "../components/Sidebar";
+
+const getPriorityLabel = (priority) => {
+    switch (priority) {
+        case 1:
+            return 'Critical';
+        case 2:
+            return 'High';
+        case 3:
+            return 'Medium';
+        case 4:
+            return 'Low';
+        default:
+            return 'Unknown';
+    }
+};
 
 function NADashboardUI() {
     const { darkMode } = useTheme();
@@ -48,8 +64,14 @@ function NADashboardUI() {
     const [error, setError] = useState(null);
     const [trendAttackCategory, setTrendAttackCategory] = useState([]);
     const [trendAttackData, setTrendAttackData] = useState([]);
-    console.log("trendAttackCategory:", trendAttackCategory);
-    console.log("trendAttackData:", trendAttackData);
+    const [alerts, setAlerts] = useState([]);
+
+    // console.log("trendAttackCategory:", trendAttackCategory);
+    // console.log("trendAttackData:", trendAttackData);
+    // console.log(threatSrc)
+    // console.log(threatDest)
+    // console.log("alerts:", alerts)
+    // console.log(response.data.recent_alerts);
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
@@ -76,6 +98,9 @@ function NADashboardUI() {
                     // top threat src and dest ip address
                     setThreatSrc(response.data.top_threat_src || []);
                     setThreatDest(response.data.top_threat_dest || []);
+
+                    // recent alerts
+                    setAlerts(response.data.recent_alerts || []); 
                 } else {
                     setError('No data available');
                 }
@@ -234,9 +259,9 @@ function NADashboardUI() {
 
                     {/* 4th row */}
                     <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                        <p className="pb-3 text-sm md:text-base">Threat Map</p>
-                        <div className="h-80">
-
+                        <p className="pb-3 text-sm md:text-base">Recent Alerts</p>
+                        <div className="h-96">
+                            <RecentAlertsTable alerts={alerts}/>
                         </div>
                     </div>
                 </div>
