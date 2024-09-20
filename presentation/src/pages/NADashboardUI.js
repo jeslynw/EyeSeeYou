@@ -15,21 +15,6 @@ import AlertOverview from "../components/AlertsOverview";
 
 // import Sidebar from "../components/Sidebar";
 
-const getPriorityLabel = (priority) => {
-    switch (priority) {
-        case 1:
-            return 'Critical';
-        case 2:
-            return 'High';
-        case 3:
-            return 'Medium';
-        case 4:
-            return 'Low';
-        default:
-            return 'Unknown';
-    }
-};
-
 function NADashboardUI() {
     const { darkMode } = useTheme();
 
@@ -79,7 +64,6 @@ function NADashboardUI() {
     // console.log(threatDest)
     // console.log("alerts:", alerts)
     // console.log(response.data.recent_alerts);
-    console.log(alertsOverview)
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
@@ -109,7 +93,6 @@ function NADashboardUI() {
 
                     // recent alerts
                     const alertsOverview = response.data.alert_overview;
-                        console.log('Alert Overview:', alertsOverview);
                         setAlertsOverview({
                             critical: alertsOverview.critical || 0,
                             high: alertsOverview.high || 0,
@@ -148,7 +131,7 @@ function NADashboardUI() {
 
                 <div className="w-full">
                     {/* 1st row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
                         {/* Alerts Overview */}
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
@@ -160,9 +143,7 @@ function NADashboardUI() {
                             <p className="text-sm md:text-base">Alerts Over Time</p>
                             <iframe src="http://localhost:5601/app/dashboards#/view/192995c0-740c-11ef-b531-93a452c5fb45?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A20000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" className="border-0 rounded-xl" height="420" width="360" frameborder="0" scrolling="no"></iframe>
                         </div>
-                        <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                            <p className="text-sm md:text-base">Alerts</p>
-                        </div>
+
                     </div>
 
                     <div className="py-2"></div>

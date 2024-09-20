@@ -17,6 +17,7 @@ import pymysql
 from auth_decorators import token_required
 from routes.FeedbackApp import feedback_bp
 from routes.NADashboardApp import nadashboard_bp
+from routes.NAAlertsApp import naalerts_bp
 
 
 app = Flask(__name__)
@@ -152,6 +153,7 @@ def go_to_events():
 
 app.register_blueprint(feedback_bp)
 app.register_blueprint(nadashboard_bp)
+app.register_blueprint(naalerts_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
