@@ -40,21 +40,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         navigate('/');
     };
 
-    // const navItems = [
-    //     {path: '/nadashboard', name:'Dashboard', icon:DashboardOutlinedIcon},
-    //     {path: '/naalerts', name:'Alerts', icon:NotificationsNoneOutlinedIcon},
-    //     {path: '/naevents', name:'Events', icon:TodayOutlinedIcon},
-    //     {path: '/naloginhistory', name:'Log In History', icon:HistoryOutlinedIcon}, 
-    //     {path: '/viewaccountdetails', name:'Profile', icon:PersonRoundedIcon},
-    //     {path: '/feedback', name:'Feedback', icon:RateReviewOutlinedIcon},
-    //     {path: '#', name: 'Logout', icon: LogoutOutlinedIcon, onClick: openLogoutPopUp},
-    // ]
-
       // Navigation items for top
       const navItemsTop = [
         { path: "/nadashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
         { path: "/naalerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
-        { path: "/naevents", name: "Events", icon: TodayOutlinedIcon },
+        // { path: "/naevents", name: "Events", icon: TodayOutlinedIcon },
         { path: "/naloginhistory", name: "Log In History", icon: HistoryOutlinedIcon },
     ];
 
