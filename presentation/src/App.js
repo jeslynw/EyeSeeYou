@@ -26,7 +26,7 @@ function App() {
             <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
             <Route path="/naalerts" element={<NAAlerts />} />
             <Route path="/naloginhistory" element={<NALogInHistory />} />
-            <Route path="/naevents" element={<NAEvents />} />
+            {/* <Route path="/naevents" element={<NAEvents />} /> */}
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
           </Route>
