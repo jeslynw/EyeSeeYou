@@ -34,22 +34,25 @@ def fetch_dashboard():
                 "priority": alert["priority"]
             } 
             for alert in recent_alerts
-]
+        ]
         return jsonify({
             "logged_in_as": current_user,
             "top_threat_src": list_top_threat_src,
             "top_threat_dest": list_top_threat_dest,
             "trending_attacks": list_trending_attacks,
-            "recent_alerts":list_recent_alerts
+            "recent_alerts":list_recent_alerts,
+            "alert_overview": overview
         }), 200
     
 
 def alert_overview():
     a = Alerts()
-    crit = a.get_critical_priority()
-    high = a.get_high_priority()
-    med = a.get_medium_priority()
-    low = a.get_low_priority()
+    crit = a.get_critical_priority()["critical_count"]
+    high = a.get_high_priority()["high_count"]
+    med = a.get_medium_priority()["medium_count"]
+    low = a.get_low_priority()["low_count"]
+
+    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
