@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import TopThreatSrc from "../components/TopThreatSrc";
 import TopThreatDest from "../components/TopThreatDest";
 import TrendingAttacks from "../components/TrendingAttacks";
+import RecentAlertsTable from "../components/RecentAlertsTable";
 
 // import check_token from "../auth.js";
 
@@ -48,8 +49,9 @@ function NADashboardUI() {
     const [error, setError] = useState(null);
     const [trendAttackCategory, setTrendAttackCategory] = useState([]);
     const [trendAttackData, setTrendAttackData] = useState([]);
-    console.log("trendAttackCategory:", trendAttackCategory);
-    console.log("trendAttackData:", trendAttackData);
+    const [alerts, setAlerts] = useState([]);
+    // console.log("trendAttackCategory:", trendAttackCategory);
+    // console.log("trendAttackData:", trendAttackData);
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
@@ -63,19 +65,20 @@ function NADashboardUI() {
             .then(response => {
                 if (response.status === 200) {
                     // //  trending attacks data
-                    // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
-                    // const classCounts = response.data.trending_attacks.map(alert => alert.count);
-                    // const sortedData = alertClasses.map((c, i) => ({ class: c, count: classCounts[i] })).sort((a, b) => b.count - a.count);
-                    // const sortedCategories = sortedData.map(d => d.class);
-                    // const sortedSeriesData = sortedData.map(d => d.count);
-                    // setTrendAttackCategory(sortedCategories);
-                    // setTrendAttackData([{ data: sortedSeriesData }]);
-
-
+                    const alertClasses = response.data.trending_attacks.map(alert => alert.class);
+                    const classCounts = response.data.trending_attacks.map(alert => alert.count);
+                    const sortedData = alertClasses.map((c, i) => ({ class: c, count: classCounts[i] })).sort((a, b) => b.count - a.count);
+                    const sortedCategories = sortedData.map(d => d.class);
+                    const sortedSeriesData = sortedData.map(d => d.count);
+                    setTrendAttackCategory(sortedCategories);
+                    setTrendAttackData([{ data: sortedSeriesData }]);
 
                     // top threat src and dest ip address
                     setThreatSrc(response.data.top_threat_src || []);
                     setThreatDest(response.data.top_threat_dest || []);
+
+                    // recent alerts
+                    setAlerts(response.data.recent_alerts || []); 
                 } else {
                     setError('No data available');
                 }
@@ -219,15 +222,15 @@ function NADashboardUI() {
                                 View All
                             </button>
                             </div>
-                            <div className="h-56">
+                            {/* <div className="h-56"> */}
                                 <iframe
                                     src="http://localhost:5601/app/dashboards#/view/ab1556b0-770c-11ef-a5fb-e755f6ca9b2d?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',expandedPanelId:'2ba5ee70-89c9-4e51-ab81-cd5bb1e9803c',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-5582c66e-ea40-45aa-8474-46c428de321a,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:filter-index-pattern-0,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('5582c66e-ea40-45aa-8474-46c428de321a':(columnOrder:!('2a90a558-a0e3-4912-9f89-f50812f5f730','69eb975c-6069-48c2-9f98-18d4d954317a'),columns:('2a90a558-a0e3-4912-9f89-f50812f5f730':(customLabel:!t,dataType:string,isBucketed:!t,label:'-',operationType:terms,params:(missingBucket:!f,orderBy:(columnId:'69eb975c-6069-48c2-9f98-18d4d954317a',type:column),orderDirection:desc,otherBucket:!t,size:5),scale:ordinal,sourceField:class.keyword),'69eb975c-6069-48c2-9f98-18d4d954317a':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records)),incompleteColumns:())))),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,indexRefName:filter-index-pattern-0,key:class.keyword,negate:!t,params:(query:none),type:phrase),query:(match_phrase:(class.keyword:none)))),query:(language:kuery,query:''),visualization:(axisTitlesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),fittingFunction:None,gridlinesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),labelsOrientation:(x:0,yLeft:0,yRight:0),layers:!((accessors:!('69eb975c-6069-48c2-9f98-18d4d954317a'),layerId:'5582c66e-ea40-45aa-8474-46c428de321a',layerType:data,position:top,seriesType:bar_horizontal,showGridlines:!f,xAccessor:'2a90a558-a0e3-4912-9f89-f50812f5f730',yConfig:!((color:%234782b4,forAccessor:'69eb975c-6069-48c2-9f98-18d4d954317a')))),legend:(isVisible:!t,position:right),preferredSeriesType:bar_horizontal,tickLabelsVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),valueLabels:hide,yLeftExtent:(mode:full),yRightExtent:(mode:full))),title:'',type:lens,visualizationType:lnsXY),enhancements:(),hidePanelTitles:!t),gridData:(h:15,i:'2ba5ee70-89c9-4e51-ab81-cd5bb1e9803c',w:24,x:0,y:0),panelIndex:'2ba5ee70-89c9-4e51-ab81-cd5bb1e9803c',type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Eyeseeyou%20trending%20attacks',viewMode:view)&hide-filter-bar=true"
-                                    height="200"
+                                    height="400"
                                     width="1650"
                                     frameborder="0">
                                 </iframe>
                                 {/* <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={500} height={230} /> */}
-                            </div>
+                            {/* </div> */}
                         </div>  
                     </div>
 
@@ -252,15 +255,15 @@ function NADashboardUI() {
                                 height="300" width="760" scrolling="no" frameborder="0"></iframe>
                             </div>
                         </div>  
-                    </div> *
+                    </div>
 
                     <div className="py-2"></div>
 
                     {/* 4th row */}
                     <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                        <p className="pb-3 text-sm md:text-base">Threat Map</p>
-                        <div className="h-80">
-
+                        <p className="pb-3 text-sm md:text-base">Recent Alerts</p>
+                        <div className="h-96">
+                            <RecentAlertsTable alerts={alerts}/>
                         </div>
                     </div>
                 </div>
