@@ -7,6 +7,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import TopThreatSrc from "../components/TopThreatSrc";
 import TopThreatDest from "../components/TopThreatDest";
+import TrendingAttacks from "../components/TrendingAttacks";
+import RecentAlertsTable from "../components/RecentAlertsTable";
+import AlertOverview from "../components/AlertsOverview";
 
 // import check_token from "../auth.js";
 
@@ -41,157 +44,105 @@ function NADashboardUI() {
 
   const { darkMode } = useTheme();
 
-  // navigation button
-  const navigate = useNavigate();
-  const navigateTAButton = () => {
-    navigate("/trendingattacks");
-  };
-  // live time and date
-  const [currentDate, setCurrentDate] = useState("");
-  useEffect(() => {
-      const updateTime = () => {
+    // navigation button
+    const navigate = useNavigate();
+    const navigateTAButton = () => {
+        navigate('/trendingattacks');
+    }
+    // live time and date
+    const [currentDate, setCurrentDate] = useState('');
+    useEffect(() => {
+        const updateTime = () => {
         const date = new Date();
-        const showDate =
-        date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-        const showTime =
-        date.getHours().toString().padStart(2, "0") +
-             ":" +
-        date.getMinutes().toString().padStart(2, "0") +
-             ":" +
-        date.getSeconds().toString().padStart(2, "0");
-        const updatedDateTime = showDate + " , " + showTime;
+        const showDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+        const showTime = date.getHours().toString().padStart(2, '0') + ':' + 
+                            date.getMinutes().toString().padStart(2, '0') + ':' + 
+                            date.getSeconds().toString().padStart(2, '0');
+        const updatedDateTime = showDate + ' , ' + showTime;
         setCurrentDate(updatedDateTime);
 
         };
+
         updateTime();
 
-        const timerId = setInterval(updateTime, 1000);
-        return () => clearInterval(timerId);
+    const timerId = setInterval(updateTime, 1000);
+    return () => clearInterval(timerId);
   }, []);
 
 
-// getting the top threat sources and destination ip address
-const [threatSrc, setThreatSrc] = useState([]);
-const [threatDest, setThreatDest] = useState([]);
-const [error, setError] = useState(null);
+    // getting the top threat sources and destination ip address
+    const [threatSrc, setThreatSrc] = useState([]);
+    const [threatDest, setThreatDest] = useState([]);
+    const [error, setError] = useState(null);
+    const [trendAttackCategory, setTrendAttackCategory] = useState([]);
+    const [trendAttackData, setTrendAttackData] = useState([]);
+    const [alerts, setAlerts] = useState([]);
+    const [alertsOverview, setAlertsOverview] = useState({
+        critical: 0,
+        high: 0,
+        med: 0,
+        low: 0,
+      });
 
-useEffect(() => {
-    const access_token = sessionStorage.getItem('accesstoken');
+    // console.log("trendAttackCategory:", trendAttackCategory);
+    // console.log("trendAttackData:", trendAttackData);
+    // console.log(threatSrc)
+    // console.log(threatDest)
+    // console.log("alerts:", alerts)
+    // console.log(response.data.recent_alerts);
 
-    const fetchData = () => {
-        axios.get('http://127.0.0.1:5000/nadashboard', {
-            headers: {
-                'Authorization': `Bearer ${access_token}`
-            }
-        })
-        .then(response => {
-            if (response.status === 200) {
-                setThreatSrc(response.data.top_threat_src || []);
-                setThreatDest(response.data.top_threat_dest || []);
-            } else {
-                setError('No data available');
-            }
+    useEffect(() => {
+        const access_token = sessionStorage.getItem('accesstoken');
 
-            const temp = response.data.alert_classes;
-            console.log("Alert classes:", temp);
-        })
-        .catch(error => {
-            console.error('Error fetching threat info:', error);
-            setError('Error fetching data');
-        });
-    } 
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+        const fetchData = () => {
+            axios.get('http://127.0.0.1:5000/nadashboard', {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    //  trending attacks data
+                    const alertClasses = response.data.trending_attacks.map(alert => alert.class);
+                    const classCounts = response.data.trending_attacks.map(alert => alert.count);
+                    const sortedData = alertClasses.map((c, i) => ({ class: c, count: classCounts[i] })).sort((a, b) => b.count - a.count);
+                    const sortedCategories = sortedData.map(d => d.class);
+                    const sortedSeriesData = sortedData.map(d => d.count);
+                    setTrendAttackCategory(sortedCategories);
+                    setTrendAttackData([{ data: sortedSeriesData }]);
 
-    return () => clearInterval(interval);
-}, []);
+                    // top threat src and dest ip address
+                    setThreatSrc(response.data.top_threat_src || []);
+                    setThreatDest(response.data.top_threat_dest || []);
+                    
+                    setAlerts(response.data.recent_alerts || []); 
 
-  // alert counts -- placeholder
-  const critical = 10;
-  const high = 50;
-  const medium = 1;
-  const low = 1;
+                    // recent alerts
+                    const alertsOverview = response.data.alert_overview;
+                        setAlertsOverview({
+                            critical: alertsOverview.critical || 0,
+                            high: alertsOverview.high || 0,
+                            med: alertsOverview.med || 0,
+                            low: alertsOverview.low || 0,
+                        });
+                } else {
+                    setError('No data available');
+                }
 
-  // Weighting factors: give more weight to critical and high
-  const weightCritical = 1;
-  const weightHigh = 0.8;
-  const weightMedium = 0.5;
-  const weightLow = 0.3;
+                const temp = response.data.alert_classes;
+                console.log("Alert classes:", temp);
+            })
+            .catch(error => {
+                console.error('Error fetching threat info:', error);
+                setError('Error fetching data');
+            });
+        } 
+        fetchData(); // Initial fetch
+        const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
 
-  // Calculate weighted network
-  const severity =
-    parseFloat((
-      critical * weightCritical +
-      high * weightHigh +
-      medium * weightMedium +
-      low * weightLow).toFixed(2));
+        return () => clearInterval(interval);
+    }, []);
 
-
-  let networkStatus;
-  let emoji;
-
-  // change network status and emoji face depends on the network health
-  if (severity <= 10) {
-    networkStatus = "Good";
-    // green smile emoji
-    emoji = (
-      <svg
-        className="w-11 h-11 text-[#51ff2e]"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          fillRule="evenodd"
-          d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
-          clipRule="evenodd"
-        />
-      </svg>
-    );
-  } else if (severity <= 30) {
-    networkStatus = "Moderate";
-    // moderate emoji
-    emoji = (
-      <svg
-        className="w-11 h-11 text-yellow-400"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          fillRule="evenodd"
-          d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
-          clipRule="evenodd"
-        />
-      </svg>
-    );
-  } else {
-    networkStatus = "Bad";
-    // red smile emoji
-    emoji = (
-      <svg
-        className="w-11 h-11 text-[#FF5733]"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          fillRule="evenodd"
-          d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM7.99 9a1 1 0 0 1 1-1H9a1 1 0 0 1 0 2h-.01a1 1 0 0 1-1-1ZM14 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H15a1 1 0 0 1-1-1Zm-5.506 7.216A5.5 5.5 0 0 1 6.6 13h10.81a5.5 5.5 0 0 1-8.916 3.216Z"
-          clipRule="evenodd"
-        />
-      </svg>
-    );
-  }
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -204,148 +155,22 @@ useEffect(() => {
           <p className="text-base">{currentDate}</p>
         </div>
 
-        <div className="w-full">
-          {/* 1st row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {/* Alerts Overview */}
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
-              <div className="flex justify-between flex-col md:flex-row bg-[#efe8ff] dark:bg-[#252525] rounded-xl p-4 items-center">
-                {/* Left side: Network status and total alerts */}
-                <div className="flex flex-col md:block">
-                  <div className="flex items-center">
-                    {emoji}
-                    <div className="ml-4">
-                      <p className="text-xs">Network Status</p>
-                      <p className="text-lg font-medium">{networkStatus}</p>
+                <div className="w-full">
+                    {/* 1st row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
+                        {/* Alerts Overview */}
+                        <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+                            <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
+                            <AlertOverview alert={alertsOverview}/>
+                        </div>
+
+
+                        <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+                            <p className="text-sm md:text-base">Alerts Over Time</p>
+                            <iframe src="http://localhost:5601/app/dashboards#/view/192995c0-740c-11ef-b531-93a452c5fb45?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A20000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" className="border-0 rounded-xl" height="420" width="360" frameborder="0" scrolling="no"></iframe>
+                        </div>
+
                     </div>
-                  </div>
-                  <div className="flex items-center md: pt-5 ">
-                    {/* alerts icon */}
-                    <svg
-                      className="w-11 h-11 text-[#ff1f1fea]"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM6 6a1 1 0 0 1-.707-.293l-1-1a1 1 0 0 1 1.414-1.414l1 1A1 1 0 0 1 6 6Zm-2 4H3a1 1 0 0 1 0-2h1a1 1 0 1 1 0 2Zm14-4a1 1 0 0 1-.707-1.707l1-1a1 1 0 1 1 1.414 1.414l-1 1A1 1 0 0 1 18 6Zm3 4h-1a1 1 0 1 1 0-2h1a1 1 0 1 1 0 2ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z" />
-                    </svg>
-                    <div className="ml-4">
-                      <p className="text-xs">Total Alerts</p>
-                      <p className="text-lg font-medium">{critical + high + medium + low}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Middle side: Critical, high, medium, low symbols and amounts */}
-                <div className="flex flex-col md:flex-row items-start md:items-center mt-4 md:mt-0 lg:pl-4">
-                  {/* Symbols Column */}
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center mb-2">
-                      <svg
-                        className="w-6 h-6 text-[#ff1f1fea]"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                        />
-                      </svg>
-                      <p className="ml-2 text-sm">
-                        Critical
-                        <span className="pl-[20px]">{critical}</span>
-                      </p>
-                    </div>
-
-                    <div className="flex items-center mb-2">
-                      <svg
-                        className="w-6 h-6 text-[#ff841fea]"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                        />
-                      </svg>
-                      <p className="ml-2 text-sm">
-                        High <span className="pl-[34px]">{high}</span>
-                      </p>
-                    </div>
-
-                    <div className="flex items-center mb-2">
-                      <svg
-                        className="w-6 h-6 text-[#ffe91fea]"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                        />
-                      </svg>
-                      <p className="ml-2 text-sm">
-                        Medium <span className="pl-[9px]">{medium}</span>
-                      </p>
-                    </div>
-
-                    <div className="flex items-center mb-2">
-                      <svg
-                        className="w-6 h-6 text-[#51ff2e]"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                        />
-                      </svg>
-                      <p className="ml-2 text-sm">
-                        Low <span className="pl-[39px]">{low}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Amount Column */}
-                  {/* <div className="flex flex-col items-center pl-3 mt-4 md:mt-0">
-                                        <p className="text-lg">10</p>
-                                        <p className="text-lg mt-1">10</p>
-                                        <p className="text-lg mt-1">10</p>
-                                        <p className="text-lg mt-1">10</p>
-                                    </div> */}
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="text-sm md:text-base">Alerts Over Time</p>
-              {/* <iframe src="http://localhost:5601/app/dashboards#/view/b8b80800-740d-11ef-9738-0708712fa299?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A20000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))" height="450" width="400"></iframe> */}
-            </div>
-
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="text-sm md:text-base">Alerts</p>
-            </div>
-          </div>
 
           <div className="py-2"></div>
 
@@ -358,52 +183,60 @@ useEffect(() => {
               <div className="h-56"></div>
             </div>
 
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <div className="flex justify-between">
-                <p className="pb-3 text-sm md:text-base">Trending Attacks</p>
-                <button
-                  onClick={navigateTAButton}
-                  className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-[#444] rounded-md"
-                >
-                  View All
-                </button>
-              </div>
-              <div className="h-56"></div>
-            </div>
-          </div>
-
-          <div className="py-2"></div>
-
-                    {/* 3rd row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                            <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
-                            <div className="h-56">
-                                <TopThreatSrc threats={threatSrc} error={error}/>
+                            <div className="flex justify-between">
+                            <p className="pb-3 text-sm md:text-base">Trending Attacks</p>
+                            <button onClick={navigateTAButton} className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-[#444] rounded-md">
+                                View All
+                            </button>
                             </div>
-                        </div>
-
-                        <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                            <p className="pb-3 text-sm md:text-base">Top Threat Destination</p>
                             <div className="h-56">
-                                <TopThreatDest threats={threatDest} error={error} />
+                                <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={500} height={230} />
                             </div>
                         </div>  
                     </div>
 
           <div className="py-2"></div>
 
-          {/* 4th row */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <p className="pb-3 text-sm md:text-base">Threat Map</p>
-            <div className="h-80"></div>
+          {/* 3rd row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+              <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
+              <div className="h-56">
+                <TopThreatSrc threats={threatSrc} error={error} />
+              </div>
+            </div>
+
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+              <p className="pb-3 text-sm md:text-base">
+                Top Threat Destination
+              </p>
+              <div className="h-56">
+                <TopThreatDest threats={threatDest} error={error} />
+              </div>
+            </div>
           </div>
-        </div>
+
+          <div className="py-2"></div>
+
+                    {/* 4th row */}
+                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+                        <p className="pb-3 text-sm md:text-base">Recent Alerts</p>
+                        <div className="h-96">
+                            <RecentAlertsTable alerts={alerts}/>
+                        </div>
+                    </div>
+                </div>
 
         <div className="p-10"></div>
       </div>
     </div>
   );
+                <div className='p-10'></div>
+        
+            </div>
+        </div>
+    );
 }
 
 export default NADashboardUI;

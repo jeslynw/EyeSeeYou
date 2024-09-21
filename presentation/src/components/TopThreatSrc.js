@@ -8,7 +8,7 @@ function TopThreatSrc({ threats, error })  {
                     <div className="text-red-500 text-center">{error}</div>
                 ) : (
                     <div className='space-y-2 px-4'>
-                        {console.log('SrcThreats:', threats)}
+                        {/* {console.log('SrcThreats:', threats)} */}
 
                         {threats.length === 0 ? (
                             <div>No data available</div>

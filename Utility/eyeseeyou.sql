@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 -- Database: `eyeseeyou`
 --
 
+DROP DATABASE IF EXISTS `eyeseeyou`;
+
 CREATE DATABASE IF NOT EXISTS `eyeseeyou` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `eyeseeyou`;
 
