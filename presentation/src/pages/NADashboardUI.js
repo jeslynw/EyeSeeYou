@@ -64,7 +64,6 @@ function NADashboardUI() {
     // console.log(threatDest)
     // console.log("alerts:", alerts)
     // console.log(response.data.recent_alerts);
-    console.log(alertsOverview)
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
@@ -94,7 +93,6 @@ function NADashboardUI() {
 
                     // recent alerts
                     const alertsOverview = response.data.alert_overview;
-                        console.log('Alert Overview:', alertsOverview);
                         setAlertsOverview({
                             critical: alertsOverview.critical || 0,
                             high: alertsOverview.high || 0,
@@ -133,7 +131,7 @@ function NADashboardUI() {
 
                 <div className="w-full">
                     {/* 1st row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
                         {/* Alerts Overview */}
                         <div className="col-span-4 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
@@ -158,9 +156,7 @@ function NADashboardUI() {
                                 scrolling="no">
                             </iframe>
                         </div>
-                        {/* <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                            <p className="text-sm md:text-base">Alerts</p>
-                        </div> */}
+
                     </div>
 
                     <div className="py-2"></div>
