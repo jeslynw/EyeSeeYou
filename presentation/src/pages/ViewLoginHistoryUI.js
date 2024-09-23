@@ -24,7 +24,11 @@ function NALogInHistory() {
         .then(response => {
         if (response.status === 200) {
                 const user_id = response.data.logged_in_as;
+                const login_history_username = response.data.username
+                const login_history_timestamp = response.data.timestamp
+                const login_history_status = response.data.status
                 console.log(`User: ${user_id}`);
+                console.log('Login History: ', login_history_username, login_history_timestamp, login_history_status)
         }
         })
         .catch(error => {

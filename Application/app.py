@@ -18,6 +18,7 @@ from auth_decorators import token_required
 from routes.FeedbackApp import feedback_bp
 from routes.NADashboardApp import nadashboard_bp
 from routes.NAAlertsApp import naalerts_bp
+from routes.ViewLoginHistoryApp import viewloginhistory_bp
 
 
 app = Flask(__name__)
@@ -130,30 +131,11 @@ def update_account():
     return jsonify(success), 200 
 
 
-@app.route('/alerts', methods=['GET'])
-@token_required
-def go_to_alerts():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
-
-
-@app.route('/loginhistory', methods=['GET'])
-@token_required
-def go_to_login_history():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
-
-
-@app.route('/events', methods=['GET'])
-@token_required
-def go_to_events():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
-
 
 app.register_blueprint(feedback_bp)
 app.register_blueprint(nadashboard_bp)
 app.register_blueprint(naalerts_bp)
+app.register_blueprint(viewloginhistory_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -42,7 +42,6 @@ function FeedbackPage() {
     
     const feedbackData = {
         user_id: sessionStorage.getItem('user_id'),
-        // user_id: '1',
         rating: value,
         review: feedback
     };
@@ -54,17 +53,19 @@ function FeedbackPage() {
     })
     .then(response => {
       console.log(response.data.message);
-      //clear fields and log(or show) result
+      
       setFeedback('');
       setValue(0);
       console.log('Rating submitted:', value);
       console.log('Review submitted:', feedback);
+
+      //to add message for user
     })
     .catch(error => {
       console.error('Error submitting feedback:', error);
     });
 
-    // console.log('Feedback submitted:', feedback);
+    
   };
 
 

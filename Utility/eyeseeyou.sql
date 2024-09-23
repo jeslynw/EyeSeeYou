@@ -122,45 +122,6 @@ INSERT INTO `alerts` (`id`, `timestamp`, `pkt_num`, `protocol`, `pkt_gen`, `pkt_
 -- --------------------------------------------------------
 
 --
--- Table structure for table `feedback`
---
-
-CREATE TABLE `feedback` (
-  `feedback_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `rating` tinyint(1) NOT NULL,
-  `review` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `feedback`
---
-
-INSERT INTO `feedback` (`feedback_id`, `user_id`, `rating`, `review`) VALUES
-(1, 1, 5, 'very nice');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `plan`
---
-
-CREATE TABLE `plan` (
-  `plan_id` int(11) NOT NULL,
-  `plan_type` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `plan`
---
-
-INSERT INTO `plan` (`plan_id`, `plan_type`) VALUES
-(1, 'Basic Plan'),
-(2, 'Premium Plan');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `user`
 --
 
@@ -203,6 +164,67 @@ CREATE TABLE `user_profile` (
 INSERT INTO `user_profile` (`profile_id`, `profile_name`) VALUES
 (1, 'Network Administrator'),
 (2, 'Management');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `feedback_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` tinyint(1) NOT NULL,
+  `review` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`feedback_id`, `user_id`, `rating`, `review`) VALUES
+(1, 1, 5, 'very nice');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `plan`
+--
+
+CREATE TABLE `plan` (
+  `plan_id` int(11) NOT NULL,
+  `plan_type` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `plan`
+--
+
+INSERT INTO `plan` (`plan_id`, `plan_type`) VALUES
+(1, 'Basic Plan'),
+(2, 'Premium Plan');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_history`
+--
+
+CREATE TABLE `login_history` (
+  `username` varchar(30) NOT NULL,
+  `timestamp` varchar(50) DEFAULT NULL,
+  `status` enum('Successful Login','Unsuccessful login') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `login_history`
+--
+
+-- INSERT INTO `login_history` (`username`, `timestamp`, `status`) VALUES
+-- (flee, 'Basic Plan','Unsuccessful login'),
+-- (flee, 'Basic Plan','Unsuccessful login');
+
+-- --------------------------------------------------------
 
 --
 -- Indexes for dumped tables
