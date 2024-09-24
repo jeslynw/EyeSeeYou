@@ -23,12 +23,12 @@ function AlertsLogs({alerts}) {
     return (
         <div className="max-h-[380px] overflow-y-auto">
         <Table className="min-w-full">
-            <Table.Head className="sticky top-0 bg-slate-200">
-                <Table.HeadCell>Timestamp</Table.HeadCell>
-                <Table.HeadCell>Source IP Address</Table.HeadCell>
-                <Table.HeadCell>Destination IP Address</Table.HeadCell>
-                <Table.HeadCell>Threat Name</Table.HeadCell>
-                <Table.HeadCell>Priority</Table.HeadCell>
+            <Table.Head className="sticky top-0">
+                <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Timestamp</Table.HeadCell>
+                <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Source IP Address</Table.HeadCell>
+                <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Destination IP Address</Table.HeadCell>
+                <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Threat Name</Table.HeadCell>
+                <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Priority</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
                 {alerts.map((alert, index) => {
