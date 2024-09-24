@@ -8,7 +8,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AlertPageOverview from '../components/AlertsPageOverview';
-import RecentAlertsTable from '../components/RecentAlertsTable';
 import AlertsLogs from '../components/AlertsLogs';
 
 function NAAlerts() {
@@ -112,7 +111,7 @@ function NAAlerts() {
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
             {breadcrumbItems.map((item) => (
                   <Link
-                  className='text-[#000] dark:text-[#ffffff]'
+                  className='text-[#6b7280] dark:text-[#ffffff79] text-base font-light'
                   to = {item.path}
                   underline="hover"
                   onClick = {item.onClick}
