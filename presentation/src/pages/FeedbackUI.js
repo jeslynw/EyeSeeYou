@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Rating from '@mui/material/Rating';
 import Header from '../components/Header';
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 import { useTheme } from "../components/ThemeProvider";
 
 function FeedbackPage() {
+
+  const navigate = useNavigate();
+
   const access_token = sessionStorage.getItem('accesstoken');
   const refresh_token = sessionStorage.getItem('refreshtoken');
 
@@ -16,6 +19,10 @@ function FeedbackPage() {
   const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+        navigate('/loginUI');
+    }
     if (access_token) {
       axios.get('http://127.0.0.1:5000/feedback', {
         headers: {

@@ -69,12 +69,18 @@ function NADashboardUI() {
     // console.log(response.data.recent_alerts);
 
     useEffect(() => {
+        // redirect to login page if no access token
+        if (!sessionStorage.getItem('accesstoken')) {
+            navigate('/loginUI');
+        }
         const access_token = sessionStorage.getItem('accesstoken');
+        const refresh_token = sessionStorage.getItem('refreshtoken');
 
         const fetchData = () => {
             axios.get('http://127.0.0.1:5000/nadashboard', {
                 headers: {
-                    'Authorization': `Bearer ${access_token}`
+                    'Authorization': `Bearer ${access_token}`,
+                    'RefreshToken': `${refresh_token}`
                 }
             })
             .then(response => {

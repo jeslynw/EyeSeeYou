@@ -52,6 +52,10 @@ function UpdateAccountDetailsUI() {
   const access_token = sessionStorage.getItem('accesstoken');
 
   useEffect(() => {
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+      navigate('/loginUI');
+    }
     if (access_token) {
       console.log('Access found:', access_token);
       axios.get('http://127.0.0.1:5000/viewaccountdetails', {

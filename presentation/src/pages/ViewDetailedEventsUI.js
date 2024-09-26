@@ -7,11 +7,19 @@ import { useTheme } from "../components/ThemeProvider";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { useNavigate } from "react-router-dom";
 
 function NAEvents() {
   //debugging for user
     const access_token = sessionStorage.getItem('accesstoken');
     const refresh_token = sessionStorage.getItem('refreshtoken');
+
+    const navigate = useNavigate();
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+        navigate('/loginUI');
+    }
+
     if (access_token) {
         console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/events', {
