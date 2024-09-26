@@ -78,15 +78,17 @@ class Feedback:
     #         print(f"Get by user error: {e}")
     #         return []
 
-    @staticmethod
-    def submit_feedback(user_id, rating, review):
-        query = "INSERT INTO feedback (user_id, rating, review) VALUES (%s, %s, %s)"
-        values = (user_id, rating, review)
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute(query, values)
-                conn.commit()
-                return True
-        except Exception as e:
-            print(f"Error submitting feedback: {e}")
-            return False
+    # @staticmethod
+    # def submit_feedback(user_id, rating, review):
+    #     query = "INSERT INTO feedback (user_id, rating, review) VALUES (%s, %s, %s)"
+    #     values = (user_id, rating, review)
+    #     conn = db.get_connection()
+
+    #     try:
+    #         with conn.cursor() as cursor:
+    #             cursor.execute(query, values)
+    #             conn.commit()
+    #             return True
+    #     except Exception as e:
+    #         print(f"Error submitting feedback: {e}")
+    #         return False

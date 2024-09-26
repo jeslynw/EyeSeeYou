@@ -18,13 +18,8 @@ const getPriorityStyle = (priority) => {
     }
 };
 
-function RecentAlertsTable({alerts}) {
-    // Sort alerts by timestamp, assuming it's a valid date string.
-    const sortedAlerts = alerts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-    // Get the 5 most recent alerts
-    const recentAlerts = sortedAlerts.slice(0, 5);
-
+function AlertsLogs({alerts}) {
+    
     return (
         <div className="max-h-[380px] overflow-y-auto">
         <Table className="min-w-full">
@@ -36,7 +31,7 @@ function RecentAlertsTable({alerts}) {
                 <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Priority</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-                {recentAlerts.map((alert, index) => {
+                {alerts.map((alert, index) => {
                     const { label, color } = getPriorityStyle(alert.priority);
                     return (
                         <Table.Row key={index} className="bg-slate-100 dark:border-gray-700 dark:bg-gray-800">
@@ -58,4 +53,4 @@ function RecentAlertsTable({alerts}) {
     );
 }
 
-export default RecentAlertsTable
+export default AlertsLogs;

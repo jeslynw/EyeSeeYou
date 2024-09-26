@@ -16,8 +16,15 @@ import pymysql
 
 from auth_decorators import token_required
 from routes.FeedbackApp import feedback_bp
-from routes.NADashboardApp import nadashboard_bp
-from routes.NAAlertsApp import naalerts_bp
+
+# NA Routes
+from NAroutes.NADashboardApp import nadashboard_bp
+from NAroutes.NAAlertsApp import naalerts_bp
+from NAroutes.NATrendingAttacksApp import natrendingattacks_bp
+
+# M routes
+from Mroutes.MDashboardApp import m_dashboard_bp
+from Mroutes.MAlertsApp import m_alerts_bp
 
 
 app = Flask(__name__)
@@ -48,24 +55,24 @@ app.config['SECRET_KEY'] = getkey()
 #     return decorated
 
 
-
-@app.route('/data', methods=['GET'])
-def get_data():
+# debugging
+# @app.route('/data', methods=['GET'])
+# def get_data():
     
-    query = "SELECT * FROM user"
+#     query = "SELECT * FROM user"
     
-    conn = db.get_connection()
-    cursor = conn.cursor()
-    try:    
-        cursor.execute(query)
-        data = cursor.fetchall()
-    except pymysql.connect.Error as err:
-        print(err)
-        return jsonify({"error": "Error in fetching data"})
-    finally:
-        cursor.close()
-        conn.close()
-    return jsonify(data)
+#     conn = db.get_connection()
+#     cursor = conn.cursor()
+#     try:    
+#         cursor.execute(query)
+#         data = cursor.fetchall()
+#     except pymysql.connect.Error as err:
+#         print(err)
+#         return jsonify({"error": "Error in fetching data"})
+#     finally:
+#         cursor.close()
+#         conn.close()
+#     return jsonify(data)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -130,30 +137,19 @@ def update_account():
     return jsonify(success), 200 
 
 
-@app.route('/alerts', methods=['GET'])
-@token_required
-def go_to_alerts():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
-
-
-@app.route('/loginhistory', methods=['GET'])
-@token_required
-def go_to_login_history():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
-
-
-@app.route('/events', methods=['GET'])
-@token_required
-def go_to_events():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200 
+# @app.route('/loginhistory', methods=['GET'])
+# @token_required
+# def go_to_login_history():
+#     current_user = get_jwt_identity()
+#     return jsonify(logged_in_as=current_user), 200
 
 
 app.register_blueprint(feedback_bp)
 app.register_blueprint(nadashboard_bp)
 app.register_blueprint(naalerts_bp)
+app.register_blueprint(natrendingattacks_bp)
+app.register_blueprint(m_dashboard_bp)
+app.register_blueprint(m_alerts_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

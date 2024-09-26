@@ -8,6 +8,7 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Link } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AlertPageOverview from "../components/AlertsPageOverview";
+import AlertsLogs from "../components/AlertsLogs";
 
 function NAAlerts() {
   //debugging for user
@@ -58,6 +59,7 @@ function NAAlerts() {
     return () => clearInterval(timerId);
   }, []);
 
+  const [alerts, setAlerts] = useState([]);
   const [alertsOverview, setAlertsOverview] = useState({
     critical: 0,
     high: 0,
@@ -89,6 +91,7 @@ function NAAlerts() {
               med: alertsOverview.med || 0,
               low: alertsOverview.low || 0,
             });
+            setAlerts(response.data.recent_alerts || []);
           }
         });
     };
@@ -114,7 +117,7 @@ function NAAlerts() {
           >
             {breadcrumbItems.map((item) => (
               <Link
-                className="text-[#000] dark:text-[#ffffff]"
+                className="text-[#6b7280] dark:text-[#ffffff79] text-base font-light"
                 to={item.path}
                 underline="hover"
                 onClick={item.onClick}
@@ -140,7 +143,7 @@ function NAAlerts() {
           {/* Alerts Logs */}
           <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
             <p className="pb-3 text-sm md:text-base">Alerts Logs</p>
-            <div className="h-80"></div>
+            <AlertsLogs alerts={alerts} />
           </div>
         </div>
 

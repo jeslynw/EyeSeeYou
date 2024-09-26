@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Rating from "@mui/material/Rating";
 import Header from "../components/Header";
 import axios from "axios";
@@ -6,41 +6,43 @@ import axios from "axios";
 import { useTheme } from "../components/ThemeProvider";
 
 function FeedbackPage() {
-  //debugging for user
   const access_token = sessionStorage.getItem("accesstoken");
   const refresh_token = sessionStorage.getItem("refreshtoken");
-  if (access_token) {
-    console.log("Access found:", access_token);
-    axios
-      .get("http://127.0.0.1:5000/feedback", {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-      .then(response => {
-      if (response.status === 200) {
-            const user_id = response.data.logged_in_as;
-            console.log(`User: ${user_id}`);
-      }
-      })
-      .catch((error) => {
-        console.error("Error fetching user info:", error);
-      });
-  } else {
-    console.error("No token found. Please log in.");
-  }
 
   const { darkMode } = useTheme();
   const [value, setValue] = React.useState(0);
-
+  const [user_id, setUserId] = useState(null);
   const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+    if (access_token) {
+      axios
+        .get("http://127.0.0.1:5000/feedback", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            const user_id = response.data.logged_in_as;
+            setUserId(user_id); // Store user_id in state
+            sessionStorage.setItem("user_id", user_id); // Store user_id in sessionStorage
+            console.log(`User: ${user_id}`);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user info:", error);
+        });
+    } else {
+      console.error("No token found. Please log in.");
+    }
+  }, [access_token]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const feedbackData = {
       user_id: sessionStorage.getItem("user_id"),
-      // user_id: '1',
       rating: value,
       review: feedback,
     };
