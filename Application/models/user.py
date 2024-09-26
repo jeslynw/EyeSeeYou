@@ -145,6 +145,26 @@ class User:
             if conn:
                 conn.close()
 
+    def get_profile_id(username):
+        query = "SELECT user_id, profile_id FROM user WHERE username = %s"
+        values = (username,)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Get by id: username={username}, no user found")
+                    return None
+                print(f"profile_id={result[1]}")
+                return result[1]
+        except Exception as e:
+            print(f"Get by id error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
     
     def get_details(user_id):
         query = """
