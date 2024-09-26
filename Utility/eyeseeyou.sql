@@ -183,7 +183,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `full_name`, `username`, `password`, `phone`, `email`, `organisation_name`, `profile_id`, `plan_id`, `active`) VALUES
 (1, 'Frankie Lee', 'flee', '$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS', '98431863', 'flee@gmail.com', 'Yishun Men', 1, 1, 1),
-(2, 'Keith Min Khant Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 'Burmese Monk', 1, 2, 1);
+(2, 'Keith Min Khant Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 'Burmese Monk', 1, 2, 1),
+(3, 'Roydenn', 'roy', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '12300023', 'roy@gmail.com', 'Sumo Temple', 2, 2, 1);
 
 -- --------------------------------------------------------
 
