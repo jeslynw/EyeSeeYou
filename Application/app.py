@@ -6,6 +6,7 @@ from flask_jwt_extended.exceptions import JWTDecodeError
 from jwt import ExpiredSignatureError, InvalidTokenError
 from flask_cors import CORS
 import getKey as gk
+from datetime import timedelta
 
 # import file
 from models.user import User
@@ -39,20 +40,7 @@ def getkey():
 app.config['SECRET_KEY'] = getkey()
 
 # def token_expiration(username):
-#     return jwt.encode({'username': username, 'exp': str(datetime.now(timezone.utc) + timedelta(minutes=30))}, app.config['SECRET_KEY'])
-
-# def token_required(func):
-#     @wraps(func)
-#     def decorated(*args, **kwargs):
-#         token = request.args.get('token')
-#         if not token:
-#             return jsonify({'message': 'Token is missing!'}), 401
-#         try:
-#             data = jwt.decode(token, app.config['SECRET_KEY'])
-#         except:
-#             return jsonify({'message': 'Invalid token'}), 403
-#         return func(*args, **kwargs)
-#     return decorated
+#     return jwt.encode({'username': username, 'exp': str(datetime.now(timezone.utc) + timedelta(minutes=30))}, app.config['SECRET_KEY']
 
 
 # debugging
@@ -87,9 +75,9 @@ def login():
     if User.authenticate(username, password):
         # token = token_expiration(username)
         user_id = User.get_id(username)
-        access_token = create_access_token(identity=user_id)
+        access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=20))
         refresh_token = create_refresh_token(identity=user_id)
-        
+        print(access_token)
         return jsonify(
             {'message': 'Login successful',
             'token': {
@@ -108,9 +96,10 @@ def refresh():
     user_id = get_jwt_identity()
     access_token = create_access_token(identity=user_id)
     refresh_token = create_refresh_token(identity=user_id)
+    print(access_token)
     return jsonify(
-        {"access_token": access_token,
-         "refresh_token": refresh_token}
+        {"accesstoken": access_token,
+         "refreshtoken": refresh_token}
         ), 200
 
 

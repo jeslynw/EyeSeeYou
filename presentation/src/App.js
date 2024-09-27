@@ -48,7 +48,16 @@ function App() {
     const interceptor = axios.interceptors.response.use(
       response => response,
       async error => {
-        if (error.response.status !== 401) {
+        // if (error.response.status !== 403 && error.response.status !== 405) {
+        //   return Promise.reject(error);
+        // }
+
+        if (!error.response) {
+          return Promise.reject(error);
+        }
+
+        const status = error.response.status;
+        if (status !== 403 && status !== 401) {
           return Promise.reject(error);
         }
 
@@ -59,6 +68,7 @@ function App() {
           try {
             const access_token = await RefreshToken();
             originalRequest.headers["Authorization"] = `Bearer ${access_token}`;
+
             return axios.request(originalRequest);
           } catch (error) {
             sessionStorage.clear();
@@ -98,19 +108,24 @@ function App() {
 
 
 // Function to use the refresh token to get tokens
-async function RefreshToken() {
+export async function RefreshToken() {
   try {
-    const refresh_token = sessionStorage.getItem("refresh_token");
+    const refresh_token = sessionStorage.getItem("refreshtoken");
 
-    const response = await axios.post("http://127.0.0.1:5000/refresh", {
-      refresh_token: refresh_token,
+    const response = await axios.post("http://127.0.0.1:5000/refresh", {},{
+      headers: {
+        'Authorization': `Bearer ${refresh_token}`
+      }
     });
 
-    const new_access_token = response.data.access_token;
-    const new_refresh_token = response.data.refresh_token;
+    const new_access_token = response.data.accesstoken;
+    const new_refresh_token = response.data.refreshtoken;
 
-    sessionStorage.setItem("access_token", new_access_token);
-    sessionStorage.setItem("refresh_token", new_refresh_token);
+    sessionStorage.removeItem("accesstoken");
+    sessionStorage.removeItem("refreshtoken");
+
+    sessionStorage.setItem("accesstoken", new_access_token);
+    sessionStorage.setItem("refreshtoken", new_refresh_token);
 
     return new_access_token;
   } catch (error) {

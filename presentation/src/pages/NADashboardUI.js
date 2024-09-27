@@ -11,6 +11,9 @@ import TrendingAttacks from "../components/TrendingAttacks";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
 
+import { jwtDecode } from "jwt-decode";
+import { RefreshToken } from "../App";
+
 // import check_token from "../auth.js";
 
 // import Sidebar from "../components/Sidebar";
@@ -61,42 +64,31 @@ function NADashboardUI() {
         low: 0,
       });
 
-    // console.log("trendAttackCategory:", trendAttackCategory);
-    // console.log("trendAttackData:", trendAttackData);
-    // console.log(threatSrc)
-    // console.log(threatDest)
-    // console.log("alerts:", alerts)
-    // console.log(response.data.recent_alerts);
-
     useEffect(() => {
         // redirect to login page if no access token
         if (!sessionStorage.getItem('accesstoken')) {
             navigate('/loginUI');
         }
-        const access_token = sessionStorage.getItem('accesstoken');
-        const refresh_token = sessionStorage.getItem('refreshtoken');
 
-        const fetchData = () => {
+
+        const checkIfTokenExpired = (token) => {
+            if (!token) return true; // No token is available
+            const decodedToken = jwtDecode(token);
+            const currentTime = Date.now() / 1000;
+            return decodedToken.exp < currentTime; 
+          };
+
+        const fetchData = async () => {
+        
+            let access_token = sessionStorage.getItem('accesstoken');
+
             axios.get('http://127.0.0.1:5000/nadashboard', {
                 headers: {
-                    'Authorization': `Bearer ${access_token}`,
-                    'RefreshToken': `${refresh_token}`
+                    'Authorization': `Bearer ${access_token}`
                 }
             })
             .then(response => {
                 if (response.status === 200) {
-                    // //  trending attacks data
-                    // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
-                    // const classCounts = response.data.trending_attacks.map(alert => alert.count);
-                    // const sortedData = alertClasses.map((c, i) => ({ class: c, count: classCounts[i] })).sort((a, b) => b.count - a.count);
-                    // const sortedCategories = sortedData.map(d => d.class);
-                    // const sortedSeriesData = sortedData.map(d => d.count);
-                    // setTrendAttackCategory(sortedCategories);
-                    // setTrendAttackData([{ data: sortedSeriesData }]);
-
-                    // top threat src and dest ip address
-                    // setThreatSrc(response.data.top_threat_src || []);
-                    // setThreatDest(response.data.top_threat_dest || []);
                     
                     setAlerts(response.data.recent_alerts || []); 
 
