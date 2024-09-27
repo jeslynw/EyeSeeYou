@@ -14,46 +14,97 @@ import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import BasicPlanDisabling from "./components/BasicPlanDisabling";
 
+// management
+import MLayout from "./components/MLayout";
+import MDashboardUI from "./pages/MDashboardUI";
+import MAlerts from "./pages/ViewSimplifiedAlertsUI";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
-  return (
-    <ThemeProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/loginUI" element={<LoginUI />} />
-          <Route element={<Layout />}>
-            <Route path="/nadashboard" element={<NADashboardUI />} />
+  const userRole = localStorage.getItem("userrole"); // Or get from React Context/Redux
+  if (userRole == 1) {
+    return (
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/loginUI" element={<LoginUI />} />
             <Route
-              path="/viewaccountdetails"
-              element={<ViewAccountDetailsUI />}
-            />
-            <Route
-              path="/updateaccountdetails"
-              element={<UpdateAccountDetailsUI />}
-            />
-            <Route
-              path="/naalerts"
               element={
-                <BasicPlanDisabling>
-                  <NAAlerts />
-                </BasicPlanDisabling>
+                <ProtectedRoute allowedRoles={["1"]}>
+                  <Layout />
+                </ProtectedRoute>
               }
-            />
+            >
+              <Route path="/nadashboard" element={<NADashboardUI />} />
+              <Route
+                path="/viewaccountdetails"
+                element={<ViewAccountDetailsUI />}
+              />
+              <Route
+                path="/updateaccountdetails"
+                element={<UpdateAccountDetailsUI />}
+              />
+              <Route
+                path="/naalerts"
+                element={
+                  <BasicPlanDisabling>
+                    <NAAlerts />
+                  </BasicPlanDisabling>
+                }
+              />
+              <Route
+                path="/naloginhistory"
+                element={
+                  <BasicPlanDisabling>
+                    <NALogInHistory />
+                  </BasicPlanDisabling>
+                }
+              />
+              <Route path="/feedback" element={<FeedbackPage />} />
+              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    );
+  } else if (userRole == 2) {
+    return (
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/loginUI" element={<LoginUI />} />
             <Route
-              path="/naloginhistory"
               element={
-                <BasicPlanDisabling>
-                  <NALogInHistory />
-                </BasicPlanDisabling>
+                <ProtectedRoute allowedRoles={["2"]}>
+                  <MLayout />
+                </ProtectedRoute>
               }
-            />
-            <Route path="/feedback" element={<FeedbackPage />} />
-            <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
-          </Route>
-        </Routes>
-      </Router>
-    </ThemeProvider>
-  );
+            >
+              <Route path="/mdashboard" element={<MDashboardUI />} />
+              <Route path="/malerts" element={<MAlerts />} />
+              <Route
+                path="/viewaccountdetails"
+                element={<ViewAccountDetailsUI />}
+              />
+              <Route
+                path="/updateaccountdetails"
+                element={<UpdateAccountDetailsUI />}
+              />
+              <Route path="/feedback" element={<FeedbackPage />} />
+              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    );
+  }
+
+  console.log(userRole);
+
+  return { userRole };
 }
 
 export default App;

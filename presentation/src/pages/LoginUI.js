@@ -16,6 +16,7 @@ function LoginUI() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [profileId, setProfileId] = useState('')
 
   const navigate = useNavigate();
   const navigateLandingPage = () => {
@@ -30,12 +31,11 @@ function LoginUI() {
       return;
     }
 
-    try {
-      console.log("username", username)
-      console.log("password", password)
+    try {      
       const response = await axios.post('http://127.0.0.1:5000/login', {
         username: username,
-        password: password
+        password: password,
+        profileId: profileId
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -43,15 +43,13 @@ function LoginUI() {
       });
 
       if (response.status === 200 && response.data.message === "Login successful") {
-        console.log("Login successful");
-        console.log("access", response.data.token.access)
-        console.log("refresh", response.data.token.refresh)
         sessionStorage.setItem('accesstoken', response.data.token.access);
         sessionStorage.setItem('refreshtoken', response.data.token.refresh);
-        redirectToDashboard()
+        localStorage.setItem('userrole', response.data.profileId);
+
+        setProfileId(response.data.profileId)
+        redirectToDashboard(profileId)
       } else {
-        console.log("response", response.status)
-        console.log("response", response.data.message)
         displayErrorMessage()
       }
     } catch (error) {
@@ -64,8 +62,13 @@ function LoginUI() {
     setError("Incorrect username or password");
   }
 
-  function redirectToDashboard(){
-    window.location.href = '/nadashboard'
+  function redirectToDashboard(profileId){
+    if (profileId === 1){
+      window.location.href = '/nadashboard'
+    }
+    else if (profileId === 2){
+      window.location.href = '/mdashboard'
+    }
   }
 
   return (

@@ -5,9 +5,9 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import TopThreatSrc from "../components/TopThreatSrc";
-import TopThreatDest from "../components/TopThreatDest";
-import TrendingAttacks from "../components/TrendingAttacks";
+// import TopThreatSrc from "../components/TopThreatSrc";
+// import TopThreatDest from "../components/TopThreatDest";
+// import TrendingAttacks from "../components/TrendingAttacks";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
 
@@ -136,7 +136,7 @@ function NADashboardUI() {
           }
 
           const temp = response.data.alert_classes;
-          console.log("Alert classes:", temp);
+          // console.log("Alert classes:", temp);
         })
         .catch((error) => {
           console.error("Error fetching threat info:", error);
