@@ -8,10 +8,11 @@ import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
 import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 import NADashboardUI from "./pages/NADashboardUI";
 import NAAlerts from "./pages/ViewDetailedAlertsUI";
-import NAEvents from "./pages/ViewDetailedEventsUI";
+// import NAEvents from "./pages/ViewDetailedEventsUI";
 import NALogInHistory from "./pages/ViewLoginHistoryUI";
 import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
+import BasicPlanDisabling from "./components/BasicPlanDisabling";
 
 function App() {
   return (
@@ -30,9 +31,22 @@ function App() {
               path="/updateaccountdetails"
               element={<UpdateAccountDetailsUI />}
             />
-            <Route path="/naalerts" element={<NAAlerts />} />
-            <Route path="/naloginhistory" element={<NALogInHistory />} />
-            {/* <Route path="/naevents" element={<NAEvents />} /> */}
+            <Route
+              path="/naalerts"
+              element={
+                <BasicPlanDisabling>
+                  <NAAlerts />
+                </BasicPlanDisabling>
+              }
+            />
+            <Route
+              path="/naloginhistory"
+              element={
+                <BasicPlanDisabling>
+                  <NALogInHistory />
+                </BasicPlanDisabling>
+              }
+            />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
           </Route>
