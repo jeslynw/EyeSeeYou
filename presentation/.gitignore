@@ -1,15 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+**/node_modules
+presentation/.pnp
+**/package-lock.json
+**/package.json
 .pnp.js
 
 # testing
-/coverage
+presentation/coverage
 
 # production
-/build
+presentation/build
 
 # misc
 .DS_Store
@@ -23,5 +25,9 @@ yarn-debug.log*
 yarn-error.log*
 
 #backend
-Application/_pycache_
+**/__pycache__
 Application/env
+Application/api_secret.txt
+Application/.venv
+
+# Application/dbAccess.py
