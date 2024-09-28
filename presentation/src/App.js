@@ -26,7 +26,7 @@ function App() {
 
   console.log("userRole: ", userRole); // Debugging log
 
-  if (userRole == 1) {
+  if (userRole === "1") {
     return (
       <ThemeProvider>
         <Router>
@@ -72,7 +72,7 @@ function App() {
         </Router>
       </ThemeProvider>
     );
-  } else if (userRole == 2) {
+  } else if (userRole === "2") {
     return (
       <ThemeProvider>
         <Router>
