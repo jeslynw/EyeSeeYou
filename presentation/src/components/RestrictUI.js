@@ -26,7 +26,8 @@ function RestrictUI({ openPopUp, setOpenPopUp, handleCancel, handleUpgrade }) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             This feature is only available for Premium Plan users. Upgrade now
-            to enable this feature.
+            to enable this feature. <br />
+            Click cancel to go back.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

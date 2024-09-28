@@ -53,8 +53,7 @@ const BasicPlanDisabling = ({ children }) => {
     // todo: navigate to eyeseeyou wix pricing plan page
   };
 
-  // testing, change back to free plan later
-  if (currentUser.plan_type === "Free Plan") {
+  if (currentUser.plan_type === "Basic Plan") {
     return (
       <div>
         {children}
@@ -67,6 +66,9 @@ const BasicPlanDisabling = ({ children }) => {
       </div>
     );
   }
+
+  console.log("plan type: ", currentUser.plan_type); // debug
+
   // if user is on premium plan, display content normally
   return children;
 };

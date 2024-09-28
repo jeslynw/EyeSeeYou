@@ -23,6 +23,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const userRole = localStorage.getItem("userrole"); // Or get from React Context/Redux
+
+  console.log("userRole: ", userRole); // Debugging log
+
   if (userRole == 1) {
     return (
       <ThemeProvider>
@@ -102,9 +105,20 @@ function App() {
     );
   }
 
-  console.log(userRole);
-
-  return { userRole };
+  console.log("userRole is not set, redirecting to loginUI");
+  return (
+    <div>
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/loginUI" element={<LoginUI />} />
+            {/* then system will check for user role here and redirect to appropriate page */}
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </div>
+  );
 }
 
 export default App;
