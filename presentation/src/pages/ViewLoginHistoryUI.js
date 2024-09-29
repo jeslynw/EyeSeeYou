@@ -1,14 +1,13 @@
 import React from 'react'
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Table } from "flowbite-react";
 
-import LoginHistoryTable from '../components/LoginHistoryTable';
 
 function NALogInHistory() {
     //debugging for user
@@ -64,6 +63,19 @@ function NALogInHistory() {
     {path: '/naloginhistory', name: "Log In History"}
   ]
 
+  const tempData = [
+    { name: 'Apple"', color: 'Silver', type: 'Laptop', price: '$2999' },
+    { name: 'Dell', color: 'Black', type: 'Laptop', price: '$1199' },
+    { name: 'HP', color: 'Silver', type: 'Laptop', price: '$1399' },
+    { name: 'Lenovo', color: 'Black', type: 'Laptop', price: '$1599' },
+    { name: 'Microsoft', color: 'Platinum', type: 'Laptop', price: '$1499' },
+    { name: 'Apple"', color: 'Silver', type: 'Laptop', price: '$2999' },
+    { name: 'Dell XPS 13', color: 'Black', type: 'Laptop', price: '$1199' },
+    { name: 'HP', color: 'Silver', type: 'Laptop', price: '$1399' },
+    { name: 'Lenovo', color: 'Black', type: 'Laptop', price: '$1599' },
+    { name: 'Microsoft', color: 'Platinum', type: 'Laptop', price: '$1499' },
+  ];
+
   return (
     <div className={`${darkMode ? 'dark' : ''}   h-screen`}>
         <Header />  
@@ -76,7 +88,7 @@ function NALogInHistory() {
                 <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
                 {breadcrumbItems.map((item) => (
                       <Link
-                      className='text-[#413c3c9d] dark:text-[#ffffff79] text-sm font-light'
+                      className='text-[#6b7280] dark:text-[#ffffff79] text-base font-light'
                       to = {item.path}
                       underline="hover"
                       onClick = {item.onClick}
@@ -96,7 +108,27 @@ function NALogInHistory() {
                 <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                     <p className="pb-3 text-sm md:text-base">User Logs</p>
                     <div className="h-[415px]">
-                        <LoginHistoryTable className="mt-10"/>
+                        {/* <LoginHistoryTable className="mt-10"/> */}
+                        <div className="max-h-[400px] overflow-y-auto">
+                            <Table className="min-w-full">
+                                <Table.Head className="sticky top-0">
+                                <Table.HeadCell className='bg-slate-200'>Username</Table.HeadCell>
+                                <Table.HeadCell className='bg-slate-200'>Fullname</Table.HeadCell>
+                                <Table.HeadCell className='bg-slate-200'>Date & Time</Table.HeadCell>
+                                <Table.HeadCell className='bg-slate-200'>Status</Table.HeadCell>
+                                </Table.Head>
+                                <Table.Body className="divide-y">
+                                {tempData.map((item, index) => (
+                                    <Table.Row key={index} className="bg-slate-100 dark:border-gray-700 dark:bg-gray-800">
+                                    <Table.Cell>{item.name}</Table.Cell>
+                                    <Table.Cell>{item.color}</Table.Cell>
+                                    <Table.Cell>{item.type}</Table.Cell>
+                                    <Table.Cell>{item.price}</Table.Cell>
+                                    </Table.Row>
+                                ))}
+                                </Table.Body>
+                            </Table>
+                        </div>
                     </div>
                 </div>
             </div>

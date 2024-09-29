@@ -10,13 +10,13 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AlertPageOverview from '../components/AlertsPageOverview';
 import AlertsLogs from '../components/AlertsLogs';
 
-function NAAlerts() {
+function MAlerts() {
     //debugging for user
     const access_token = sessionStorage.getItem('accesstoken');
     const refresh_token = sessionStorage.getItem('refreshtoken');
     if (access_token) {
         console.log('Access found:', access_token);
-        axios.get('http://127.0.0.1:5000/naalerts', {
+        axios.get('http://127.0.0.1:5000/malerts', {
         headers: {
             'Authorization': `Bearer ${access_token}`
         }
@@ -71,7 +71,7 @@ function NAAlerts() {
         const access_token = sessionStorage.getItem('accesstoken');
 
         const fetchData = () => {
-            axios.get('http://127.0.0.1:5000/naalerts', {
+            axios.get('http://127.0.0.1:5000/malerts', {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -129,16 +129,16 @@ function NAAlerts() {
         <div className="w-full">
             {/* Overall Alerts */}
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                <p className="pb-3 text-sm md:text-base">Overall Alerts</p>
-                <AlertPageOverview alert={alertsOverview} />
+                <p className="pb-3 text-sm md:text-base">Alerts Status</p>
+                {/* <AlertPageOverview alert={alertsOverview} /> */}
             </div>
 
             <div className="py-4"></div>
 
             {/* Alerts Logs */}
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                <p className="pb-3 text-sm md:text-base">Alerts Logs</p>
-                <AlertsLogs alerts={alerts}/>
+                <p className="pb-3 text-sm md:text-base">Alerts Reports</p>
+                {/* <AlertsLogs alerts={alerts}/> */}
             </div>
         </div>
 
@@ -149,4 +149,4 @@ function NAAlerts() {
   )
 }
 
-export default NAAlerts
+export default MAlerts
