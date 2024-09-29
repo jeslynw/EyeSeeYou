@@ -11,8 +11,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "apexcharts": "^3.52.0",
-    "axios": "^1.7.4",
+    "apexcharts": "^3.53.0",
+    "axios": "^1.7.7",
     "flowbite-react": "^0.10.1",
     "framer-motion": "^11.5.6",
     "presentation": "file:",
@@ -50,6 +50,6 @@
     ]
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.9"
+    "tailwindcss": "^3.4.12"
   }
 }
