@@ -1,9 +1,9 @@
-import React from "react";
-import { useState } from "react";
-import Header from "../components/Header";
-import { useTheme } from "../components/ThemeProvider";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { useState } from 'react';
+import Header from '../components/Header';
+import { useTheme } from '../components/ThemeProvider';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function ViewAccountDetailsUI() {
   const { darkMode } = useTheme();
@@ -11,7 +11,7 @@ function ViewAccountDetailsUI() {
   // navigation button
   const navigate = useNavigate();
   const navigateEditButton = () => {
-    navigate("/updateaccountdetails");
+    navigate('/updateaccountdetails');
   };
 
   const [fullname, setFullname] = useState('');
@@ -23,17 +23,16 @@ function ViewAccountDetailsUI() {
   const [type, setType] = useState('');
   const [plan_type, setPlan] = useState('');
 
-
   //debugging for user
-  const access_token = sessionStorage.getItem("accesstoken");
-  const refresh_token = sessionStorage.getItem("refreshtoken");
+  const access_token = sessionStorage.getItem('accesstoken');
+  const refresh_token = sessionStorage.getItem('refreshtoken');
   if (access_token) {
-    console.log("Access found:", access_token);
+    console.log('Access found:', access_token);
     axios
-      .get("http://127.0.0.1:5000/viewaccountdetails", {
+      .get('http://127.0.0.1:5000/viewaccountdetails', {
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       })
       .then((response) => {
@@ -41,30 +40,30 @@ function ViewAccountDetailsUI() {
           const currentUser = response.data;
           const user_id = response.data.logged_in_as;
           console.log(`User: ${user_id}`);
-          setFullname(currentUser.full_name)
-          setUsername(currentUser.username)
-          setEmail(currentUser.email)
-          setPhone(currentUser.phone)
-          setOrganisation(currentUser.organisation_name)
-          setType(currentUser.profile_name)
-          setPlan(currentUser.plan_type)
-      }
+          setFullname(currentUser.full_name);
+          setUsername(currentUser.username);
+          setEmail(currentUser.email);
+          setPhone(currentUser.phone);
+          setOrganisation(currentUser.organisation_name);
+          setType(currentUser.profile_name);
+          setPlan(currentUser.plan_type);
+        }
       })
       .catch((error) => {
-        console.error("Error fetching user info:", error);
+        console.error('Error fetching user info:', error);
       });
   } else {
-    console.error("No token found. Please log in.");
+    console.error('No token found. Please log in.');
   }
 
   function displayAccountDetails() {
     return (
-      <div className={`${darkMode ? "dark" : ""}`}>
+      <div className={`${darkMode ? 'dark' : ''}`}>
         <Header />
 
         <div
           className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0"
-          style={{ minHeight: "calc(100vh - 60px)" }}
+          style={{ minHeight: 'calc(100vh - 60px)' }}
         >
           {/* account details text */}
           <div className="flex w-full justify-between  items-center mt-4 mb-4">
@@ -164,8 +163,12 @@ function ViewAccountDetailsUI() {
               </div>
 
               <div>
-                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Plan</p>
-                <p className="block text-sm font-medium dark:font-normal mb-4">{plan_type}</p>
+                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">
+                  Plan
+                </p>
+                <p className="block text-sm font-medium dark:font-normal mb-4">
+                  {plan_type}
+                </p>
               </div>
             </div>
           </div>

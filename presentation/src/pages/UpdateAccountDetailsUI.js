@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import Header from "../components/Header";
-import { useTheme } from "../components/ThemeProvider";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useEffect } from "react";
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import { useTheme } from '../components/ThemeProvider';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 function UpdateAccountDetailsUI() {
   const { darkMode } = useTheme();
@@ -11,7 +11,7 @@ function UpdateAccountDetailsUI() {
   // navigation button
   const navigate = useNavigate();
   const navigateToAccountDetails = () => {
-    navigate("/viewaccountdetails");
+    navigate('/viewaccountdetails');
   };
 
   const [fullname, setFullname] = useState('');
@@ -23,7 +23,7 @@ function UpdateAccountDetailsUI() {
   const [type, setType] = useState('');
   const [plan_type, setPlan] = useState('');
   const [error, setError] = useState({});
-  const [formFilled, setFormFilled] = useState("");
+  const [formFilled, setFormFilled] = useState('');
 
   //debugging for user
   // const access_token = sessionStorage.getItem('accesstoken');
@@ -49,16 +49,16 @@ function UpdateAccountDetailsUI() {
   //     console.error('No token found. Please log in.');
   // }
 
-  const access_token = sessionStorage.getItem("accesstoken");
+  const access_token = sessionStorage.getItem('accesstoken');
 
   useEffect(() => {
     if (access_token) {
-      console.log("Access found:", access_token);
+      console.log('Access found:', access_token);
       axios
-        .get("http://127.0.0.1:5000/viewaccountdetails", {
+        .get('http://127.0.0.1:5000/viewaccountdetails', {
           headers: {
             Authorization: `Bearer ${access_token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         })
         .then((response) => {
@@ -66,20 +66,20 @@ function UpdateAccountDetailsUI() {
             const currentUser = response.data;
             const user_id = response.data.logged_in_as;
             console.log(`User: ${user_id}`);
-            setFullname(currentUser.full_name)
+            setFullname(currentUser.full_name);
             setUsername(currentUser.username);
             setEmail(currentUser.email);
             setPhone(currentUser.phone);
-            setOrganisation(currentUser.organisation_name)
-            setType(currentUser.profile_name)
-            setPlan(currentUser.plan_type)
+            setOrganisation(currentUser.organisation_name);
+            setType(currentUser.profile_name);
+            setPlan(currentUser.plan_type);
           }
         })
         .catch((error) => {
-          console.error("Error fetching user info:", error);
+          console.error('Error fetching user info:', error);
         });
     } else {
-      console.error("No token found. Please log in.");
+      console.error('No token found. Please log in.');
     }
   }, [access_token]);
 
@@ -97,63 +97,68 @@ function UpdateAccountDetailsUI() {
 
     // Check if all fields are filled
     if (!fullname || !username || !email || !phone) {
-      setError("Please enter the required fields.");
+      setError('Please enter the required fields.');
       return;
     }
 
     // Check if the phone number is in number format
     if (!/^\d+$/.test(phone)) {
-      setError("Please enter only numbers in the phone number field.");
+      setError('Please enter only numbers in the phone number field.');
       return;
     }
 
-    try{
-      axios.post(`http://127.0.0.1:5000/updateaccountdetails`,{
-        "full_name": fullname,
-        "username": username,
-        "password": password,
-        "email": email,
-        "phone": phone
-      },{
-        headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .then((response) => {
-        console.log('Account details updated successfully:', response.data);
-        if (response.data) {
+    try {
+      axios
+        .post(
+          `http://127.0.0.1:5000/updateaccountdetails`,
+          {
+            full_name: fullname,
+            username: username,
+            password: password,
+            email: email,
+            phone: phone,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then((response) => {
+          console.log('Account details updated successfully:', response.data);
+          if (response.data) {
             displaySuccessMessage();
           } else {
             displayErrorMessage();
-            console.log(error, "Credentials not updated!");
+            console.log(error, 'Credentials not updated!');
           }
         })
         .catch((error) => {
-          console.log(error, "error");
+          console.log(error, 'error');
           displayErrorMessage();
         });
     } catch (error) {
-      setError("An error occurred during the update process.");
+      setError('An error occurred during the update process.');
     }
   }
 
   function displayErrorMessage() {
-    setError("Account details not updated!");
+    setError('Account details not updated!');
   }
 
   function displaySuccessMessage() {
-    setError("");
+    setError('');
     navigateToAccountDetails();
   }
 
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <div className={darkMode ? 'dark' : ''}>
       <Header />
 
       <div
         className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0"
-        style={{ minHeight: "calc(100vh - 60px)" }}
+        style={{ minHeight: 'calc(100vh - 60px)' }}
       >
         {/* NOTE: edit the form action attribute to handle where the data being submitted*/}
         <form action="{handleSubmit}">
@@ -261,14 +266,21 @@ function UpdateAccountDetailsUI() {
               </div>
 
               <div>
-                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">Plan</p>
-                <p className="block text-sm font-medium dark:font-normal mb-4 py-2">{plan_type}</p>
+                <p className="block text-[12px] dark:font-normal text-[#3a3a3a] dark:text-[#d8d8d8] mb-1">
+                  Plan
+                </p>
+                <p className="block text-sm font-medium dark:font-normal mb-4 py-2">
+                  {plan_type}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="w-full flex justify-end mt-4 gap-4">
-            <button onClick={navigateToAccountDetails} className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none cursor-pointer">
+            <button
+              onClick={navigateToAccountDetails}
+              className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none cursor-pointer"
+            >
               Cancel
             </button>
             <input

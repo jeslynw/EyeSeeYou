@@ -8,10 +8,10 @@ presentation/.pnp
 .pnp.js
 
 # testing
-/coverage
+presentation/coverage
 
 # production
-/build
+presentation/build
 
 # misc
 .DS_Store
