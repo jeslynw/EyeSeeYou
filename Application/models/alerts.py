@@ -6,6 +6,27 @@ conn = db.get_connection()
 # app = db.app
 
 class Alerts:
+    
+    def get_all_alerts(self):
+        query = "SELECT COUNT(*) as total_count FROM alerts"
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"No alerts found")
+                    return None
+                return {
+                    'total_count' : result[0]
+                }
+        except Exception as e:
+            print(f"Get total count error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+    
     def get_critical_priority(self):
         query = "SELECT COUNT(*) as critical_count FROM alerts where priority = 1"
         conn = db.get_connection()

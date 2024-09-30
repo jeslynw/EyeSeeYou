@@ -7,10 +7,10 @@ from flask_jwt_extended import get_jwt_identity
 
 from auth_decorators import token_required
 
-nadashboard_bp = Blueprint('nadashboard', __name__)
+m_alerts_bp = Blueprint('malerts', __name__)
 
 # top source ip address
-@nadashboard_bp.route('/nadashboard', methods=['GET'])
+@m_alerts_bp.route('/malerts', methods=['GET'])
 @token_required
 def fetch_dashboard():
     if request.method == 'GET':
@@ -127,24 +127,3 @@ def get_top_threat_dest():
     finally:
         cursor.close()
         conn.close()
-
-
-# def getOtherStuff():
-#     query = """SELECT src_addr, COUNT(src_addr), dst_addr, class as source_address, destination_address, classification
-#                 FROM alerts
-#                 GROUP BY src_addr, dst_addr, class
-#                 ORDER BY count DESC
-#                 LIMIT 5"""
-    
-#     conn = db.get_connection()
-#     cursor = conn.cursor()
-#     try:    
-#         cursor.execute(query)
-#         data = cursor.fetchall()
-#     except pymysql.connect.Error as err:
-#         print(err)
-#         return jsonify({"error": "Error in fetching data"})
-#     finally:
-#         cursor.close()
-#         conn.close()
-#     return jsonify(data)
