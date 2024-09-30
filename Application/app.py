@@ -21,6 +21,7 @@ from routes.FeedbackApp import feedback_bp
 from NAroutes.NADashboardApp import nadashboard_bp
 from NAroutes.NAAlertsApp import naalerts_bp
 from NAroutes.NATrendingAttacksApp import natrendingattacks_bp
+from NAroutes.ViewLoginHistoryApp import viewloginhistory_bp
 
 # M routes
 from Mroutes.MDashboardApp import m_dashboard_bp
@@ -152,6 +153,7 @@ app.register_blueprint(naalerts_bp)
 app.register_blueprint(natrendingattacks_bp)
 app.register_blueprint(m_dashboard_bp)
 app.register_blueprint(m_alerts_bp)
+app.register_blueprint(viewloginhistory_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

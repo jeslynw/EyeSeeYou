@@ -33,7 +33,7 @@ USE `eyeseeyou`;
 --
 
 CREATE TABLE `alerts` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `timestamp` varchar(50) DEFAULT NULL,
   `pkt_num` bigint(20) DEFAULT NULL,
   `protocol` varchar(30) DEFAULT NULL,
@@ -50,7 +50,8 @@ CREATE TABLE `alerts` (
   `class` varchar(100) DEFAULT NULL,
   `action` varchar(20) DEFAULT NULL,
   `b64_data` text DEFAULT NULL,
-  `status` enum('Resolved','Open') NOT NULL DEFAULT 'Open'
+  `status` enum('Resolved','Open') NOT NULL DEFAULT 'Open',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -119,6 +120,69 @@ INSERT INTO `alerts` (`id`, `timestamp`, `pkt_num`, `protocol`, `pkt_gen`, `pkt_
 (59, '09/18-11:28:00.530066', 2368, 'UDP', 'raw', 203, 'C2S', '192.168.44.1', 54749, '239.255.255.250', 1900, 'unknown', '1:1917:16', 3, 'Detection of a Network Scan', 'allow', 'TS1TRUFSQ0ggKiBIVFRQLzEuMQ0KSE9TVDogMjM5LjI1NS4yNTUuMjUwOjE5MDANCk1BTjogInNzZHA6ZGlzY292ZXIiDQpNWDogMQ0KU1Q6IHVybjpkaWFsLW11bHRpc2NyZWVuLW9yZzpzZXJ2aWNlOmRpYWw6MQ0KVVNFUi1BR0VOVDogTWljcm9zb2Z0IEVkZ2UvMTI4LjAuMjczOS43OSBXaW5kb3dzDQoNCg==', 'Open'),
 (60, '09/18-11:27:57.495621', 2365, 'UDP', 'raw', 203, 'C2S', '192.168.44.1', 54749, '239.255.255.250', 1900, 'unknown', '1:1917:16', 3, 'Detection of a Network Scan', 'allow', 'TS1TRUFSQ0ggKiBIVFRQLzEuMQ0KSE9TVDogMjM5LjI1NS4yNTUuMjUwOjE5MDANCk1BTjogInNzZHA6ZGlzY292ZXIiDQpNWDogMQ0KU1Q6IHVybjpkaWFsLW11bHRpc2NyZWVuLW9yZzpzZXJ2aWNlOmRpYWw6MQ0KVVNFUi1BR0VOVDogTWljcm9zb2Z0IEVkZ2UvMTI4LjAuMjczOS43OSBXaW5kb3dzDQoNCg==', 'Open');
 
+--
+-- Triggers `alerts`
+--
+DELIMITER $$
+CREATE TRIGGER `crit_alert` AFTER INSERT ON `alerts` 
+FOR EACH ROW 
+  IF NEW.priority = 1 THEN
+    INSERT INTO `notification` (alert_id) VALUES (NEW.id);
+  END IF
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(100) NOT NULL,
+  `username` varchar(30) UNIQUE NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `phone` varchar(20) UNIQUE NOT NULL,
+  `email` varchar(50) UNIQUE NOT NULL,
+  `organisation_name` varchar(100) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `plan_id` int(11) NOT NULL,
+  `active` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`full_name`, `username`, `password`, `phone`, `email`, `organisation_name`, `profile_id`, `plan_id`, `active`) VALUES
+('Frankie Lee', 'flee', '$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS', '98431863', 'flee@gmail.com', 'Yishun Men', 1, 1, 1),
+('Keith Min Khant Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 'Burmese Monk', 1, 2, 1),
+('Roydenn', 'roy', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '12300023', 'roy@gmail.com', 'Sumo Temple', 2, 2, 1),
+('Jeslyn Wangsa', 'jeslyn', '$2b$12$vzRro9BBYxFBA5g4w2QQx.yRnZs2ozXA0rDv5bG8XZt123tuKz7Ea', '82123642', 'jeslyn@gmail.com', 'SIM simps', 1, 1, 1),
+('Ervina', 'ervina', '$2b$12$s8JBCotREd1RSMwetiZFAOUwNJtjPotfqf53vSrlthoAQKg.aObVS', '81105273', 'ervina@gmail.com', 'SIM simps', 2, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_profile`
+--
+
+CREATE TABLE `user_profile` (
+  `profile_id` int(11) NOT NULL,
+  `profile_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`profile_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_profile`
+--
+
+INSERT INTO `user_profile` (`profile_id`, `profile_name`) VALUES
+(1, 'Network Administrator'),
+(2, 'Management');
+
 -- --------------------------------------------------------
 
 --
@@ -126,10 +190,11 @@ INSERT INTO `alerts` (`id`, `timestamp`, `pkt_num`, `protocol`, `pkt_gen`, `pkt_
 --
 
 CREATE TABLE `feedback` (
-  `feedback_id` int(11) NOT NULL,
+  `feedback_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `rating` tinyint(1) NOT NULL,
-  `review` varchar(255) DEFAULT NULL
+  `review` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`feedback_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -147,7 +212,8 @@ INSERT INTO `feedback` (`feedback_id`, `user_id`, `rating`, `review`) VALUES
 
 CREATE TABLE `plan` (
   `plan_id` int(11) NOT NULL,
-  `plan_type` varchar(50) NOT NULL
+  `plan_type` varchar(50) NOT NULL,
+  PRIMARY KEY (`plan_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -159,119 +225,58 @@ INSERT INTO `plan` (`plan_id`, `plan_type`) VALUES
 (2, 'Premium Plan');
 
 -- --------------------------------------------------------
-
 --
--- Table structure for table `user`
+-- Table structure for table `login_history`
 --
 
-CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL,
-  `full_name` varchar(100) NOT NULL,
+CREATE TABLE `login_history` (
   `username` varchar(30) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `organisation_name` varchar(100) NOT NULL,
-  `profile_id` int(11) NOT NULL,
-  `plan_id` int(11) NOT NULL,
-  `active` tinyint(1) DEFAULT 1
+  `timestamp` varchar(50) DEFAULT NULL,
+  `status` enum('Successful Login','Unsuccessful login') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`user_id`, `full_name`, `username`, `password`, `phone`, `email`, `organisation_name`, `profile_id`, `plan_id`, `active`) VALUES
-(1, 'Frankie Lee', 'flee', '$2b$12$d.vVdacMBWoOGYt3hhP5ve6sPlyQvDg4Q6y6FWEyOZ8Zba.IZ7KpS', '98431863', 'flee@gmail.com', 'Yishun Men', 1, 1, 1),
-(2, 'Keith Min Khant Thu', 'mkt', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '96864135', 'mkt@gmail.com', 'Burmese Monk', 1, 2, 1),
-(3, 'Roydenn', 'roy', '$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2', '12300023', 'roy@gmail.com', 'Sumo Temple', 2, 2, 1);
 
 -- --------------------------------------------------------
-
 --
--- Table structure for table `user_profile`
+-- Table structure for table `notification`
 --
 
-CREATE TABLE `user_profile` (
-  `profile_id` int(11) NOT NULL,
-  `profile_name` varchar(50) NOT NULL
+CREATE TABLE `notification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `alert_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `user_profile`
---
-
-INSERT INTO `user_profile` (`profile_id`, `profile_name`) VALUES
-(1, 'Network Administrator'),
-(2, 'Management');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `alerts`
---
-ALTER TABLE `alerts`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `feedback`
---
-ALTER TABLE `feedback`
-  ADD PRIMARY KEY (`feedback_id`),
-  ADD UNIQUE KEY `feedback_id` (`feedback_id`),
-  ADD KEY `idx_feedback` (`rating`,`review`),
-  ADD KEY `feedback_ibfk_1` (`user_id`);
-
---
--- Indexes for table `plan`
---
-ALTER TABLE `plan`
-  ADD PRIMARY KEY (`plan_id`);
+-- --------------------------------------------------------
 
 --
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `phone` (`phone`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `idx_profile_id` (`profile_id`),
-  ADD KEY `idz_plan_id` (`plan_id`);
+  ADD INDEX `idx_profile_id` (`profile_id`),
+  ADD INDEX `idx_plan_id` (`plan_id`);
 
 --
--- Indexes for table `user_profile`
---
-ALTER TABLE `user_profile`
-  ADD PRIMARY KEY (`profile_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `alerts`
---
-ALTER TABLE `alerts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
-
---
--- AUTO_INCREMENT for table `feedback`
+-- Indexes for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  ADD INDEX `idx_feedback` (`rating`,`review`),
+  ADD INDEX `feedback_ibfk_1` (`user_id`);
 
 --
--- AUTO_INCREMENT for table `user`
+-- Indexes for table `login_history`
+--
+ALTER TABLE `login_history`
+  ADD INDEX (`timestamp`);
+
+-- --------------------------------------------------------
+
+--
+-- Constraints for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Constraints for dumped tables
---
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`profile_id`) REFERENCES `user_profile` (`profile_id`),
+  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`plan_id`) REFERENCES `plan` (`plan_id`),
+  ADD CONSTRAINT `chk_mgt_plan` CHECK (NOT (`profile_id` = 2 AND `plan_id` <> 2));
 
 --
 -- Constraints for table `feedback`
@@ -279,14 +284,14 @@ ALTER TABLE `user`
 ALTER TABLE `feedback`
   ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
---
--- Constraints for table `user`
---
-ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`profile_id`) REFERENCES `user_profile` (`profile_id`),
-  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`plan_id`) REFERENCES `plan` (`plan_id`);
-COMMIT;
 
+--
+-- Constraints for table `notification`
+--
+ALTER TABLE `notification`
+  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`alert_id`) REFERENCES `alerts` (`id`);
+
+COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
