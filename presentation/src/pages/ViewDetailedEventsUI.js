@@ -8,17 +8,19 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useNavigate } from "react-router-dom";
+import { checkIfTokenExpired } from "../App";
 
 function NAEvents() {
-  //debugging for user
-    const access_token = sessionStorage.getItem('accesstoken');
-    const refresh_token = sessionStorage.getItem('refreshtoken');
 
     const navigate = useNavigate();
     // redirect to login page if no access token
     if (!sessionStorage.getItem('accesstoken')) {
         navigate('/loginUI');
     }
+
+    checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
+    const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
         console.log('Access found:', access_token);

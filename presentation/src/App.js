@@ -16,12 +16,13 @@ import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 // backup
 // function App() {
 //   return (
 //     <ThemeProvider>
-//       <Router>  
+//       {/* <Router>   */}
 //         <Routes>
 //           <Route path="/" element={<LandingPage />} />
 //           <Route path="/loginUI" element={<LoginUI />} />
@@ -36,7 +37,7 @@ import { useNavigate } from "react-router-dom";
 //             <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
 //           </Route>
 //         </Routes>
-//       </Router>   
+//       {/* </Router>    */}
 //     </ThemeProvider>  
 //   );
 // }
@@ -106,6 +107,12 @@ function App() {
 
 }
 
+export const checkIfTokenExpired = (token) => {
+  if (!token) return true; // No token is available
+  const decodedToken = jwtDecode(token);
+  const currentTime = Date.now() / 1000;
+  return decodedToken.exp < currentTime; 
+};
 
 // Function to use the refresh token to get tokens
 export async function RefreshToken() {

@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { checkIfTokenExpired } from "../App";
 
 function ViewAccountDetailsUI() {
   const { darkMode } = useTheme();
@@ -25,14 +26,18 @@ function ViewAccountDetailsUI() {
 
 
   //debugging for user
-  const access_token = sessionStorage.getItem('accesstoken');
-  const refresh_token = sessionStorage.getItem('refreshtoken');
+  // const access_token = sessionStorage.getItem('accesstoken');
 
   // redirect to login page if no access token
   if (!sessionStorage.getItem('accesstoken')) {
     navigate('/loginUI');
   }
-    
+  
+  // let access_token = sessionStorage.getItem('accesstoken');
+  checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
+  const access_token = sessionStorage.getItem('accesstoken');
+
   if (access_token) {
       console.log('Access found:', access_token);
       axios.get('http://127.0.0.1:5000/viewaccountdetails', {

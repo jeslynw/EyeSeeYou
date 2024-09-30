@@ -11,8 +11,8 @@ import TrendingAttacks from "../components/TrendingAttacks";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
 
-import { jwtDecode } from "jwt-decode";
-import { RefreshToken } from "../App";
+// import { jwtDecode } from "jwt-decode";
+import { checkIfTokenExpired } from "../App";
 
 // import check_token from "../auth.js";
 
@@ -70,17 +70,11 @@ function NADashboardUI() {
             navigate('/loginUI');
         }
 
-
-        const checkIfTokenExpired = (token) => {
-            if (!token) return true; // No token is available
-            const decodedToken = jwtDecode(token);
-            const currentTime = Date.now() / 1000;
-            return decodedToken.exp < currentTime; 
-          };
+        checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
 
         const fetchData = async () => {
         
-            let access_token = sessionStorage.getItem('accesstoken');
+            const access_token = sessionStorage.getItem('accesstoken');
 
             axios.get('http://127.0.0.1:5000/nadashboard', {
                 headers: {
