@@ -8,10 +8,18 @@ import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
 import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 import NADashboardUI from "./pages/NADashboardUI";
 import NAAlerts from "./pages/ViewDetailedAlertsUI";
-import NAEvents from "./pages/ViewDetailedEventsUI";
+// import NAEvents from "./pages/ViewDetailedEventsUI";
 import NALogInHistory from "./pages/ViewLoginHistoryUI";
 import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
+import BasicPlanDisabling from "./components/BasicPlanDisabling";
+
+// management
+import MLayout from "./components/MLayout";
+import MDashboardUI from "./pages/MDashboardUI";
+import MAlerts from "./pages/ViewSimplifiedAlertsUI";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import axios from "axios";
 import { useEffect } from "react";
@@ -44,6 +52,10 @@ import { jwtDecode } from "jwt-decode";
 
 
 function App() {
+  const userRole = localStorage.getItem("userrole"); // Or get from React Context/Redux
+
+  console.log("userRole: ", userRole); // Debugging log
+
   const nav = useNavigate();
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
@@ -84,27 +96,99 @@ function App() {
     };
   }, [nav]);
 
+  if (userRole === "1") {
     return (
       <ThemeProvider>
-        {/* <Router>   */}
+        {/* <Router> */}
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/loginUI" element={<LoginUI />} />
-            <Route element={<Layout />}>
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={["1"]}>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
               <Route path="/nadashboard" element={<NADashboardUI />} />
-              <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
-              <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
-              <Route path="/naalerts" element={<NAAlerts />} />
-              <Route path="/naloginhistory" element={<NALogInHistory />} />
-              {/* <Route path="/naevents" element={<NAEvents />} /> */}
+              <Route
+                path="/viewaccountdetails"
+                element={<ViewAccountDetailsUI />}
+              />
+              <Route
+                path="/updateaccountdetails"
+                element={<UpdateAccountDetailsUI />}
+              />
+              <Route
+                path="/naalerts"
+                element={
+                  <BasicPlanDisabling>
+                    <NAAlerts />
+                  </BasicPlanDisabling>
+                }
+              />
+              <Route
+                path="/naloginhistory"
+                element={
+                  <BasicPlanDisabling>
+                    <NALogInHistory />
+                  </BasicPlanDisabling>
+                }
+              />
               <Route path="/feedback" element={<FeedbackPage />} />
               <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
             </Route>
           </Routes>
-        {/* </Router>    */}
-      </ThemeProvider>  
+        {/* </Router> */}
+      </ThemeProvider>
     );
+  } else if (userRole === "2") {
+    return (
+      <ThemeProvider>
+        {/* <Router> */}
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/loginUI" element={<LoginUI />} />
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={["2"]}>
+                  <MLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/mdashboard" element={<MDashboardUI />} />
+              <Route path="/malerts" element={<MAlerts />} />
+              <Route
+                path="/viewaccountdetails"
+                element={<ViewAccountDetailsUI />}
+              />
+              <Route
+                path="/updateaccountdetails"
+                element={<UpdateAccountDetailsUI />}
+              />
+              <Route path="/feedback" element={<FeedbackPage />} />
+              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+            </Route>
+          </Routes>
+        {/* </Router> */}
+      </ThemeProvider>
+    );
+  }
 
+  console.log("userRole is not set, redirecting to loginUI");
+  return (
+    <div>
+      <ThemeProvider>
+        {/* <Router> */}
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/loginUI" element={<LoginUI />} />
+            {/* then system will check for user role here and redirect to appropriate page */}
+          </Routes>
+        {/* </Router> */}
+      </ThemeProvider>
+    </div>
+  );
 }
 
 export const checkIfTokenExpired = (token) => {

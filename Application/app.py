@@ -75,6 +75,7 @@ def login():
     if User.authenticate(username, password):
         # token = token_expiration(username)
         user_id = User.get_id(username)
+        profile_id = User.get_profile_id(username)
         access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=10))
         refresh_token = create_refresh_token(identity=user_id)
         print(access_token)
@@ -83,10 +84,10 @@ def login():
             'token': {
                     "access" : access_token, 
                     "refresh" : refresh_token
-                    }
+                    },
+            'profileId': profile_id
             }
-        ), 200
-                       
+        ), 200     
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
@@ -109,6 +110,7 @@ def view_account():
     user_id = get_jwt_identity()
     current_user = User.get_details(user_id)
     return jsonify({
+        "logged_in_as": current_user['user_id'],
         'full_name': current_user['full_name'],
         'username': current_user['username'],
         'password': current_user['password'],
