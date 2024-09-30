@@ -50,11 +50,11 @@ function MDashboardUI() {
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
-        const userRole = localStorage.getItem('userrole')
+        const userRole = sessionStorage.getItem('userrole')
 
         checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
 
-        console.log("localstorage:", userRole)
+        console.log("sessionstorage:", userRole)
 
         const fetchData = () => {
             axios.get('http://127.0.0.1:5000/mdashboard', {
