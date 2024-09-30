@@ -5,18 +5,9 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import TopThreatSrc from "../components/TopThreatSrc";
-// import TopThreatDest from "../components/TopThreatDest";
-// import TrendingAttacks from "../components/TrendingAttacks";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
-
-// import { jwtDecode } from "jwt-decode";
 import { checkIfTokenExpired } from "../App";
-
-// import check_token from "../auth.js";
-
-// import Sidebar from "../components/Sidebar";
 
 function NADashboardUI() {
   const { darkMode } = useTheme();
@@ -52,12 +43,8 @@ function NADashboardUI() {
     return () => clearInterval(timerId);
   }, []);
 
-  // getting the top threat sources and destination ip address
-  // const [threatSrc, setThreatSrc] = useState([]);
-  // const [threatDest, setThreatDest] = useState([]);
   const [error, setError] = useState(null);
-  // const [trendAttackCategory, setTrendAttackCategory] = useState([]);
-  // const [trendAttackData, setTrendAttackData] = useState([]);
+
   const [alerts, setAlerts] = useState([]);
   const [alertsOverview, setAlertsOverview] = useState({
     critical: 0,

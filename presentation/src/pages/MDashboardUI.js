@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
+import { checkIfTokenExpired } from "../App";
 
 function MDashboardUI() {
     const { darkMode } = useTheme();
@@ -50,6 +51,9 @@ function MDashboardUI() {
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
         const userRole = localStorage.getItem('userrole')
+
+        checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
         console.log("localstorage:", userRole)
 
         const fetchData = () => {
