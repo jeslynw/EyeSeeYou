@@ -8,7 +8,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AlertPageOverview from '../components/AlertsPageOverview';
-import RecentAlertsTable from '../components/RecentAlertsTable';
 import AlertsLogs from '../components/AlertsLogs';
 
 function NAAlerts() {

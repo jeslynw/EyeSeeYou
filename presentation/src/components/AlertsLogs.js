@@ -29,6 +29,7 @@ function AlertsLogs({alerts}) {
                 <Table.HeadCell>Destination IP Address</Table.HeadCell>
                 <Table.HeadCell>Threat Name</Table.HeadCell>
                 <Table.HeadCell>Priority</Table.HeadCell>
+                <Table.HeadCell>Status</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
                 {alerts.map((alert, index) => {
@@ -44,6 +45,7 @@ function AlertsLogs({alerts}) {
                                     {label}
                                 </div>
                             </Table.Cell>
+                            <Table.Cell>{alert.status ? alert.status : 'Unknown'}</Table.Cell>
                         </Table.Row>
                     );
                 })}
