@@ -110,7 +110,7 @@ class Alerts:
                         WHEN 3 THEN 'Medium'
                         WHEN 4 THEN 'Low'
                         ELSE 'unknown'
-                    END AS priority
+                    END AS priority, status
                 FROM alerts
                 WHERE class != "none"
                 ORDER BY formatted_timestamp DESC
@@ -130,7 +130,8 @@ class Alerts:
                         'src_addr': row[1],
                         'dst_addr': row[2],
                         'class': row[3],
-                        'priority': row[4]
+                        'priority': row[4],
+                        'status': row[5]
                     }
                     for row in result
                 ]

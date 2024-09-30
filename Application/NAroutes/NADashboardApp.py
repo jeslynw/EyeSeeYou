@@ -13,36 +13,35 @@ nadashboard_bp = Blueprint('nadashboard', __name__)
 @nadashboard_bp.route('/nadashboard', methods=['GET'])
 @token_required
 def fetch_dashboard():
-    if request.method == 'GET':
-        current_user = get_jwt_identity()
-    
-        overview = alert_overview()
-        # top_threat_src = get_top_threat_src()
-        # top_threat_dest = get_top_threat_dest()
-        # trending_attacks = get_trending_attacks()
-        recent_alerts = get_recent_alerts()
+    current_user = get_jwt_identity()
 
-        # list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
-        # list_top_threat_dest = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
-        # list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
-        list_recent_alerts = [
-            {
-                "timestamp": alert["timestamp"],
-                "src_addr": alert["src_addr"],
-                "dst_addr": alert["dst_addr"],
-                "class": alert["class"],
-                "priority": alert["priority"]
-            } 
-            for alert in recent_alerts
-        ]
-        return jsonify({
-            "logged_in_as": current_user,
-            # "top_threat_src": list_top_threat_src,
-            # "top_threat_dest": list_top_threat_dest,
-            # "trending_attacks": list_trending_attacks,
-            "recent_alerts":list_recent_alerts,
-            "alert_overview": overview
-        }), 200
+    overview = alert_overview()
+    # top_threat_src = get_top_threat_src()
+    # top_threat_dest = get_top_threat_dest()
+    # trending_attacks = get_trending_attacks()
+    recent_alerts = get_recent_alerts()
+
+    # list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
+    # list_top_threat_dest = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
+    # list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
+    list_recent_alerts = [
+        {
+            "timestamp": alert["timestamp"],
+            "src_addr": alert["src_addr"],
+            "dst_addr": alert["dst_addr"],
+            "class": alert["class"],
+            "priority": alert["priority"]
+        } 
+        for alert in recent_alerts
+    ]
+    return jsonify({
+        "logged_in_as": current_user,
+        # "top_threat_src": list_top_threat_src,
+        # "top_threat_dest": list_top_threat_dest,
+        # "trending_attacks": list_trending_attacks,
+        "recent_alerts":list_recent_alerts,
+        "alert_overview": overview
+    }), 200
     
 
 def alert_overview():

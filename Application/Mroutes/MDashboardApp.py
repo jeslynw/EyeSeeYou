@@ -14,15 +14,14 @@ m_dashboard_bp = Blueprint('mdashboard', __name__)
 @m_dashboard_bp.route('/mdashboard', methods=['GET'])
 @token_required
 def fetch_dashboard():
-    if request.method == 'GET':
-        current_user = get_jwt_identity()
-    
-        overview = alert_overview()
+    current_user = get_jwt_identity()
 
-        return jsonify({
-            "logged_in_as": current_user,
-            "alert_overview": overview
-        }), 200
+    overview = alert_overview()
+
+    return jsonify({
+        "logged_in_as": current_user,
+        "alert_overview": overview
+    }), 200
     
 def alert_overview():
     # total_alerts = Alerts.get_all_alerts()
