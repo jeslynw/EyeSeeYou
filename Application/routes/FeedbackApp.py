@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-import pymysql
 import dbAccess as db
+from models.feedback import Feedback
 
 from flask_jwt_extended import get_jwt_identity
 
@@ -18,19 +18,4 @@ def go_to_feedback():
 @token_required
 def saveRatingAndReview():
     data = request.json
-    query = "INSERT INTO `feedback`(`user_id`, `rating`, `review`) VALUES (%s, %s, %s)"
-
-    conn = db.get_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute(query, (data['user_id'], data['rating'], data['review']))
-        conn.commit()
-        return jsonify({"message": "Feedback submitted successfully"}), 201
-    except pymysql.MySQLError as err:
-        print(f"Database error: {err}")
-        print(data['user_id'], data['rating'], data['review'])
-        return jsonify({"error": "Error submitting feedback"}), 500
-    finally:
-        cursor.close()
-        conn.close()
-
+    return Feedback.submit_feedback(data['user_id'], data['rating'], data['review'])
