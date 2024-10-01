@@ -12,12 +12,12 @@ def check_password(plaintext, hash):
     else:
         print("hash does not match, try hashing again")
 
-# def main():
-#     #hash password
-#     # hashed = hash_password("wx")
-#     # print(hashed)
+def main():
+    #hash password
+    hashed = hash_password("you")
+    print(hashed)
 
-#     #check password
-#     check_password("thuthu", "$2b$12$FtLxoZ4N1fYrWq2uSojTueByM7rbjWrqm4g8OzUZ1lWMfCLs5U1i2")
+    # #check password
+    # check_password("you", "$2b$12$s8JBCotREd1RSMwetiZFAOUwNJtjPotfqf53vSrlthoAQKg.aObVS")
 
-# main()
+main()
