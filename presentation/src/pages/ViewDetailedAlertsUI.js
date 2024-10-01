@@ -139,6 +139,13 @@ function NAAlerts() {
           </div>
 
           <div className="py-4"></div>
+          
+          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <p className="pb-3 text-sm md:text-base">Threat Map</p>
+            <div className='p-[300px]'></div>
+          </div>
+
+          <div className="py-4"></div>
 
           {/* Alerts Logs */}
           <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
