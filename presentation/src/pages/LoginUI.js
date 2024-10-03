@@ -48,7 +48,7 @@ function LoginUI() {
         sessionStorage.setItem('userrole', response.data.profileId);
 
         setProfileId(response.data.profileId)
-        redirectToDashboard(profileId)
+        redirectToDashboard(response.data.profileId)
       } else {
         displayErrorMessage()
       }

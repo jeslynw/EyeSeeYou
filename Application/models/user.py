@@ -1,101 +1,8 @@
 import bcrypt
 import dbAccess as db
-# import logging
-
-conn = db.get_connection()
-# app = db.app
+from datetime import datetime
 
 class User:
-    def __init__(self, id, full_name, username, password, phone, email, organisation_name, profile_id, plan, active):
-        self.id = id
-        self.full_name = full_name
-        self.username = username
-        self.password = password
-        self.phone = phone
-        self.email = email
-        self.organisation_name = organisation_name
-        self.profile_id = profile_id
-        self.plan = plan
-        self.active = active
-        
-    def __str__(self):
-        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation_name} {self.profile_id} {self.plan} {self.active}"
-    
-    def __repr__(self):
-        return f"{self.full_name} {self.username} {self.password} {self.phone} {self.email} {self.organisation_name} {self.profile_id} {self.plan} {self.active}"
-    
-    def get_id(self):
-        return self.id
-    
-    def get_full_name(self):
-        return self.full_name
-    
-    def get_username(self):
-        return self.username
-    
-    def get_password(self):
-        return self.password
-    
-    def get_phone(self):
-        return self.phone
-    
-    def get_email(self):
-        return self.email
-    
-    def get_organisation(self):
-        return self.organisation
-    
-    def get_profile_id(self):
-        return self.profile_id
-    
-    def get_plan(self):
-        return self.plan
-    
-    def get_active(self):
-        return self.active
-    
-    def set_full_name(self, full_name):
-        self.full_name = full_name
-
-    def set_username(self, username):
-        self.username = username
-        
-    def set_password(self, password):
-        hash = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt())
-        self.password = hash.decode('utf-8')
-        
-    def set_phone(self, phone):
-        self.phone = phone
-        
-    def set_email(self, email):
-        self.email = email
-    
-    def set_organisation_name(self, organisation_name):
-        self.organisation_name = organisation_name
-
-    def set_plan(self, plan):
-        self.plan = plan
-        
-    def set_active(self, active):
-        self.active = active
-        
-    def to_dict(self):
-        return {
-            'full_name': self.full_name,
-            'username': self.username,
-            'password': self.password,
-            'phone': self.phone,
-            'email': self.email,
-            'organisation_name': self.organisation_name,
-            'profile_id': self.profile_id,
-            'plan': self.plan,
-            'active': self.active
-        }
-        
-    def from_dict(dict):
-        return User(dict['full_name'], dict['username'], dict['password'], dict['phone'], dict['email'], dict['organisation_name'], dict['profile_id'],  dict['plan'], dict['active'])
-
-    
     def authenticate(username, password):
         query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
@@ -108,18 +15,21 @@ class User:
                     print(f"Authenticate: username={username}, no user found")
                     return False
                 
-                # Retrieve the stored hashed password
+                #retrieve hashed password
                 stored_password = result[0]
                 
-                # Check if the provided password matches the stored hashed password
+                #check if the provided password matches the stored hashed password
                 if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
                     print(f"Authenticate: username={username}, login successful")
+                    User.log_login_attempt(username, 'Successful Login')
                     return True
                 else:
                     print(f"Authenticate: username={username}, incorrect password")
+                    User.log_login_attempt(username, 'Unsuccessful Login')
                     return False
         except Exception as e:
             print.error(f"Authentication error: {e}")
+            User.log_login_attempt(username, 'Unsuccessful Login')
             return False
         finally:
             if conn:
@@ -227,6 +137,23 @@ class User:
         except:
             print("Error updating user")
             return False
+        finally:
+            if conn:
+                conn.close()
+
+    def log_login_attempt(username, status):
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        query = "INSERT INTO login_history (username, timestamp, status) VALUES (%s, %s, %s)"
+        values = (username, timestamp, status)
+        conn = db.get_connection()
+
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                conn.commit()
+        except Exception as e:
+            print(f"Error logging login attempt: {e}")
         finally:
             if conn:
                 conn.close()

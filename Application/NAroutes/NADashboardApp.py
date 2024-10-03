@@ -38,11 +38,10 @@ def fetch_dashboard():
     
 
 def alert_overview():
-    a = Alerts()
-    crit = a.get_critical_priority()["critical_count"]
-    high = a.get_high_priority()["high_count"]
-    med = a.get_medium_priority()["medium_count"]
-    low = a.get_low_priority()["low_count"]
+    crit = Alerts.get_critical_priority()["critical_count"]
+    high = Alerts.get_high_priority()["high_count"]
+    med = Alerts.get_medium_priority()["medium_count"]
+    low = Alerts.get_low_priority()["low_count"]
 
     print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
@@ -55,6 +54,5 @@ def alert_overview():
 
 
 def get_recent_alerts():
-    alert = Alerts()
-    alert_details = alert.get_alerts_details()
+    alert_details = Alerts.get_alerts_details()
     return alert_details 

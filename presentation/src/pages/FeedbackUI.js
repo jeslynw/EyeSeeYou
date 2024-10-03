@@ -78,7 +78,7 @@ function FeedbackPage() {
         console.error('Error submitting feedback:', error);
       });
 
-    // console.log('Feedback submitted:', feedback);
+    
   };
 
   return (
