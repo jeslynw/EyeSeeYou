@@ -96,7 +96,7 @@ def login():
 @jwt_required(refresh=True)
 def refresh():
     user_id = get_jwt_identity()
-    access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=10))
+    access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=20))
     refresh_token = create_refresh_token(identity=user_id)
     print(access_token)
     return jsonify(
