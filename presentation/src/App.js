@@ -52,7 +52,7 @@ import { jwtDecode } from "jwt-decode";
 
 
 function App() {
-  const userRole = localStorage.getItem("userrole"); // Or get from React Context/Redux
+  const userRole = sessionStorage.getItem("userrole"); // Or get from React Context/Redux
 
   console.log("userRole: ", userRole); // Debugging log
 
