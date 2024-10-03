@@ -18,6 +18,7 @@ import BasicPlanDisabling from "./components/BasicPlanDisabling";
 import MLayout from "./components/MLayout";
 import MDashboardUI from "./pages/MDashboardUI";
 import MAlerts from "./pages/ViewSimplifiedAlertsUI";
+// import MTroubleshootChat from "./pages/MTroubleshootChat";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -88,6 +89,7 @@ function App() {
             >
               <Route path="/mdashboard" element={<MDashboardUI />} />
               <Route path="/malerts" element={<MAlerts />} />
+              {/* <Route path="/mtroubleshootchat" element={<MTroubleshootChat />} /> */}
               <Route
                 path="/viewaccountdetails"
                 element={<ViewAccountDetailsUI />}
@@ -112,7 +114,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/loginUI" element={<LoginUI />} />
             {/* then system will check for user role here and redirect to appropriate page */}
           </Routes>
         </Router>

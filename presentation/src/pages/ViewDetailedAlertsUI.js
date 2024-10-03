@@ -1,23 +1,24 @@
-import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import axios from 'axios';
-import Header from '../components/Header';
-import { useTheme } from '../components/ThemeProvider';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import { Link } from 'react-router-dom';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import AlertPageOverview from '../components/AlertsPageOverview';
-import AlertsLogs from '../components/AlertsLogs';
+import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
+import Header from "../components/Header";
+import { useTheme } from "../components/ThemeProvider";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import { Link } from "react-router-dom";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import AlertPageOverview from "../components/AlertsPageOverview";
+import AlertsLogs from "../components/AlertsLogs";
+import SearchAlerts from "../components/SearchAlerts";
 
 function NAAlerts() {
   //debugging for user
-  const access_token = sessionStorage.getItem('accesstoken');
-  const refresh_token = sessionStorage.getItem('refreshtoken');
+  const access_token = sessionStorage.getItem("accesstoken");
+  const refresh_token = sessionStorage.getItem("refreshtoken");
   if (access_token) {
-    console.log('Access found:', access_token);
+    console.log("Access found:", access_token);
     axios
-      .get('http://127.0.0.1:5000/naalerts', {
+      .get("http://127.0.0.1:5000/naalerts", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -29,28 +30,27 @@ function NAAlerts() {
         }
       })
       .catch((error) => {
-        console.error('Error fetching user info:', error);
+        console.error("Error fetching user info:", error);
       });
   } else {
-    console.error('No token found. Please log in.');
+    console.error("No token found. Please log in.");
   }
 
   const { darkMode } = useTheme();
 
   // live time and date
-  const [currentDate, setCurrentDate] = useState('');
+  const [currentDate, setCurrentDate] = useState("");
   useEffect(() => {
     const updateTime = () => {
       const date = new Date();
-      const showDate =
-        date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+      const showDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
       const showTime =
-        date.getHours().toString().padStart(2, '0') +
-        ':' +
-        date.getMinutes().toString().padStart(2, '0') +
-        ':' +
-        date.getSeconds().toString().padStart(2, '0');
-      const updatedDateTime = showDate + ' , ' + showTime;
+        date.getHours().toString().padStart(2, "0") +
+        ":" +
+        date.getMinutes().toString().padStart(2, "0") +
+        ":" +
+        date.getSeconds().toString().padStart(2, "0");
+      const updatedDateTime = showDate + " , " + showTime;
       setCurrentDate(updatedDateTime);
     };
 
@@ -67,17 +67,23 @@ function NAAlerts() {
     low: 0,
   });
 
+  // search alerts box
+  const [showSearchPopUp, setShowSearchPopUp] = useState(false);
+  const toggleSearchPopUp = () => {
+    setShowSearchPopUp((prevState) => !prevState);
+  };
+
   const breadcrumbItems = [
-    { path: '/nadashboard', name: 'Dashboard' },
-    { path: '/naalerts', name: 'Alerts' },
+    { path: "/nadashboard", name: "Dashboard" },
+    { path: "/naalerts", name: "Alerts" },
   ];
 
   useEffect(() => {
-    const access_token = sessionStorage.getItem('accesstoken');
+    const access_token = sessionStorage.getItem("accesstoken");
 
     const fetchData = () => {
       axios
-        .get('http://127.0.0.1:5000/naalerts', {
+        .get("http://127.0.0.1:5000/naalerts", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -102,7 +108,7 @@ function NAAlerts() {
   }, []);
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div className={darkMode ? "dark" : ""}>
       <Header />
 
       <div className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12">
@@ -113,16 +119,14 @@ function NAAlerts() {
         <div>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" color="primary" />}
-            aria-label="breadcrumb"
-          >
+            aria-label="breadcrumb">
             {breadcrumbItems.map((item) => (
               <Link
                 className="text-[#6b7280] dark:text-[#ffffff79] text-base font-light"
                 to={item.path}
                 underline="hover"
                 onClick={item.onClick}
-                color="inherit"
-              >
+                color="inherit">
                 <p>{item.name}</p>
               </Link>
             ))}
@@ -142,7 +146,17 @@ function NAAlerts() {
 
           {/* Alerts Logs */}
           <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <p className="pb-3 text-sm md:text-base">Alerts Logs</p>
+            <div className="flex justify-between pb-3">
+              <p className="pb-3 text-sm md:text-base">Alerts Logs</p>
+              <button
+                onClick={toggleSearchPopUp}
+                className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
+                Search By
+              </button>
+            </div>
+
+            {/* Search PopUp */}
+            <SearchAlerts isVisible={showSearchPopUp} onClose={toggleSearchPopUp} />
             <AlertsLogs alerts={alerts} />
           </div>
         </div>

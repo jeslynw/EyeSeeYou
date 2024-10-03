@@ -4,12 +4,6 @@ import Header from "../components/Header";
 import axios from "axios";
 
 import { useTheme } from "../components/ThemeProvider";
-import React, { useState, useEffect } from "react";
-import Rating from "@mui/material/Rating";
-import Header from "../components/Header";
-import axios from "axios";
-
-import { useTheme } from "../components/ThemeProvider";
 
 function FeedbackPage() {
   const access_token = sessionStorage.getItem("accesstoken");
@@ -40,23 +34,6 @@ function FeedbackPage() {
         .catch((error) => {
           console.error("Error fetching user info:", error);
         });
-      axios
-        .get("http://127.0.0.1:5000/feedback", {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            const user_id = response.data.logged_in_as;
-            setUserId(user_id); // Store user_id in state
-            sessionStorage.setItem("user_id", user_id); // Store user_id in sessionStorage
-            console.log(`User: ${user_id}`);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user info:", error);
-        });
     } else {
       console.error("No token found. Please log in.");
     }
@@ -69,7 +46,7 @@ function FeedbackPage() {
     const feedbackData = {
       user_id: sessionStorage.getItem("user_id"),
       rating: value,
-      review: feedback,
+      review: review,
     };
 
     axios
@@ -81,16 +58,18 @@ function FeedbackPage() {
       .then((response) => {
         console.log(response.data.message);
         //clear fields and log(or show) result
-        setFeedback("");
         setValue(0);
+        setReview("");
+        setReturnMsg("Feedback submitted successfully!");
         console.log("Rating submitted:", value);
-        console.log("Review submitted:", feedback);
+        console.log("Review submitted:", review);
       })
       .catch((error) => {
         console.error("Error submitting feedback:", error);
+        setReturnMsg(
+          "Error submitting feedback. Unable to submit a review only without valid rating."
+        );
       });
-
-    // console.log('Feedback submitted:', feedback);
   };
 
   return (
