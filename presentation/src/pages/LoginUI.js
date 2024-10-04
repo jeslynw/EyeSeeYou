@@ -45,7 +45,7 @@ function LoginUI() {
       if (response.status === 200 && response.data.message === "Login successful") {
         sessionStorage.setItem('accesstoken', response.data.token.access);
         sessionStorage.setItem('refreshtoken', response.data.token.refresh);
-        localStorage.setItem('userrole', response.data.profileId);
+        sessionStorage.setItem('userrole', response.data.profileId);
 
         setProfileId(response.data.profileId)
         redirectToDashboard(response.data.profileId)

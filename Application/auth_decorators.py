@@ -13,15 +13,19 @@ def token_required(func):
             if auth_header.startswith('Bearer '):
                 token = auth_header[7:]
         else:
+            print("Missing token!")
             return jsonify({'message': 'Token is missing!'}), 401
         
         try:
             # data = decode_token(token, app.config['SECRET_KEY'])
             verify_jwt_in_request()
             current_user = get_jwt_identity()
+            print(current_user)
         except ExpiredSignatureError:
-            return jsonify({'message': 'Token expired'}), 403
+            print("Expired token!")
+            return jsonify({'message': 'Token expired'}), 401
         except InvalidTokenError as e:
+            print("Invalid token!")
             return jsonify({'message': 'Invalid token'}), 403
         
         return func(*args, **kwargs)

@@ -4,6 +4,7 @@ import { useTheme } from '../components/ThemeProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { checkIfTokenExpired } from "../App";
 
 function UpdateAccountDetailsUI() {
   const { darkMode } = useTheme();
@@ -25,33 +26,18 @@ function UpdateAccountDetailsUI() {
   const [error, setError] = useState({});
   const [formFilled, setFormFilled] = useState('');
 
-  //debugging for user
-  // const access_token = sessionStorage.getItem('accesstoken');
-  // const refresh_token = sessionStorage.getItem('refreshtoken');
-  // if (access_token) {
-  //     console.log('Access found:', access_token);
-  //     axios.get('http://127.0.0.1:5000/updateaccountdetails', {
-  //     headers: {
-  //         'Authorization': `Bearer ${access_token}`,
-  //         'Content-Type': 'application/json'
-  //     }
-  //     })
-  //     .then(response => {
-  //     if (response.status === 200) {
-  //         const currentUser = response.data.logged_in_as;
-  //         console.log(`User: ${currentUser}`);
-  //     }
-  //     })
-  //     .catch(error => {
-  //     console.error('Error fetching user info:', error);
-  //     });
-  // } else {
-  //     console.error('No token found. Please log in.');
-  // }
-
   const access_token = sessionStorage.getItem('accesstoken');
 
   useEffect(() => {
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+      navigate('/loginUI');
+    }
+
+    checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
+    // const access_token = sessionStorage.getItem('accesstoken');
+
     if (access_token) {
       console.log('Access found:', access_token);
       axios

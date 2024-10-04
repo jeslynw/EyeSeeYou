@@ -5,15 +5,9 @@ import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import TopThreatSrc from "../components/TopThreatSrc";
-// import TopThreatDest from "../components/TopThreatDest";
-// import TrendingAttacks from "../components/TrendingAttacks";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
-
-// import check_token from "../auth.js";
-
-// import Sidebar from "../components/Sidebar";
+import { checkIfTokenExpired } from "../App";
 
 function NADashboardUI() {
   const { darkMode } = useTheme();
@@ -49,12 +43,8 @@ function NADashboardUI() {
     return () => clearInterval(timerId);
   }, []);
 
-  // getting the top threat sources and destination ip address
-  // const [threatSrc, setThreatSrc] = useState([]);
-  // const [threatDest, setThreatDest] = useState([]);
   const [error, setError] = useState(null);
-  // const [trendAttackCategory, setTrendAttackCategory] = useState([]);
-  // const [trendAttackData, setTrendAttackData] = useState([]);
+
   const [alerts, setAlerts] = useState([]);
   const [alertsOverview, setAlertsOverview] = useState({
     critical: 0,
@@ -63,39 +53,27 @@ function NADashboardUI() {
     low: 0,
   });
 
-  // console.log("trendAttackCategory:", trendAttackCategory);
-  // console.log("trendAttackData:", trendAttackData);
-  // console.log(threatSrc)
-  // console.log(threatDest)
-  // console.log("alerts:", alerts)
-  // console.log(response.data.recent_alerts);
+    useEffect(() => {
+        // redirect to login page if no access token
+        if (!sessionStorage.getItem('accesstoken')) {
+            navigate('/loginUI');
+        }
 
-  useEffect(() => {
-    const access_token = sessionStorage.getItem("accesstoken");
+        checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
 
-    const fetchData = () => {
-      axios
-        .get("http://127.0.0.1:5000/nadashboard", {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            // //  trending attacks data
-            // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
-            // const classCounts = response.data.trending_attacks.map(alert => alert.count);
-            // const sortedData = alertClasses.map((c, i) => ({ class: c, count: classCounts[i] })).sort((a, b) => b.count - a.count);
-            // const sortedCategories = sortedData.map(d => d.class);
-            // const sortedSeriesData = sortedData.map(d => d.count);
-            // setTrendAttackCategory(sortedCategories);
-            // setTrendAttackData([{ data: sortedSeriesData }]);
+        const fetchData = async () => {
+        
+            const access_token = sessionStorage.getItem('accesstoken');
 
-            // top threat src and dest ip address
-            // setThreatSrc(response.data.top_threat_src || []);
-            // setThreatDest(response.data.top_threat_dest || []);
-
-            setAlerts(response.data.recent_alerts || []);
+            axios.get('http://127.0.0.1:5000/nadashboard', {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    
+                    setAlerts(response.data.recent_alerts || []); 
 
             // recent alerts
             const alertsOverview = response.data.alert_overview;
