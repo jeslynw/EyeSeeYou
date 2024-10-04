@@ -3,8 +3,8 @@
 # dependencies
 **/node_modules
 presentation/.pnp
-**/package-lock.json
-**/package.json
+# **/package-lock.json
+# **/package.json
 .pnp.js
 
 # testing
@@ -28,5 +28,6 @@ yarn-error.log*
 **/__pycache__
 Application/env
 Application/api_secret.txt
+Application/.venv
 
 # Application/dbAccess.py

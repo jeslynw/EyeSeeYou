@@ -1,9 +1,7 @@
 import pymysql
-from flask import Flask, jsonify
-
-app = Flask(__name__)
 
 def get_connection():
+<<<<<<< HEAD
     return pymysql.connect(host = 'localhost', user = "root", password = "your_password", db = "eyeseeyou")
 
 @app.route('/data', methods=['GET'])
@@ -26,3 +24,6 @@ def get_data():
 
 if __name__ == 'main':
     app.run(debug=True)
+=======
+    return pymysql.connect(host = 'localhost', user = "root", password = "", db = "eyeseeyou")
+>>>>>>> f58c82ec9b95a9a6e9b94e05cecfdd758cfd633f
