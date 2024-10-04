@@ -7,10 +7,19 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Table } from "flowbite-react";
-
+import { useNavigate } from "react-router-dom";
+import { checkIfTokenExpired } from "../App";
 
 function NALogInHistory() {
-    //debugging for user
+
+    const navigate = useNavigate();
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+        navigate('/loginUI');
+    }
+
+    checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
     const access_token = sessionStorage.getItem('accesstoken');
     const refresh_token = sessionStorage.getItem('refreshtoken');
 

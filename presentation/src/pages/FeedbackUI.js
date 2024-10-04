@@ -2,19 +2,32 @@ import React, { useState, useEffect } from 'react';
 import Rating from '@mui/material/Rating';
 import Header from '../components/Header';
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
 import { useTheme } from '../components/ThemeProvider';
 
+import { checkIfTokenExpired } from "../App";
+
 function FeedbackPage() {
-  const access_token = sessionStorage.getItem('accesstoken');
-  const refresh_token = sessionStorage.getItem('refreshtoken');
+
+  const navigate = useNavigate();
 
   const { darkMode } = useTheme();
   const [value, setValue] = React.useState(0);
   const [user_id, setUserId] = useState(null);
   const [feedback, setFeedback] = useState('');
 
+  const access_token = sessionStorage.getItem('accesstoken');
+
   useEffect(() => {
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+        navigate('/loginUI');
+    }
+
+    checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
+    // const access_token = sessionStorage.getItem('accesstoken');
+
     if (access_token) {
       axios
         .get('http://127.0.0.1:5000/feedback', {
