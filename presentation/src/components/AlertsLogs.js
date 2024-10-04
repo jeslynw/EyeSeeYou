@@ -18,6 +18,32 @@ const getPriorityStyle = (priority) => {
     }
 };
 
+const handleStatusChange = async (alertId, newStatus) => {
+    try {
+      const response = await fetch('http://localhost:5000/update_alert_status', {  // Use your actual backend URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`  // Include JWT token
+        },
+        body: JSON.stringify({
+          alertId: alertId,  // Send alertId
+          status: newStatus  // Send the selected new status
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update alert status');
+      }
+  
+      const result = await response.json();
+      console.log(result.message);  // Log success message
+    } catch (error) {
+      console.error('Error updating alert status:', error);
+    }
+  };
+  
+
 function AlertsLogs({alerts}) {
     
     return (
@@ -45,7 +71,18 @@ function AlertsLogs({alerts}) {
                                     {label}
                                 </div>
                             </Table.Cell>
-                            <Table.Cell>{alert.status ? alert.status : 'Unknown'}</Table.Cell>
+                            <Table.Cell>
+                                <select
+                                value={alert.status || 'Unknown'}
+                                onChange={(e) => handleStatusChange(alert.id, e.target.value)}
+                                className='rounded-lg text-sm'
+                                >
+                                    <option value="Open">Open</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="False Positive">False Positive</option>
+                                    <option value="Resolved">Resolved</option>
+                                </select>
+                            </Table.Cell>
                         </Table.Row>
                     );
                 })}
