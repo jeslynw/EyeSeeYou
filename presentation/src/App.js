@@ -184,6 +184,7 @@ function App() {
         {/* <Router> */}
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/loginUI" element={<LoginUI />} />
             {/* then system will check for user role here and redirect to appropriate page */}
           </Routes>
         {/* </Router> */}
