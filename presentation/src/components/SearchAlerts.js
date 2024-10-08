@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-const SearchAlerts = ({ isVisible, onClose }) => {
-  // const [isVisible, setIsVisible] = useState(false);
+const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
   const [formData, setFormData] = useState({
     severity: [],
     type: "",
-    location: "",
+    // location: "",
+    src_addr: "",
+    dst_addr: "",
     status: [],
   });
 
@@ -13,22 +15,39 @@ const SearchAlerts = ({ isVisible, onClose }) => {
     const { name, checked } = e.target;
 
     // Handling 'severity' checkbox
-    if (["AnySeverity", "Critical", "High", "Medium", "Low"].includes(name)) {
+    const severityMap = {
+      Critical: 1,
+      High: 2,
+      Medium: 3,
+      Low: 4,
+    };
+
+    if (name === "AnySeverity") {
+      setFormData((prevData) => ({
+        ...prevData,
+        severity: checked ? [1, 2, 3, 4] : [],
+      }));
+    } else if (severityMap[name]) {
       setFormData((prevData) => ({
         ...prevData,
         severity: checked
-          ? [...prevData.severity, name.toLowerCase()] // Add to severity array if checked
-          : prevData.severity.filter((currentSeverity) => currentSeverity !== name.toLowerCase()), // Remove from severity array if unchecked
+          ? [...prevData.severity, severityMap[name]] // Add to severity array if checked
+          : prevData.severity.filter((currentSeverity) => currentSeverity !== severityMap[name]), // Remove from severity array if unchecked
       }));
     }
 
     // Handling 'status' checkbox
-    if (["AnyStatus", "Resolved", "InProgress", "Open", "FalsePositive"].includes(name)) {
+    if (name === "AnyStatus") {
+      setFormData((prevData) => ({
+        ...prevData,
+        status: checked ? ["Resolved", "InProgress", "Open", "FalsePositive"] : [],
+      }));
+    } else if (["Resolved", "InProgress", "Open", "FalsePositive"].includes(name)) {
       setFormData((prevData) => ({
         ...prevData,
         status: checked
-          ? [...prevData.status, name.toLowerCase()] // Add status to the array if checked
-          : prevData.status.filter((currentStatus) => currentStatus !== name.toLowerCase()), // Remove from status array if unchecked
+          ? [...prevData.status, name] // Add status to the array if checked
+          : prevData.status.filter((currentStatus) => currentStatus !== name), // Remove from status array if unchecked
       }));
     }
   };
@@ -43,18 +62,43 @@ const SearchAlerts = ({ isVisible, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    const dataToSend = {
+      priority: formData.severity.length > 0 ? formData.severity : null,
+      class: formData.type ? formData.type : null,
+      // location: formData.location ? formData.location : null,
+      src_addr: formData.src_addr ? formData.src_addr : null,
+      dst_addr: formData.dst_addr ? formData.dst_addr : null,
+      status: formData.status.length > 0 ? formData.status : null,
+    };
+
+    const access_token = sessionStorage.getItem("accesstoken");
+    axios
+      .post("http://127.0.0.1:5000/naalerts/search", dataToSend, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          onSearchResults(response.data); // pass data back to parent
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching search alerts:", error);
+      });
+
     setFormData({
-      // reset form data
+      // reset form data afterwards
       severity: [],
       type: "",
-      location: "",
+      // location: "",
+      src_addr: "",
+      dst_addr: "",
       status: [],
     });
     onClose(); // close the search box
   };
 
-  // if (!isVisible) return null;
   return (
     <div
       className={`bg-gray-200 rounded-lg max-w-fit mx-auto transition-all duration-300 ease-in-out ml-auto mr-0 mb-4 transform ${
@@ -69,7 +113,13 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="AnySeverity"
-                checked={formData.severity.includes("anyseverity")}
+                checked={
+                  formData.severity.length === 4 &&
+                  formData.severity.includes(1) &&
+                  formData.severity.includes(2) &&
+                  formData.severity.includes(3) &&
+                  formData.severity.includes(4)
+                }
                 onChange={handleCheckboxChange}
               />
               <span>Any</span>
@@ -78,7 +128,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="Critical"
-                checked={formData.severity.includes("critical")}
+                checked={formData.severity.includes(1)}
                 onChange={handleCheckboxChange}
               />
               <span>Critical</span>
@@ -87,7 +137,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="High"
-                checked={formData.severity.includes("high")}
+                checked={formData.severity.includes(2)}
                 onChange={handleCheckboxChange}
               />
               <span>High</span>
@@ -96,7 +146,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="Medium"
-                checked={formData.severity.includes("medium")}
+                checked={formData.severity.includes(3)}
                 onChange={handleCheckboxChange}
               />
               <span>Medium</span>
@@ -105,7 +155,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="Low"
-                checked={formData.severity.includes("low")}
+                checked={formData.severity.includes(4)}
                 onChange={handleCheckboxChange}
               />
               <span>Low</span>
@@ -129,14 +179,30 @@ const SearchAlerts = ({ isVisible, onClose }) => {
           </div>
         </div>
 
-        {/* Location */}
+        {/* Source Address */}
         <div className="mb-4">
-          <label className="block text-lg font-medium mb-2">Location</label>
+          <label className="block text-lg font-medium mb-2">Source IP Address</label>
           <div className="relative">
             <input
               type="text"
-              name="location"
-              value={formData.location}
+              name="src_addr"
+              value={formData.src_addr}
+              onChange={handleInputChange}
+              className="w-full border rounded-md p-2 pl-10"
+              placeholder="Enter location"
+            />
+            <span className="absolute inset-y-0 left-2 flex items-center">🔍</span>
+          </div>
+        </div>
+
+        {/* Destination Address */}
+        <div className="mb-4">
+          <label className="block text-lg font-medium mb-2">Destination IP Address</label>
+          <div className="relative">
+            <input
+              type="text"
+              name="dst_adddr"
+              value={formData.dst_addr}
               onChange={handleInputChange}
               className="w-full border rounded-md p-2 pl-10"
               placeholder="Enter location"
@@ -153,7 +219,13 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="AnyStatus"
-                checked={formData.status.includes("anystatus")}
+                checked={
+                  formData.status.length === 4 &&
+                  formData.status.includes("Resolved") &&
+                  formData.status.includes("InProgress") &&
+                  formData.status.includes("Open") &&
+                  formData.status.includes("FalsePositive")
+                }
                 onChange={handleCheckboxChange}
               />
               <span>Any</span>
@@ -162,7 +234,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="Resolved"
-                checked={formData.status.includes("resolved")}
+                checked={formData.status.includes("Resolved")}
                 onChange={handleCheckboxChange}
               />
               <span>Resolved</span>
@@ -171,7 +243,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="InProgress"
-                checked={formData.status.includes("inprogress")}
+                checked={formData.status.includes("InProgress")}
                 onChange={handleCheckboxChange}
               />
               <span>In Progress</span>
@@ -180,7 +252,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="Open"
-                checked={formData.status.includes("open")}
+                checked={formData.status.includes("Open")}
                 onChange={handleCheckboxChange}
               />
               <span>Open</span>
@@ -189,7 +261,7 @@ const SearchAlerts = ({ isVisible, onClose }) => {
               <input
                 type="checkbox"
                 name="FalsePositive"
-                checked={formData.status.includes("falsepositive")}
+                checked={formData.status.includes("FalsePositive")}
                 onChange={handleCheckboxChange}
               />
               <span>False Positive</span>

@@ -1,6 +1,4 @@
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
@@ -67,16 +65,21 @@ function NAAlerts() {
     low: 0,
   });
 
+  const breadcrumbItems = [
+    { path: "/nadashboard", name: "Dashboard" },
+    { path: "/naalerts", name: "Alerts" },
+  ];
+
   // search alerts box
   const [showSearchPopUp, setShowSearchPopUp] = useState(false);
   const toggleSearchPopUp = () => {
     setShowSearchPopUp((prevState) => !prevState);
   };
 
-  const breadcrumbItems = [
-    { path: "/nadashboard", name: "Dashboard" },
-    { path: "/naalerts", name: "Alerts" },
-  ];
+  // For fetching search results
+  const onSearchResults = (searchResults) => {
+    setAlerts(searchResults);
+  };
 
   useEffect(() => {
     const access_token = sessionStorage.getItem("accesstoken");
@@ -156,7 +159,11 @@ function NAAlerts() {
             </div>
 
             {/* Search PopUp */}
-            <SearchAlerts isVisible={showSearchPopUp} onClose={toggleSearchPopUp} />
+            <SearchAlerts
+              isVisible={showSearchPopUp}
+              onClose={toggleSearchPopUp}
+              onSearchResults={onSearchResults}
+            />
             <AlertsLogs alerts={alerts} />
           </div>
         </div>
