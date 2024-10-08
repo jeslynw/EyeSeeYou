@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
+import { checkIfTokenExpired } from "../App";
 
 function MDashboardUI() {
     const { darkMode } = useTheme();
@@ -49,8 +50,11 @@ function MDashboardUI() {
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
-        const userRole = localStorage.getItem('userrole')
-        console.log("localstorage:", userRole)
+        const userRole = sessionStorage.getItem('userrole')
+
+        checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
+        console.log("sessionstorage:", userRole)
 
         const fetchData = () => {
             axios.get('http://127.0.0.1:5000/mdashboard', {
@@ -148,7 +152,11 @@ function MDashboardUI() {
                         <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                             <p className="pb-3 text-sm md:text-base">Alerts Status</p>
                             <div className="h-96">
-
+                            <iframe 
+                                src="http://localhost:5601/app/dashboards#/view/aeb67ff0-8199-11ef-9145-a10d82064bca?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',expandedPanelId:fb563037-c8b5-4a79-9f62-5cc3637c65ef,filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-2dc2e2c9-0fec-41c3-9dd0-30a5a318b5a9,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('2dc2e2c9-0fec-41c3-9dd0-30a5a318b5a9':(columnOrder:!(c9b2f6e5-cfa8-484e-a04a-b559687d1634,'670a366d-47de-4a88-a5ae-76760c49e136'),columns:('670a366d-47de-4a88-a5ae-76760c49e136':(dataType:number,isBucketed:!f,label:'Median%20of%20priority',operationType:median,scale:ratio,sourceField:priority),c9b2f6e5-cfa8-484e-a04a-b559687d1634:(dataType:number,isBucketed:!t,label:'Top%20values%20of%20priority',operationType:terms,params:(missingBucket:!f,orderBy:(columnId:'670a366d-47de-4a88-a5ae-76760c49e136',type:column),orderDirection:desc,otherBucket:!t,size:3),scale:ordinal,sourceField:priority)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(layers:!((categoryDisplay:hide,groups:!(c9b2f6e5-cfa8-484e-a04a-b559687d1634),layerId:'2dc2e2c9-0fec-41c3-9dd0-30a5a318b5a9',layerType:data,legendDisplay:show,metric:'670a366d-47de-4a88-a5ae-76760c49e136',nestedLegend:!f,numberDisplay:percent,truncateLegend:!t)),shape:donut)),title:'',type:lens,visualizationType:lnsPie),enhancements:()),gridData:(h:15,i:fb563037-c8b5-4a79-9f62-5cc3637c65ef,w:24,x:0,y:0),panelIndex:fb563037-c8b5-4a79-9f62-5cc3637c65ef,type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Eyeseeyou%20priority',viewMode:view)&hide-filter-bar=true"
+                                height="400" 
+                                width="100%">    
+                            </iframe>
                             </div>
                         </div>
                     </div>
@@ -193,7 +201,10 @@ function MDashboardUI() {
                             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                                 <div className="flex justify-between pb-3">
                                 <p className="pb-3 text-sm md:text-base">Attacks Categories</p>
-
+                                <iframe src="http://localhost:5601/app/dashboards#/view/bc5ad1f0-819a-11ef-9145-a10d82064bca?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',expandedPanelId:'07e15c2d-bcc9-4566-affe-6f44c4f63382',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-be65769e-32e6-4547-bbe6-8132592f4663,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:(be65769e-32e6-4547-bbe6-8132592f4663:(columnOrder:!(c8ab10d6-723a-4e14-8037-2153d1b714b6,'282e9aec-1bdb-4bf0-adf6-b17cfef95c17'),columns:('282e9aec-1bdb-4bf0-adf6-b17cfef95c17':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records),c8ab10d6-723a-4e14-8037-2153d1b714b6:(dataType:string,isBucketed:!t,label:'Top%20values%20of%20class.keyword',operationType:terms,params:(missingBucket:!f,orderBy:(columnId:'282e9aec-1bdb-4bf0-adf6-b17cfef95c17',type:column),orderDirection:desc,otherBucket:!t,size:5),scale:ordinal,sourceField:class.keyword)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(layers:!((categoryDisplay:hide,groups:!(c8ab10d6-723a-4e14-8037-2153d1b714b6),layerId:be65769e-32e6-4547-bbe6-8132592f4663,layerType:data,legendDisplay:show,metric:'282e9aec-1bdb-4bf0-adf6-b17cfef95c17',nestedLegend:!f,numberDisplay:percent,truncateLegend:!f)),palette:(name:kibana_palette,type:palette),shape:donut)),title:'',type:lens,visualizationType:lnsPie),enhancements:()),gridData:(h:15,i:'07e15c2d-bcc9-4566-affe-6f44c4f63382',w:24,x:0,y:0),panelIndex:'07e15c2d-bcc9-4566-affe-6f44c4f63382',type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Eyeseeyou%20class',viewMode:view)&hide-filter-bar=true" 
+                                    height="600" 
+                                    width="100%">
+                                </iframe>
                                 </div>
                             </div>
                         </div>

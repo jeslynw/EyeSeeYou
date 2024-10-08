@@ -3,8 +3,8 @@ import { Navigate } from "react-router-dom";
 
 // Role-based ProtectedRoute component
 const ProtectedRoute = ({ allowedRoles, children }) => {
-  const userRole = localStorage.getItem("userrole"); // Or get from React Context/Redux
-  console.log("userRole:", userRole);
+  const userRole = sessionStorage.getItem("userrole"); // Or get from React Context/Redux
+  console.log("userroleeee:", userRole);
   console.log("allowedRoles:", allowedRoles);
   console.log("children:", children);
 

@@ -8,11 +8,20 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AlertPageOverview from "../components/AlertsPageOverview";
 import AlertsLogs from "../components/AlertsLogs";
 import SearchAlerts from "../components/SearchAlerts";
+import { useNavigate } from "react-router-dom";
+import { checkIfTokenExpired } from "../App";
 
 function NAAlerts() {
-  //debugging for user
+  const navigate = useNavigate();
+  // redirect to login page if no access token
+  if (!sessionStorage.getItem("accesstoken")) {
+    navigate("/loginUI");
+  }
+
+  checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
+
   const access_token = sessionStorage.getItem("accesstoken");
-  const refresh_token = sessionStorage.getItem("refreshtoken");
+
   if (access_token) {
     console.log("Access found:", access_token);
     axios
@@ -143,6 +152,13 @@ function NAAlerts() {
           <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
             <p className="pb-3 text-sm md:text-base">Overall Alerts</p>
             <AlertPageOverview alert={alertsOverview} />
+          </div>
+
+          <div className="py-4"></div>
+
+          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <p className="pb-3 text-sm md:text-base">Threat Map</p>
+            <div className="p-[300px]"></div>
           </div>
 
           <div className="py-4"></div>

@@ -6,6 +6,7 @@ from flask_jwt_extended.exceptions import JWTDecodeError
 from jwt import ExpiredSignatureError, InvalidTokenError
 from flask_cors import CORS
 import getKey as gk
+from datetime import timedelta
 
 # import file
 from models.user import User
@@ -21,6 +22,7 @@ from routes.FeedbackApp import feedback_bp
 from NAroutes.NADashboardApp import nadashboard_bp
 from NAroutes.NAAlertsApp import naalerts_bp
 from NAroutes.NATrendingAttacksApp import natrendingattacks_bp
+from NAroutes.ViewLoginHistoryApp import viewloginhistory_bp
 
 # M routes
 from Mroutes.MDashboardApp import m_dashboard_bp
@@ -39,20 +41,7 @@ def getkey():
 app.config['SECRET_KEY'] = getkey()
 
 # def token_expiration(username):
-#     return jwt.encode({'username': username, 'exp': str(datetime.now(timezone.utc) + timedelta(minutes=30))}, app.config['SECRET_KEY'])
-
-# def token_required(func):
-#     @wraps(func)
-#     def decorated(*args, **kwargs):
-#         token = request.args.get('token')
-#         if not token:
-#             return jsonify({'message': 'Token is missing!'}), 401
-#         try:
-#             data = jwt.decode(token, app.config['SECRET_KEY'])
-#         except:
-#             return jsonify({'message': 'Invalid token'}), 403
-#         return func(*args, **kwargs)
-#     return decorated
+#     return jwt.encode({'username': username, 'exp': str(datetime.now(timezone.utc) + timedelta(minutes=30))}, app.config['SECRET_KEY']
 
 
 # debugging
@@ -88,9 +77,9 @@ def login():
         # token = token_expiration(username)
         user_id = User.get_id(username)
         profile_id = User.get_profile_id(username)
-        access_token = create_access_token(identity=user_id)
+        access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=10))
         refresh_token = create_refresh_token(identity=user_id)
-        
+        print(access_token)
         return jsonify(
             {'message': 'Login successful',
             'token': {
@@ -102,6 +91,18 @@ def login():
         ), 200     
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
+
+@app.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    user_id = get_jwt_identity()
+    access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=20))
+    refresh_token = create_refresh_token(identity=user_id)
+    print(access_token)
+    return jsonify(
+        {"accesstoken": access_token,
+         "refreshtoken": refresh_token}
+        ), 200
 
 
 @app.route('/viewaccountdetails', methods=['GET'])
@@ -152,6 +153,7 @@ app.register_blueprint(naalerts_bp)
 app.register_blueprint(natrendingattacks_bp)
 app.register_blueprint(m_dashboard_bp)
 app.register_blueprint(m_alerts_bp)
+app.register_blueprint(viewloginhistory_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

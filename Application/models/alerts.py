@@ -1,13 +1,7 @@
-import bcrypt
 import dbAccess as db
-# import logging
-
-conn = db.get_connection()
-# app = db.app
 
 class Alerts:
-    
-    def get_all_alerts(self):
+    def get_all_alerts():
         query = "SELECT COUNT(*) as total_count FROM alerts"
         conn = db.get_connection()
         try:
@@ -27,7 +21,7 @@ class Alerts:
             if conn:
                 conn.close()
     
-    def get_critical_priority(self):
+    def get_critical_priority():
         query = "SELECT COUNT(*) as critical_count FROM alerts where priority = 1"
         conn = db.get_connection()
         try:
@@ -47,7 +41,7 @@ class Alerts:
             if conn:
                 conn.close()
 
-    def get_high_priority(self):
+    def get_high_priority():
         query = "SELECT COUNT(*) as high_count FROM alerts where priority = 2"
         conn = db.get_connection()
         try:
@@ -67,7 +61,7 @@ class Alerts:
             if conn:
                 conn.close()
     
-    def get_medium_priority(self):
+    def get_medium_priority():
         query = "SELECT COUNT(*) as medium_count FROM alerts where priority = 3"
         conn = db.get_connection()
         try:
@@ -87,7 +81,7 @@ class Alerts:
             if conn:
                 conn.close()
     
-    def get_low_priority(self):
+    def get_low_priority():
         query = "SELECT COUNT(*) as low_count FROM alerts where priority = 4"
         conn = db.get_connection()
         try:
@@ -107,7 +101,7 @@ class Alerts:
             if conn:
                 conn.close()
 
-    def get_alerts_details(self):
+    def get_alerts_details():
         query = """
                 SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%m/%d-%H:%i:%s.%f'), '%m/%d %H:%i:%s') AS formatted_timestamp, src_addr, dst_addr, class, 
                 CASE priority
@@ -116,7 +110,7 @@ class Alerts:
                         WHEN 3 THEN 'Medium'
                         WHEN 4 THEN 'Low'
                         ELSE 'unknown'
-                    END AS priority
+                    END AS priority, status
                 FROM alerts
                 WHERE `class` != "none"
                 ORDER BY formatted_timestamp DESC
@@ -136,7 +130,8 @@ class Alerts:
                         'src_addr': row[1],
                         'dst_addr': row[2],
                         'class': row[3],
-                        'priority': row[4]
+                        'priority': row[4],
+                        'status': row[5]
                     }
                     for row in result
                 ]

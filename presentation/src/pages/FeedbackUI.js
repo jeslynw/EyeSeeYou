@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import Rating from "@mui/material/Rating";
 import Header from "../components/Header";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "../components/ThemeProvider";
+import { checkIfTokenExpired } from "../App";
 
 function FeedbackPage() {
-  const access_token = sessionStorage.getItem("accesstoken");
-  const refresh_token = sessionStorage.getItem("refreshtoken");
+  const navigate = useNavigate();
 
   const { darkMode } = useTheme();
   const [value, setValue] = React.useState(0);
@@ -15,7 +15,18 @@ function FeedbackPage() {
   const [review, setReview] = useState("");
   const [returnMsg, setReturnMsg] = useState("");
 
+  const access_token = sessionStorage.getItem("accesstoken");
+
   useEffect(() => {
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem("accesstoken")) {
+      navigate("/loginUI");
+    }
+
+    checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
+
+    // const access_token = sessionStorage.getItem('accesstoken');
+
     if (access_token) {
       axios
         .get("http://127.0.0.1:5000/feedback", {
@@ -78,8 +89,7 @@ function FeedbackPage() {
 
       <div
         className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 md:px-8 lg:px-12 pb-0"
-        style={{ minHeight: "calc(100vh - 60px)" }}
-      >
+        style={{ minHeight: "calc(100vh - 60px)" }}>
         {/* Feedback text */}
         <div className="flex mt-4 mb-4">
           <p className="text-2xl">FEEDBACK</p>
@@ -109,9 +119,7 @@ function FeedbackPage() {
 
                 {/* Return Message */}
                 {returnMsg && (
-                  <div className="text-red-500 text-sm text-center mt-2">
-                    {returnMsg}
-                  </div>
+                  <div className="text-red-500 text-sm text-center mt-2">{returnMsg}</div>
                 )}
 
                 {/* Text area */}
@@ -132,8 +140,7 @@ function FeedbackPage() {
               <button
                 onClick={handleSubmit}
                 className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
-                type="submit"
-              >
+                type="submit">
                 Submit
               </button>
             </div>
