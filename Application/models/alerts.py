@@ -112,7 +112,7 @@ class Alerts:
                         ELSE 'unknown'
                     END AS priority, status
                 FROM alerts
-                WHERE class != "none"
+                WHERE `class` != "none"
                 ORDER BY formatted_timestamp DESC
                 """
         
@@ -132,6 +132,79 @@ class Alerts:
                         'class': row[3],
                         'priority': row[4],
                         'status': row[5]
+                    }
+                    for row in result
+                ]
+                return alerts
+        except Exception as e:
+            print(f"Get alert details error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
+        query = """
+                SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, src_addr, dst_addr, class, 
+                CASE priority
+                        WHEN 1 THEN 'Critical'
+                        WHEN 2 THEN 'High'
+                        WHEN 3 THEN 'Medium'
+                        WHEN 4 THEN 'Low'
+                        ELSE 'unknown'
+                    END AS priority
+                FROM alerts
+                WHERE `class` != "none"
+            """
+        
+        # if user input exists in respective fields, add that statement to the query
+        params = []
+        conditions = []
+
+        if priority:
+            conditions.append("priority IN (%s)" % ', '.join(['%s'] * len(priority)))
+            params.extend(priority)
+
+        if class_:
+            conditions.append("`class` LIKE %s")
+            params.append(f"%{class_}%")
+
+        if src_addr:
+            conditions.append("src_addr LIKE %s")
+            params.append(f"%{src_addr}%")
+
+        if dst_addr:
+            conditions.append("dst_addr LIKE %s")
+            params.append(f"%{dst_addr}%")
+
+        if status:
+            conditions.append("status IN (%s)" % ', '.join(['%s'] * len(status)))
+            params.extend(status)
+
+        # Build the final query
+        if conditions:
+            query += " AND " + " AND ".join(conditions)
+        query += " ORDER BY formatted_timestamp DESC"
+            
+        # for debugging: print the final query and parameters
+        print("Executing query:", query)
+        print("With parameters:", priority, class_, src_addr, dst_addr, status)
+
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, params)
+                result = cursor.fetchall()
+                if not result:
+                    print(f"No alerts found")
+                    return []
+                alerts = [
+                    {
+                        'timestamp': row[0],
+                        'src_addr': row[1],
+                        'dst_addr': row[2],
+                        'class': row[3],
+                        'priority': row[4]
                     }
                     for row in result
                 ]

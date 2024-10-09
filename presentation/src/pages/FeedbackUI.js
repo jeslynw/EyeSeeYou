@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import Rating from '@mui/material/Rating';
-import Header from '../components/Header';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import Rating from "@mui/material/Rating";
+import Header from "../components/Header";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from '../components/ThemeProvider';
-
+import { useTheme } from "../components/ThemeProvider";
 import { checkIfTokenExpired } from "../App";
 
 function FeedbackPage() {
-
   const navigate = useNavigate();
 
   const { darkMode } = useTheme();
   const [value, setValue] = React.useState(0);
   const [user_id, setUserId] = useState(null);
-  const [feedback, setFeedback] = useState('');
+  const [review, setReview] = useState("");
+  const [returnMsg, setReturnMsg] = useState("");
 
-  const access_token = sessionStorage.getItem('accesstoken');
+  const access_token = sessionStorage.getItem("accesstoken");
 
   useEffect(() => {
     // redirect to login page if no access token
-    if (!sessionStorage.getItem('accesstoken')) {
-        navigate('/loginUI');
+    if (!sessionStorage.getItem("accesstoken")) {
+      navigate("/loginUI");
     }
 
-    checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+    checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
 
     // const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
       axios
-        .get('http://127.0.0.1:5000/feedback', {
+        .get("http://127.0.0.1:5000/feedback", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -39,29 +38,30 @@ function FeedbackPage() {
           if (response.status === 200) {
             const user_id = response.data.logged_in_as;
             setUserId(user_id); // Store user_id in state
-            sessionStorage.setItem('user_id', user_id); // Store user_id in sessionStorage
+            sessionStorage.setItem("user_id", user_id); // Store user_id in sessionStorage
             console.log(`User: ${user_id}`);
           }
         })
         .catch((error) => {
-          console.error('Error fetching user info:', error);
+          console.error("Error fetching user info:", error);
         });
     } else {
-      console.error('No token found. Please log in.');
+      console.error("No token found. Please log in.");
     }
   }, [access_token]);
 
+  // handle submit button
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const feedbackData = {
-      user_id: sessionStorage.getItem('user_id'),
+      user_id: sessionStorage.getItem("user_id"),
       rating: value,
-      review: feedback,
+      review: review,
     };
 
     axios
-      .post('http://127.0.0.1:5000/feedback', feedbackData, {
+      .post("http://127.0.0.1:5000/feedback", feedbackData, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -69,26 +69,27 @@ function FeedbackPage() {
       .then((response) => {
         console.log(response.data.message);
         //clear fields and log(or show) result
-        setFeedback('');
         setValue(0);
-        console.log('Rating submitted:', value);
-        console.log('Review submitted:', feedback);
+        setReview("");
+        setReturnMsg("Feedback submitted successfully!");
+        console.log("Rating submitted:", value);
+        console.log("Review submitted:", review);
       })
       .catch((error) => {
-        console.error('Error submitting feedback:', error);
+        console.error("Error submitting feedback:", error);
+        setReturnMsg(
+          "Error submitting feedback. Unable to submit a review only without valid rating."
+        );
       });
-
-    
   };
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div className={darkMode ? "dark" : ""}>
       <Header />
 
       <div
         className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 md:px-8 lg:px-12 pb-0"
-        style={{ minHeight: 'calc(100vh - 60px)' }}
-      >
+        style={{ minHeight: "calc(100vh - 60px)" }}>
         {/* Feedback text */}
         <div className="flex mt-4 mb-4">
           <p className="text-2xl">FEEDBACK</p>
@@ -116,13 +117,18 @@ function FeedbackPage() {
                   />
                 </div>
 
+                {/* Return Message */}
+                {returnMsg && (
+                  <div className="text-red-500 text-sm text-center mt-2">{returnMsg}</div>
+                )}
+
                 {/* Text area */}
                 <div className="px-4 md:px-6 mt-4 md:mt-5 text-base">
                   <textarea
                     className="w-full border-2 border-gray-400 dark:border-white rounded-lg focus:ring-1 focus:ring-[#004aad] text-black"
                     id="feedback"
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
                     rows="4"
                   />
                 </div>
@@ -134,8 +140,7 @@ function FeedbackPage() {
               <button
                 onClick={handleSubmit}
                 className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
-                type="submit"
-              >
+                type="submit">
                 Submit
               </button>
             </div>
