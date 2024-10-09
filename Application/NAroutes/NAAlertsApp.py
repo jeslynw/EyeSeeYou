@@ -60,7 +60,6 @@ def alert_overview():
         "low" : low
     }
 
-
 def get_recent_alerts():
     alert_details = Alerts.get_alerts_details()
     return alert_details 
@@ -125,3 +124,21 @@ def get_top_threat_dest():
     finally:
         cursor.close()
         conn.close()
+
+
+@naalerts_bp.route('/naalerts/search', methods=['POST'])
+@token_required
+def get_search_alerts_details():
+    alert = Alerts()
+    try:
+        data = request.json
+        priority = data.get('priority')
+        class_ = data.get('class')
+        src_addr = data.get('src_addr')
+        dst_addr = data.get('dst_addr')
+        status = data.get('status')
+        
+        alert_details = alert.get_search_alerts_details(priority, class_, src_addr, dst_addr, status)
+        return jsonify(alert_details)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
