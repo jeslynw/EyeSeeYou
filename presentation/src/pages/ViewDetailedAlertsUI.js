@@ -3,12 +3,11 @@ import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AlertPageOverview from "../components/AlertsPageOverview";
 import AlertsLogs from "../components/AlertsLogs";
 import SearchAlerts from "../components/SearchAlerts";
-import { useNavigate } from "react-router-dom";
 import { checkIfTokenExpired } from "../App";
 
 function NAAlerts() {
@@ -114,9 +113,9 @@ function NAAlerts() {
         });
     };
     fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+    // const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   return (

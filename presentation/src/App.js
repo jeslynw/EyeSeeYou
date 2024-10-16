@@ -47,10 +47,9 @@ import { jwtDecode } from "jwt-decode";
 //           </Route>
 //         </Routes>
 //       {/* </Router>    */}
-//     </ThemeProvider>  
+//     </ThemeProvider>
 //   );
 // }
-
 
 function App() {
   const userRole = sessionStorage.getItem("userrole"); // Or get from React Context/Redux
@@ -60,8 +59,8 @@ function App() {
   const nav = useNavigate();
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
-      response => response,
-      async error => {
+      (response) => response,
+      async (error) => {
         // if (error.response.status !== 403 && error.response.status !== 405) {
         //   return Promise.reject(error);
         // }
@@ -101,45 +100,38 @@ function App() {
     return (
       <ThemeProvider>
         {/* <Router> */}
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/loginUI" element={<LoginUI />} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/loginUI" element={<LoginUI />} />
+          <Route
+            element={
+              <ProtectedRoute allowedRoles={["1"]}>
+                <Layout />
+              </ProtectedRoute>
+            }>
+            <Route path="/nadashboard" element={<NADashboardUI />} />
+            <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
+            <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
             <Route
+              path="/naalerts"
               element={
-                <ProtectedRoute allowedRoles={["1"]}>
-                  <Layout />
-                </ProtectedRoute>
+                <BasicPlanDisabling>
+                  <NAAlerts />
+                </BasicPlanDisabling>
               }
-            >
-              <Route path="/nadashboard" element={<NADashboardUI />} />
-              <Route
-                path="/viewaccountdetails"
-                element={<ViewAccountDetailsUI />}
-              />
-              <Route
-                path="/updateaccountdetails"
-                element={<UpdateAccountDetailsUI />}
-              />
-              <Route
-                path="/naalerts"
-                element={
-                  <BasicPlanDisabling>
-                    <NAAlerts />
-                  </BasicPlanDisabling>
-                }
-              />
-              <Route
-                path="/naloginhistory"
-                element={
-                  <BasicPlanDisabling>
-                    <NALogInHistory />
-                  </BasicPlanDisabling>
-                }
-              />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
-            </Route>
-          </Routes>
+            />
+            <Route
+              path="/naloginhistory"
+              element={
+                <BasicPlanDisabling>
+                  <NALogInHistory />
+                </BasicPlanDisabling>
+              }
+            />
+            <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+          </Route>
+        </Routes>
         {/* </Router> */}
       </ThemeProvider>
     );
@@ -147,31 +139,24 @@ function App() {
     return (
       <ThemeProvider>
         {/* <Router> */}
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/loginUI" element={<LoginUI />} />
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["2"]}>
-                  <MLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/mdashboard" element={<MDashboardUI />} />
-              <Route path="/malerts" element={<MAlerts />} />
-              {/* <Route path="/mtroubleshootchat" element={<MTroubleshootChat />} /> */}
-              <Route
-                path="/viewaccountdetails"
-                element={<ViewAccountDetailsUI />}
-              />
-              <Route
-                path="/updateaccountdetails"
-                element={<UpdateAccountDetailsUI />}
-              />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
-            </Route>
-          </Routes>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/loginUI" element={<LoginUI />} />
+          <Route
+            element={
+              <ProtectedRoute allowedRoles={["2"]}>
+                <MLayout />
+              </ProtectedRoute>
+            }>
+            <Route path="/mdashboard" element={<MDashboardUI />} />
+            <Route path="/malerts" element={<MAlerts />} />
+            {/* <Route path="/mtroubleshootchat" element={<MTroubleshootChat />} /> */}
+            <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
+            <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
+            <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+          </Route>
+        </Routes>
         {/* </Router> */}
       </ThemeProvider>
     );
@@ -182,10 +167,11 @@ function App() {
     <div>
       <ThemeProvider>
         {/* <Router> */}
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            {/* then system will check for user role here and redirect to appropriate page */}
-          </Routes>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/loginUI" element={<LoginUI />} />
+          {/* then system will check for user role here and redirect to appropriate page */}
+        </Routes>
         {/* </Router> */}
       </ThemeProvider>
     </div>
@@ -196,7 +182,7 @@ export const checkIfTokenExpired = (token) => {
   if (!token) return true; // No token is available
   const decodedToken = jwtDecode(token);
   const currentTime = Date.now() / 1000;
-  return decodedToken.exp < currentTime; 
+  return decodedToken.exp < currentTime;
 };
 
 // Function to use the refresh token to get tokens
@@ -204,11 +190,15 @@ export async function RefreshToken() {
   try {
     const refresh_token = sessionStorage.getItem("refreshtoken");
 
-    const response = await axios.post("http://127.0.0.1:5000/refresh", {},{
-      headers: {
-        'Authorization': `Bearer ${refresh_token}`
+    const response = await axios.post(
+      "http://127.0.0.1:5000/refresh",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${refresh_token}`,
+        },
       }
-    });
+    );
 
     const new_access_token = response.data.accesstoken;
     const new_refresh_token = response.data.refreshtoken;
