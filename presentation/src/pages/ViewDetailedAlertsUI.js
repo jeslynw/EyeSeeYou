@@ -163,7 +163,9 @@ function NAAlerts() {
           <div className="py-4"></div>
 
           {/* Alerts Logs */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+          <div
+            id="alerts-logs"
+            className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
             <div className="flex justify-between pb-3">
               <p className="pb-3 text-sm md:text-base">Alerts Logs</p>
               <button

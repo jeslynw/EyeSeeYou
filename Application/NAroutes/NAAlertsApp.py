@@ -26,6 +26,7 @@ def fetch_dashboard():
     list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
     list_recent_alerts = [
         {
+            "id": alert["id"],
             "timestamp": alert["timestamp"],
             "src_addr": alert["src_addr"],
             "dst_addr": alert["dst_addr"],
@@ -61,7 +62,8 @@ def alert_overview():
     }
 
 def get_recent_alerts():
-    alert_details = Alerts.get_search_alerts_details(self=Alerts, priority='', class_='', src_addr='', dst_addr='', status='')
+    alert = Alerts()
+    alert_details = alert.get_search_alerts_details(priority='', class_='', src_addr='', dst_addr='', status='')
     return alert_details
 
 def get_trending_attacks():
@@ -142,3 +144,33 @@ def get_search_alerts_details():
         return jsonify(alert_details)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+@naalerts_bp.route('/naalerts/update_alert_status', methods=['POST'])
+@token_required
+def update_alert_status():
+    try:
+        data = request.json
+        alertId = data.get('alertId')
+        new_status = data.get('status')
+
+        query = "UPDATE alerts SET status = %s WHERE id = %s"
+        conn = db.get_connection()
+        if not conn:
+            raise Exception("Database connection failed")
+        
+        with conn.cursor() as cursor:
+            cursor.execute(query, (new_status, alertId))
+            conn.commit()
+            
+            if cursor.rowcount > 0:
+                return jsonify({"message": "Alert status updated successfully"}), 200
+            else:
+                return jsonify({"error": "Alert not found or status unchanged"}), 404
+    
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()

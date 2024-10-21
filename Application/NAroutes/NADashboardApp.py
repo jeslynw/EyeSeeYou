@@ -54,5 +54,6 @@ def alert_overview():
 
 
 def get_recent_alerts():
-    alert_details = Alerts.get_alerts_details()
+    alert = Alerts()
+    alert_details = alert.get_search_alerts_details(priority='', class_='', src_addr='', dst_addr='', status='')
     return alert_details 
