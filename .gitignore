@@ -12,7 +12,7 @@ presentation/coverage
 
 # production
 presentation/build
-presentation/api_secret.txt
+presentation/.env
 
 # misc
 .DS_Store
