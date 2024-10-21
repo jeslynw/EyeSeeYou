@@ -60,6 +60,14 @@ def alert_overview():
         "low" : low
     }
 
+
+def critical_alerts():
+    alert = Alerts.get_critical_alert()
+    return {
+        'class': alert['class'],
+        'critical': alert['critical']
+    }
+
 def get_recent_alerts():
     alert_details = Alerts.get_alerts_details()
     return alert_details 
@@ -124,7 +132,6 @@ def get_top_threat_dest():
     finally:
         cursor.close()
         conn.close()
-
 
 @naalerts_bp.route('/naalerts/search', methods=['POST'])
 @token_required

@@ -39,7 +39,6 @@ function FeedbackPage() {
             const user_id = response.data.logged_in_as;
             setUserId(user_id); // Store user_id in state
             sessionStorage.setItem("user_id", user_id); // Store user_id in sessionStorage
-            console.log(`User: ${user_id}`);
           }
         })
         .catch((error) => {
@@ -67,13 +66,10 @@ function FeedbackPage() {
         },
       })
       .then((response) => {
-        console.log(response.data.message);
         //clear fields and log(or show) result
         setValue(0);
         setReview("");
         setReturnMsg("Feedback submitted successfully!");
-        console.log("Rating submitted:", value);
-        console.log("Review submitted:", review);
       })
       .catch((error) => {
         console.error("Error submitting feedback:", error);
