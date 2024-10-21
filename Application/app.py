@@ -8,6 +8,12 @@ from flask_cors import CORS
 import getKey as gk
 from datetime import timedelta
 
+# send mail and generate OTP
+import smtplib
+from random import randint
+from flask_mail import Mail, Message
+# from mailbox import Message
+
 # import file
 from models.user import User
 from models.user_profile import UserProfile
@@ -32,6 +38,15 @@ from Mroutes.MAlertsApp import m_alerts_bp
 app = Flask(__name__)
 jwt = JWTManager(app)
 CORS(app, origins=['http://localhost:3000'])
+
+app.config['MAIL_SERVER'] = "smtp.gmail.com"
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = "eyeseeyoufyp@gmail.com"
+app.config['MAIL_PASSWORD'] = "fxjv puoa tdul zzwm"
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
 
 # custom way to get tokens
 def getkey():
@@ -63,6 +78,30 @@ app.config['SECRET_KEY'] = getkey()
 #         conn.close()
 #     return jsonify(data)
 
+
+def send_otp():
+    data = request.get_json()
+    if not data or 'username' not in data:
+        return jsonify({"message": "Invalid request"}), 400
+    
+    username = data.get('username')
+    email = User.get_email(username)
+    otp = randint(100000, 999999)
+    User.update_otp(username, otp)
+
+    # Construct the email message
+    msg = Message(
+        'One-Time Password', 
+        sender = 'eyeseeyoufyp@gmail.com', 
+        recipients = [email])
+    msg.body = 'Your One-Time Password is ', otp
+
+    try:
+        mail.send(msg)
+        print("success")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -91,6 +130,7 @@ def login():
         ), 200     
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
+
 
 @app.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)

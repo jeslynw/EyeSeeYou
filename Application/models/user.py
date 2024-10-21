@@ -55,6 +55,45 @@ class User:
             if conn:
                 conn.close()
 
+    def get_email(username):
+        query = "SELECT email FROM user WHERE username = %s"
+        values = (username,)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Get by id: username={username}, no user found")
+                    return None
+                return result[0]
+        except Exception as e:
+            print(f"Get by id error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    # Change password to OTP
+    def update_otp(username, otp):
+        query = "UPDATE user SET otp = %s WHERE username = %s"
+        values = (otp, username)
+        conn = db.get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute(query, values)
+            conn.commit()
+            return True
+        except:
+            print("Error updating user")
+            return False
+        finally:
+            if conn:
+                conn.close()
+
+
+
     def get_profile_id(username):
         query = "SELECT user_id, profile_id FROM user WHERE username = %s"
         values = (username,)
