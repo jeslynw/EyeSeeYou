@@ -8,17 +8,19 @@ import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
 import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 import NADashboardUI from "./pages/NADashboardUI";
 import NAAlerts from "./pages/ViewDetailedAlertsUI";
-// import NAEvents from "./pages/ViewDetailedEventsUI";
 import NALogInHistory from "./pages/ViewLoginHistoryUI";
 import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import BasicPlanDisabling from "./components/BasicPlanDisabling";
 
+// import SimulateAlert from "./components/SimulateAlert";
+import { Toaster } from 'react-hot-toast';
+import { AlertNotificationProvider } from "./components/AlertNotificationContext";
+
 // management
 import MLayout from "./components/MLayout";
 import MDashboardUI from "./pages/MDashboardUI";
 import MAlerts from "./pages/ViewSimplifiedAlertsUI";
-// import MTroubleshootChat from "./pages/MTroubleshootChat";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -26,6 +28,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import GeneratePDF from "./pages/GeneratePDF";
+
 
 // backup
 // function App() {
@@ -53,9 +57,9 @@ import { jwtDecode } from "jwt-decode";
 
 
 function App() {
-  const userRole = sessionStorage.getItem("userrole"); // Or get from React Context/Redux
+  const userRole = sessionStorage.getItem("userrole");
 
-  console.log("userRole: ", userRole); // Debugging log
+  // console.log("userRole: ", userRole); // Debugging log
 
   const nav = useNavigate();
   useEffect(() => {
@@ -100,84 +104,95 @@ function App() {
   if (userRole === "1") {
     return (
       <ThemeProvider>
-        {/* <Router> */}
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/loginUI" element={<LoginUI />} />
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["1"]}>
-                  <Layout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/nadashboard" element={<NADashboardUI />} />
+        <AlertNotificationProvider>
+          <div className="text-center">
+            {/* <SimulateAlert/> */}
+          </div>
+          <Toaster />
+          {/* <Router> */}
+            <Routes>
+              {/* <Route path="/Simulate" element={<SimulateAlert />} /> */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/loginUI" element={<LoginUI />} />
+              {/* <Route path="/pdf" element={<PDF />} /> */}
               <Route
-                path="/viewaccountdetails"
-                element={<ViewAccountDetailsUI />}
-              />
-              <Route
-                path="/updateaccountdetails"
-                element={<UpdateAccountDetailsUI />}
-              />
-              <Route
-                path="/naalerts"
                 element={
-                  <BasicPlanDisabling>
-                    <NAAlerts />
-                  </BasicPlanDisabling>
+                  <ProtectedRoute allowedRoles={["1"]}>
+                    <Layout />
+                  </ProtectedRoute>
                 }
-              />
-              <Route
-                path="/naloginhistory"
-                element={
-                  <BasicPlanDisabling>
-                    <NALogInHistory />
-                  </BasicPlanDisabling>
-                }
-              />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
-            </Route>
-          </Routes>
-        {/* </Router> */}
+              >
+                <Route path="/nadashboard" element={<NADashboardUI />} />
+                <Route
+                  path="/viewaccountdetails"
+                  element={<ViewAccountDetailsUI />}
+                />
+                <Route
+                  path="/updateaccountdetails"
+                  element={<UpdateAccountDetailsUI />}
+                />
+                <Route
+                  path="/naalerts"
+                  element={
+                    <BasicPlanDisabling>
+                      <NAAlerts />
+                    </BasicPlanDisabling>
+                  }
+                />
+                <Route
+                  path="/naloginhistory"
+                  element={
+                    <BasicPlanDisabling>
+                      <NALogInHistory />
+                    </BasicPlanDisabling>
+                  }
+                />
+                <Route path="/feedback" element={<FeedbackPage />} />
+                <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+              </Route>
+            </Routes>
+          {/* </Router> */}
+        </AlertNotificationProvider>
       </ThemeProvider>
     );
   } else if (userRole === "2") {
     return (
       <ThemeProvider>
-        {/* <Router> */}
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/loginUI" element={<LoginUI />} />
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["2"]}>
-                  <MLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/mdashboard" element={<MDashboardUI />} />
-              <Route path="/malerts" element={<MAlerts />} />
-              {/* <Route path="/mtroubleshootchat" element={<MTroubleshootChat />} /> */}
+        <AlertNotificationProvider>
+          {/* <SimulateAlert/> */}
+          <Toaster />
+          {/* <Router> */}
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/loginUI" element={<LoginUI />} />
               <Route
-                path="/viewaccountdetails"
-                element={<ViewAccountDetailsUI />}
-              />
-              <Route
-                path="/updateaccountdetails"
-                element={<UpdateAccountDetailsUI />}
-              />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
-            </Route>
-          </Routes>
-        {/* </Router> */}
+                element={
+                  <ProtectedRoute allowedRoles={["2"]}>
+                    <MLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/mdashboard" element={<MDashboardUI />} />
+                <Route path="/malerts" element={<MAlerts />} />
+                <Route
+                  path="/viewaccountdetails"
+                  element={<ViewAccountDetailsUI />}
+                />
+                <Route
+                  path="/updateaccountdetails"
+                  element={<UpdateAccountDetailsUI />}
+                />
+                <Route path="/feedback" element={<FeedbackPage />} />
+                <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+                <Route path="/summarisedpdf" element={<GeneratePDF />} />
+              </Route>
+            </Routes>
+          {/* </Router> */}
+        </AlertNotificationProvider>
       </ThemeProvider>
     );
   }
 
-  console.log("userRole is not set, redirecting to loginUI");
   return (
     <div>
       <ThemeProvider>

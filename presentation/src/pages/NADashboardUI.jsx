@@ -9,6 +9,7 @@ import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
 import { checkIfTokenExpired } from "../App";
 
+
 function NADashboardUI() {
   const { darkMode } = useTheme();
 
@@ -53,53 +54,53 @@ function NADashboardUI() {
     low: 0,
   });
 
-    useEffect(() => {
-        // redirect to login page if no access token
-        if (!sessionStorage.getItem('accesstoken')) {
-            navigate('/loginUI');
-        }
+  useEffect(() => {
+    // redirect to login page if no access token
+    if (!sessionStorage.getItem('accesstoken')) {
+        navigate('/loginUI');
+    }
 
-        checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+    checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
 
-        const fetchData = async () => {
-        
-            const access_token = sessionStorage.getItem('accesstoken');
+    const fetchData = async () => {
+    
+      const access_token = sessionStorage.getItem('accesstoken');
 
-            axios.get('http://127.0.0.1:5000/nadashboard', {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`
-                }
-            })
-            .then(response => {
-                if (response.status === 200) {
-                    
-                    setAlerts(response.data.recent_alerts || []); 
-
-            // recent alerts
-            const alertsOverview = response.data.alert_overview;
-            setAlertsOverview({
-              critical: alertsOverview.critical || 0,
-              high: alertsOverview.high || 0,
-              med: alertsOverview.med || 0,
-              low: alertsOverview.low || 0,
-            });
-          } else {
-            setError("No data available");
+      axios.get('http://127.0.0.1:5000/nadashboard', {
+          headers: {
+              'Authorization': `Bearer ${access_token}`
           }
+      })
+      .then(response => {
+        if (response.status === 200) {
+          setAlerts(response.data.recent_alerts || []); 
 
-          const temp = response.data.alert_classes;
-          // console.log("Alert classes:", temp);
-        })
-        .catch((error) => {
-          console.error("Error fetching threat info:", error);
-          setError("Error fetching data");
-        });
-    };
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+      // recent alerts
+      const alertsOverview = response.data.alert_overview;
+      setAlertsOverview({
+        critical: alertsOverview.critical || 0,
+        high: alertsOverview.high || 0,
+        med: alertsOverview.med || 0,
+        low: alertsOverview.low || 0,
+      });
+      } else {
+        setError("No data available");
+      }
 
-    return () => clearInterval(interval);
+      const temp = response.data.alert_classes;
+      // console.log("Alert classes:", temp);
+    })
+    .catch((error) => {
+      console.error("Error fetching threat info:", error);
+      setError("Error fetching data");
+    });
+  };
+  fetchData(); // Initial fetch
+  const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+
+  return () => clearInterval(interval);
   }, []);
+
 
   return (
     <div className={darkMode ? "dark" : ""}>
