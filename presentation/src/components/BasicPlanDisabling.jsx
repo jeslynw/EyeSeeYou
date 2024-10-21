@@ -9,9 +9,11 @@ const BasicPlanDisabling = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    //debugging for user
     const access_token = sessionStorage.getItem("accesstoken");
+    const refresh_token = sessionStorage.getItem("refreshtoken");
     if (access_token) {
-      console.log("Access found: ", access_token);
+      // console.log("Access found:", access_token);
       axios
         .get("http://127.0.0.1:5000/viewaccountdetails", {
           headers: {
@@ -32,12 +34,14 @@ const BasicPlanDisabling = ({ children }) => {
     }
   }, []);
 
+  // open upgrade popup
   const openUpgradePopUp = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default link behavior
     setOpenPopUp(true);
   };
 
-  const handleCancelBtn = () => {
+  // handle cancel button
+  const handleCancel = () => {
     setOpenPopUp(false);
     navigate("/nadashboard");
   };
@@ -45,8 +49,8 @@ const BasicPlanDisabling = ({ children }) => {
   // handle upgrade button
   const confirmUpgrade = () => {
     setOpenPopUp(false);
-    // navigate to eyeseeyou wix pricing plan page
-    window.open("https://eyeseeyoufyp.wixsite.com/my-site-2/plans-pricing", "_blank");
+    // navigate("/");
+    // todo: navigate to eyeseeyou wix pricing plan page
   };
 
   if (currentUser.plan_type === "Basic Plan") {
@@ -56,14 +60,14 @@ const BasicPlanDisabling = ({ children }) => {
         <RestrictUI
           openPopUp={openUpgradePopUp}
           setOpenPopUp={setOpenPopUp}
-          handleCancel={handleCancelBtn}
+          handleCancel={handleCancel}
           handleUpgrade={confirmUpgrade}
         />
       </div>
     );
   }
 
-  console.log("plan type: ", currentUser.plan_type); // debug
+  // console.log("plan type: ", currentUser.plan_type); // debug
 
   // if user is on premium plan, display content normally
   return children;

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import pymysql
-# from models.alerts import Alerts
+from models.trending_attack import TrendingAttacK
 import dbAccess as db
 
 from flask_jwt_extended import get_jwt_identity
@@ -23,20 +23,5 @@ def fetch_trending_attacks():
     
 
 def get_trending_attacks():
-    query = """SELECT class, COUNT(*) as count
-               FROM alerts
-               WHERE class NOT IN ('none')
-               GROUP BY class"""
-
-    conn = db.get_connection()
-    cursor = conn.cursor()
-    try:    
-        cursor.execute(query)
-        data = cursor.fetchall()
-        return data
-    except pymysql.connect.Error as err:
-        print(err)
-        return jsonify({"error": "Error in fetching data"})
-    finally:
-        cursor.close()
-        conn.close()
+    trend = TrendingAttacK.trending_attacks()
+    return trend

@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Table } from "flowbite-react";
-import axios from "axios";
 
 const getPriorityStyle = (priority) => {
   switch (priority) {
@@ -19,42 +18,33 @@ const getPriorityStyle = (priority) => {
   }
 };
 
+const handleStatusChange = async (alertId, newStatus) => {
+  try {
+    const response = await fetch("http://localhost:5000/update_alert_status", {
+      // Use your actual backend URL
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Include JWT token
+      },
+      body: JSON.stringify({
+        alertId: alertId, // Send alertId
+        status: newStatus, // Send the selected new status
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update alert status");
+    }
+
+    const result = await response.json();
+    //   console.log(result.message);  // Log success message
+  } catch (error) {
+    console.error("Error updating alert status:", error);
+  }
+};
+
 function AlertsLogs({ alerts }) {
-  const [updatedAlerts, setUpdatedAlerts] = useState(null);
-
-  const handleStatusChange = async (alertId, newStatus) => {
-    const access_token = sessionStorage.getItem("accesstoken");
-    const data = {
-      alertId: alertId, // Send alertId
-      status: newStatus, // Send the selected new status
-    };
-
-    axios
-      .post("http://localhost:5000/naalerts/update_alert_status", data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`, // Include JWT token
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log(response.data.message); // Log success message
-
-          // Update status on the dropdown box
-          setUpdatedAlerts((prevAlerts) =>
-            (prevAlerts || alerts).map((alert) =>
-              alert.id === alertId ? { ...alert, status: newStatus } : alert
-            )
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating alert status:", error);
-      });
-  };
-
-  const alertsToDisplay = updatedAlerts || alerts;
-
   return (
     <div className="max-h-[380px] overflow-y-auto">
       <Table className="min-w-full">
@@ -71,7 +61,7 @@ function AlertsLogs({ alerts }) {
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Status</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {alertsToDisplay.map((alert, index) => {
+          {alerts.map((alert, index) => {
             const { label, color } = getPriorityStyle(alert.priority);
             return (
               <Table.Row key={index} className="bg-slate-100 dark:border-gray-700 dark:bg-gray-800">

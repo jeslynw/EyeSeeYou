@@ -28,7 +28,7 @@ function NALogInHistory() {
     useEffect(() => {
         const fetchLoginHistory = async () => {
             if (access_token) {
-                console.log('Access found:', access_token);
+                // console.log('Access found:', access_token);
                 try {
                     const response = await axios.get('http://127.0.0.1:5000/loginhistory', {
                         headers: { Authorization: `Bearer ${access_token}` },
