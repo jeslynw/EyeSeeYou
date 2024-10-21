@@ -12,6 +12,7 @@ presentation/coverage
 
 # production
 presentation/build
+presentation/.env
 
 # misc
 .DS_Store

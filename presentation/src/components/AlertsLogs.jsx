@@ -37,7 +37,7 @@ const handleStatusChange = async (alertId, newStatus) => {
       }
   
       const result = await response.json();
-      console.log(result.message);  // Log success message
+    //   console.log(result.message);  // Log success message
     } catch (error) {
       console.error('Error updating alert status:', error);
     }

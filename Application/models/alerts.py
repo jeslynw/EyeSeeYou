@@ -215,3 +215,65 @@ class Alerts:
         finally:
             if conn:
                 conn.close()
+
+    def get_critical_alert():
+        query = """
+                SELECT class
+                CASE priority
+                    WHEN 2 THEN 'Critical'
+                    END AS priority
+                FROM alerts 
+                where priority = 2
+                """
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"No low alerts found")
+                    return None
+                return {
+                    'class' : result[0],
+                    'critical': result[1]
+                }
+        except Exception as e:
+            print(f"Get critical alert error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_top_src_dest_ip():
+        query = '''
+                SELECT src_addr, COUNT(src_addr) AS count_src_addr, dst_addr, COUNT(dst_addr) AS count_dst_addr
+                FROM alerts
+                WHERE NOT (src_addr LIKE '::%' OR src_addr LIKE 'f%')
+                AND NOT (dst_addr LIKE '::%' OR dst_addr LIKE 'f%')
+                GROUP BY src_addr, dst_addr
+                LIMIT 3
+                '''
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+                if result is None:
+                    print(f"No source and destination ip address found")
+                    return None
+                
+                formatted_results = []
+                for row in result:
+                    formatted_results.append({
+                        'src_addr': row[0],
+                        'count_src_addr': row[1],
+                        'dst_addr': row[2],
+                        'count_dst_addr': row[3]
+                    })
+                return formatted_results
+        except Exception as e:
+            print(f"Get critical alert error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()

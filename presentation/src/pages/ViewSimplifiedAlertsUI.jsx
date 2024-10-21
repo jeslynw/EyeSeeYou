@@ -15,7 +15,7 @@ function MAlerts() {
     const access_token = sessionStorage.getItem('accesstoken');
     const refresh_token = sessionStorage.getItem('refreshtoken');
     if (access_token) {
-        console.log('Access found:', access_token);
+        // console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/malerts', {
         headers: {
             'Authorization': `Bearer ${access_token}`
@@ -24,7 +24,7 @@ function MAlerts() {
         .then(response => {
         if (response.status === 200) {
                 const user_id = response.data.logged_in_as;
-                console.log(`User: ${user_id}`);
+                // console.log(`User: ${user_id}`);
         }
         })
         .catch(error => {
@@ -63,8 +63,8 @@ function MAlerts() {
       });
     
     const breadcrumbItems = [
-        {path: '/nadashboard', name:'Dashboard'},
-        {path: '/naalerts', name: "Alerts"}
+        {path: '/mdashboard', name:'Dashboard'},
+        {path: '/malerts', name: "Alerts"}
     ]
 
     useEffect(() => {
