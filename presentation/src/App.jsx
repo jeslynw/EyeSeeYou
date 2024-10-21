@@ -15,7 +15,7 @@ import BasicPlanDisabling from "./components/BasicPlanDisabling";
 
 // import SimulateAlert from "./components/SimulateAlert";
 import { Toaster } from 'react-hot-toast';
-import { AlertNotificationProvider } from "./components/AlertNotificationContext";
+// import { AlertNotificationProvider } from "./components/AlertNotificationContext";
 
 // management
 import MLayout from "./components/MLayout";
@@ -104,7 +104,7 @@ function App() {
   if (userRole === "1") {
     return (
       <ThemeProvider>
-        <AlertNotificationProvider>
+        {/* <AlertNotificationProvider> */}
           <div className="text-center">
             {/* <SimulateAlert/> */}
           </div>
@@ -152,13 +152,13 @@ function App() {
               </Route>
             </Routes>
           {/* </Router> */}
-        </AlertNotificationProvider>
+        {/* </AlertNotificationProvider> */}
       </ThemeProvider>
     );
   } else if (userRole === "2") {
     return (
       <ThemeProvider>
-        <AlertNotificationProvider>
+        {/* <AlertNotificationProvider> */}
           {/* <SimulateAlert/> */}
           <Toaster />
           {/* <Router> */}
@@ -188,7 +188,7 @@ function App() {
               </Route>
             </Routes>
           {/* </Router> */}
-        </AlertNotificationProvider>
+        {/* </AlertNotificationProvider> */}
       </ThemeProvider>
     );
   }
