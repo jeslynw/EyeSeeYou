@@ -23,7 +23,7 @@ function NAEvents() {
     const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
-        console.log('Access found:', access_token);
+        // console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/events', {
         headers: {
             'Authorization': `Bearer ${access_token}`
@@ -32,7 +32,7 @@ function NAEvents() {
         .then(response => {
         if (response.status === 200) {
                 const user_id = response.data.logged_in_as;
-                console.log(`User: ${user_id}`);
+                // console.log(`User: ${user_id}`);
         }
         })
         .catch(error => {

@@ -13,7 +13,7 @@ const BasicPlanDisabling = ({ children }) => {
     const access_token = sessionStorage.getItem("accesstoken");
     const refresh_token = sessionStorage.getItem("refreshtoken");
     if (access_token) {
-      console.log("Access found:", access_token);
+      // console.log("Access found:", access_token);
       axios
         .get("http://127.0.0.1:5000/viewaccountdetails", {
           headers: {
@@ -67,7 +67,7 @@ const BasicPlanDisabling = ({ children }) => {
     );
   }
 
-  console.log("plan type: ", currentUser.plan_type); // debug
+  // console.log("plan type: ", currentUser.plan_type); // debug
 
   // if user is on premium plan, display content normally
   return children;
