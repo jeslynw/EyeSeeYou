@@ -147,13 +147,10 @@ function GeneratePDF() {
 
 
     // gemini API chatbot
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     useEffect(() => {
         const generateAIContent = async () => {
             if (!isDataLoaded) return; 
-            
-            const genAI = new GoogleGenerativeAI('AIzaSyANU7EYJW1fcoJfzeJmWJQi5qgcSboZ3tY');
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
                     
             const topSrcIpList = srcAndDstIP.map((ip) => `${ip.src_addr} with the count ${ip.count_src_addr}`).join(', ');
             const topDstIpList = srcAndDstIP.map((ip) => `${ip.dst_addr} with the count ${ip.count_dst_addr}`).join(', ');
@@ -191,21 +188,21 @@ function GeneratePDF() {
                 // Make all API calls concurrently
                 const [conclusionRes, recommendationRes, trendRes] = await Promise.all([
                     axios({
-                        url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyANU7EYJW1fcoJfzeJmWJQi5qgcSboZ3tY',
+                        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
                         method: 'post',
                         data: {
                             contents: [{ parts: [{ text: prompts.conclusion }] }],
                         },
                     }),
                     axios({
-                        url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyANU7EYJW1fcoJfzeJmWJQi5qgcSboZ3tY',
+                        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
                         method: 'post',
                         data: {
                             contents: [{ parts: [{ text: prompts.recommendation }] }],
                         },
                     }),
                     axios({
-                        url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyANU7EYJW1fcoJfzeJmWJQi5qgcSboZ3tY',
+                        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
                         method: 'post',
                         data: {
                             contents: [{ parts: [{ text: prompts.trend }] }],
