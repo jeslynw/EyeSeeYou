@@ -161,58 +161,90 @@ class Alerts:
             params = []
             conditions = []
 
-            if priority:
-                conditions.append("priority IN (%s)" % ', '.join(['%s'] * len(priority)))
-                params.extend(priority)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, params)
+                result = cursor.fetchall()
+                if not result:
+                    print(f"No alerts found")
+                    return []
+                alerts = [
+                    {
+                        'timestamp': row[0],
+                        'src_addr': row[1],
+                        'dst_addr': row[2],
+                        'class': row[3],
+                        'priority': row[4]
+                    }
+                    for row in result
+                ]
+                return alerts
+        except Exception as e:
+            print(f"Get alert details error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
 
-            if class_:
-                conditions.append("`class' LIKE %s")
-                params.append(f"%{class_}%")
+    def get_critical_alert():
+        query = """
+                SELECT class
+                CASE priority
+                    WHEN 2 THEN 'Critical'
+                    END AS priority
+                FROM alerts 
+                where priority = 2
+                """
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"No low alerts found")
+                    return None
+                return {
+                    'class' : result[0],
+                    'critical': result[1]
+                }
+        except Exception as e:
+            print(f"Get critical alert error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
 
-            if src_addr:
-                conditions.append("src_addr LIKE %s")
-                params.append(f"%{src_addr}%")
-
-            if dst_addr:
-                conditions.append("dst_addr LIKE %s")
-                params.append(f"%{dst_addr}%")
-
-            if status:
-                conditions.append("status IN (%s)" % ', '.join(['%s'] * len(status)))
-                params.extend(status)
-
-            # Build the final query
-            if conditions:
-                query += " AND " + " AND ".join(conditions)
-            query += " ORDER BY formatted_timestamp DESC"
+    def get_top_src_dest_ip():
+        query = '''
+                SELECT src_addr, COUNT(src_addr) AS count_src_addr, dst_addr, COUNT(dst_addr) AS count_dst_addr
+                FROM alerts
+                WHERE NOT (src_addr LIKE '::%' OR src_addr LIKE 'f%')
+                AND NOT (dst_addr LIKE '::%' OR dst_addr LIKE 'f%')
+                GROUP BY src_addr, dst_addr
+                LIMIT 3
+                '''
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+                if result is None:
+                    print(f"No source and destination ip address found")
+                    return None
                 
-            # for debugging: print the final query and parameters
-            # print("Executing query:", query)
-            # print("With parameters:", priority, class_, src_addr, dst_addr, status)
-
-            conn = db.get_connection()
-            try:
-                with conn.cursor() as cursor:
-                    cursor.execute(query, params)
-                    result = cursor.fetchall()
-                    if not result:
-                        print(f"No alerts found")
-                        return []
-                    alerts = [
-                        {
-                            'timestamp': row[0],
-                            'src_addr': row[1],
-                            'dst_addr': row[2],
-                            'class': row[3],
-                            'priority': row[4],
-                            'status': row[5]
-                        }
-                        for row in result
-                    ]
-                    return alerts
-            except Exception as e:
-                print(f"Get alert details error: {e}")
-                return []
-            finally:
-                if conn:
-                    conn.close()
+                formatted_results = []
+                for row in result:
+                    formatted_results.append({
+                        'src_addr': row[0],
+                        'count_src_addr': row[1],
+                        'dst_addr': row[2],
+                        'count_dst_addr': row[3]
+                    })
+                return formatted_results
+        except Exception as e:
+            print(f"Get critical alert error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()

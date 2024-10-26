@@ -22,7 +22,7 @@ function TrendingAttacksUI() {
     const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
-        console.log('Access found:', access_token);
+        // console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/loginhistory', {
         headers: {
             'Authorization': `Bearer ${access_token}`
@@ -31,7 +31,7 @@ function TrendingAttacksUI() {
         .then(response => {
         if (response.status === 200) {
               const user_id = response.data.logged_in_as;
-              console.log(`User: ${user_id}`);
+            //   console.log(`User: ${user_id}`);
         }
         })
         .catch(error => {
@@ -142,7 +142,7 @@ function TrendingAttacksUI() {
     };
 
     const breadcrumbItems = [
-        {path: '/nadashboard', name:'Dashboard'},
+        {path: '/mdashboard', name:'Dashboard'},
         {path: '/trendingattacks', name: "Trending Attacks"}
     ]
 

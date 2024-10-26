@@ -38,7 +38,7 @@ function ViewAccountDetailsUI() {
   const access_token = sessionStorage.getItem('accesstoken');
 
   if (access_token) {
-    console.log('Access found:', access_token);
+    // console.log('Access found:', access_token);
     axios
       .get('http://127.0.0.1:5000/viewaccountdetails', {
         headers: {
@@ -50,7 +50,7 @@ function ViewAccountDetailsUI() {
         if (response.status === 200) {
           const currentUser = response.data;
           const user_id = response.data.logged_in_as;
-          console.log(`User: ${user_id}`);
+          // console.log(`User: ${user_id}`);
           setFullname(currentUser.full_name);
           setUsername(currentUser.username);
           setEmail(currentUser.email);

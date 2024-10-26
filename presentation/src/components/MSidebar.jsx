@@ -15,7 +15,7 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import MessageIcon from '@mui/icons-material/Message';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 const MSidebar = ({ isOpen, toggleSidebar }) => {
     const { darkMode } = useTheme();
@@ -43,7 +43,7 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
       const navItemsTop = [
         { path: "/mdashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
         { path: "/malerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
-        { path: "/mtroubleshootchat", name: "Troubleshoot Chat", icon: MessageIcon },
+        { path: "/summarisedpdf", name: "Report", icon: DescriptionOutlinedIcon },
     ];
 
     // Navigation items for bottom
