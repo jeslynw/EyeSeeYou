@@ -18,30 +18,30 @@ const getPriorityStyle = (priority) => {
     }
 };
 
-const handleStatusChange = async (alertId, newStatus) => {
-    try {
-      const response = await fetch('http://localhost:5000/update_alert_status', {  // Use your actual backend URL
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`  // Include JWT token
-        },
-        body: JSON.stringify({
-          alertId: alertId,  // Send alertId
-          status: newStatus  // Send the selected new status
-        })
-      });
+// const handleStatusChange = async (alertId, newStatus) => {
+//     try {
+//       const response = await fetch('http://localhost:5000/update_alert_status', {  // Use your actual backend URL
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${localStorage.getItem('access_token')}`  // Include JWT token
+//         },
+//         body: JSON.stringify({
+//           alertId: alertId,  // Send alertId
+//           status: newStatus  // Send the selected new status
+//         })
+//       });
   
-      if (!response.ok) {
-        throw new Error('Failed to update alert status');
-      }
+//       if (!response.ok) {
+//         throw new Error('Failed to update alert status');
+//       }
   
-      const result = await response.json();
-      console.log(result.message);  // Log success message
-    } catch (error) {
-      console.error('Error updating alert status:', error);
-    }
-  };
+//       const result = await response.json();
+//       console.log(result.message);  // Log success message
+//     } catch (error) {
+//       console.error('Error updating alert status:', error);
+//     }
+//   };
   
 
 function AlertsLogs({alerts}) {

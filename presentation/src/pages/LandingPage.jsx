@@ -6,19 +6,19 @@ import { useNavigate } from "react-router-dom";
 
 import '../App.css';
 import '../index.css';
-import FooterUI from '../components/FooterUI.js';
-import PrivacyPolicy from '../components/PrivacyPolicy.js';
+import FooterUI from '../components/FooterUI.jsx';
+import PrivacyPolicy from '../components/PrivacyPolicy.jsx';
 
 // image
 import logo from '../images/logo.png'
 
 // graph, chart, etx
-import HardcodeBarChart from '../components/HardcodeBarChart.js';
-import HardCodePieChart from '../components/HardCodePieChart.js';
-import HardcodeHorizontalBarChart from '../components/HardcodeHorizontalBarChart.js';
-import HardCodeRealtime from '../components/HardCodeRealtime.js';
-import PricingPlan from '../components/PricingPlan.js';
-import FeedbackContainer from '../components/FeedbackContainer.js';
+import HardcodeBarChart from '../components/HardcodeBarChart.jsx';
+import HardCodePieChart from '../components/HardCodePieChart.jsx';
+import HardcodeHorizontalBarChart from '../components/HardcodeHorizontalBarChart.jsx';
+import HardCodeRealtime from '../components/HardCodeRealtime.jsx';
+import PricingPlan from '../components/PricingPlan.jsx';
+import FeedbackContainer from '../components/FeedbackContainer.jsx';
 
 function LandingPage() {
   // navigation button

@@ -20,28 +20,28 @@ function NAAlerts() {
 
   checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
 
-  const access_token = sessionStorage.getItem("accesstoken");
+  // const access_token = sessionStorage.getItem("accesstoken");
 
-  if (access_token) {
-    console.log("Access found:", access_token);
-    axios
-      .get("http://127.0.0.1:5000/naalerts", {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          const user_id = response.data.logged_in_as;
-          console.log(`User: ${user_id}`);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user info:", error);
-      });
-  } else {
-    console.error("No token found. Please log in.");
-  }
+  // if (access_token) {
+  //   console.log("Access found:", access_token);
+  //   axios
+  //     .get("http://127.0.0.1:5000/naalerts", {
+  //       headers: {
+  //         Authorization: `Bearer ${access_token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         const user_id = response.data.logged_in_as;
+  //         console.log(`User: ${user_id}`);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching user info:", error);
+  //     });
+  // } else {
+  //   console.error("No token found. Please log in.");
+  // }
 
   const { darkMode } = useTheme();
 
@@ -85,10 +85,64 @@ function NAAlerts() {
     setShowSearchPopUp((prevState) => !prevState);
   };
 
+  // State to track if the user is searching
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(null);
+
   // For fetching search results
   const onSearchResults = (searchResults) => {
     setAlerts(searchResults);
+    setSearchQuery(searchResults);
+    setIsSearchActive(true); // Mark that a search is active
   };
+
+  // useEffect(() => {
+  //   const access_token = sessionStorage.getItem("accesstoken");
+
+  //   // if (!accessToken || checkIfTokenExpired(accessToken)) {
+  //   //   navigate("/loginUI");
+  //   //   return;
+  //   // }
+
+  //   const eventSource = new EventSource(`http://127.0.0.1:5000/naalerts?token=${accessToken}`);
+
+  //   // const eventSource = new EventSource('http://127.0.0.1:5000/naalerts', {
+  //   //   headers: {
+  //   //       'Authorization': `Bearer ${access_token}`
+  //   //   }
+  //   //   });
+
+  //   if (eventSource.onopen) {
+  //     console.log("sse is open");
+  //   } else { console.log("error here")}
+
+  //   eventSource.onmessage = (event) => {
+  //     const data = JSON.parse(event.data);
+  //     console.log("Received SSE Data:", data);
+
+  //     if (data.alert_overview) {
+  //       setAlertsOverview({
+  //         critical: data.alert_overview.critical || 0,
+  //         high: data.alert_overview.high || 0,
+  //         med: data.alert_overview.med || 0,
+  //         low: data.alert_overview.low || 0,
+  //       });
+  //     }
+
+  //     if (data.alerts) {
+  //       setAlerts(data.alerts || []);
+  //     }
+  //   };
+
+  //   eventSource.onerror = (error) => {
+  //     console.error("SSE error:", error);
+  //     eventSource.close();
+  //   };
+
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // }, [isSearchActive, searchQuery]); // Reopen connection if search changes
 
   useEffect(() => {
     const access_token = sessionStorage.getItem("accesstoken");
@@ -109,15 +163,23 @@ function NAAlerts() {
               med: alertsOverview.med || 0,
               low: alertsOverview.low || 0,
             });
-            setAlerts(response.data.recent_alerts || []);
+            if (!isSearchActive) {
+              setAlerts(response.data.recent_alerts || []);
+            }
+            else{
+              setAlerts(searchQuery);
+              console.log(searchQuery);
+            }
           }
         });
     };
     fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
 
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000); // Poll every 5 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [isSearchActive, searchQuery]);
 
   return (
     <div className={darkMode ? "dark" : ""}>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useTheme } from "../components/ThemeProvider";
+import { useTheme } from "./ThemeProvider";
 
 import LogoutUI from "./LogoutUI";
 import logo from "../images/logo.png"
@@ -12,12 +12,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import MessageIcon from '@mui/icons-material/Message';
 
-const MSidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
     const { darkMode } = useTheme();
     const navigate = useNavigate();
 
@@ -34,6 +35,8 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
     const confirmLogout = () => {
         sessionStorage.removeItem('accesstoken');
         sessionStorage.removeItem('refreshtoken');
+        sessionStorage.removeItem('userrole');
+        sessionStorage.clear();
         console.log("Logging out...");
         setOpenPopUp(false);
         navigate('/');
@@ -41,9 +44,10 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
 
       // Navigation items for top
       const navItemsTop = [
-        { path: "/mdashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
-        { path: "/malerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
-        { path: "/mtroubleshootchat", name: "Troubleshoot Chat", icon: MessageIcon },
+        { path: "/nadashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
+        { path: "/naalerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
+        // { path: "/naevents", name: "Events", icon: TodayOutlinedIcon },
+        { path: "/naloginhistory", name: "Log In History", icon: HistoryOutlinedIcon },
     ];
 
     // Navigation items for bottom
@@ -156,4 +160,4 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
     );
 };
 
-export default MSidebar;
+export default Sidebar;
