@@ -142,24 +142,24 @@ function LandingPage() {
               </div>  
 
               <div className='text-[#9ecbd1] p-8 bg-[#40656A] rounded-xl'>
-                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
                 </svg>
                 <p className='mt-3 text-lg font-semibold'>Traffic Monitoring</p>
                 <p className='mt-2 text-sm'>Proactively detect and stop threats by continuously analyzing network traffic for suspicious activity.</p>
               </div>
 
               <div className='text-[#184452]  p-8 bg-[#289EAE] rounded-xl'>  
-                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#184452">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#184452">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
                 </svg>
                 <p className='mt-3 text-lg font-semibold'>Events Detection</p>
                 <p className='mt-2 text-sm'>Gains deep insights into network behavior with detailed event logging and analysis.</p>
               </div>
 
               <div className='text-[#184452] p-8 bg-[#289EAE] rounded-xl'>
-                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#184452">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#184452">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                 </svg>
                 <p className='mt-3 text-lg font-semibold'>Alerts Notification</p>
                 <p className='mt-2 text-sm'>Stays informed with real-time alerts that instantly notify you of potential threats, allowing for rapid response.</p>
@@ -167,8 +167,8 @@ function LandingPage() {
 
               <div className='text-[#1c6485]  p-8 bg-[#74B1B9] rounded-xl'>
                 <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 12l4 4 8-8 4 4" stroke="#1c6485" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M20 20H4" stroke="#1c6485" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 12l4 4 8-8 4 4" stroke="#1c6485" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20 20H4" stroke="#1c6485" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <p className='mt-3 text-lg font-semibold'>Trending Attacks</p>
                 <p className='mt-2 text-sm'>Highlights real-time patterns and frequencies of emerging threats, stay ahead of evolving attacks to better protect your network.</p>
@@ -176,8 +176,8 @@ function LandingPage() {
 
               <div className='text-[#9ecbd1] p-8 bg-[#40656A] rounded-xl'>
                 <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4V12L16 14" stroke="#9ecbd1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M12 21C6.48 21 2 16.52 2 12S6.48 3 12 3s10 4.48 10 9-4.48 9-10 9z" stroke="#9ecbd1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 4V12L16 14" stroke="#9ecbd1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 21C6.48 21 2 16.52 2 12S6.48 3 12 3s10 4.48 10 9-4.48 9-10 9z" stroke="#9ecbd1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <p className='mt-3 text-lg font-semibold'>Log In History</p>
                 <p className='mt-2 text-sm'>Monitors user access by tracking successful and failed login attempts to identify potential unauthorized access.</p>

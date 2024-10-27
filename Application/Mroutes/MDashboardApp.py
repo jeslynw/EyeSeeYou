@@ -1,11 +1,8 @@
 from flask import Blueprint, request, jsonify
 import pymysql
 from models.alerts import Alerts
-
 import dbAccess as db
-
 from flask_jwt_extended import get_jwt_identity
-
 from auth_decorators import token_required
 
 m_dashboard_bp = Blueprint('mdashboard', __name__)

@@ -54,8 +54,6 @@ function MDashboardUI() {
 
         checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
 
-        console.log("sessionstorage:", userRole)
-
         const fetchData = () => {
             axios.get('http://127.0.0.1:5000/mdashboard', {
                 headers: {
@@ -167,18 +165,11 @@ function MDashboardUI() {
                     <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-5">
                         <div className="flex justify-between pb-3">
                             <p className="pb-3 text-sm md:text-base">Attacks</p>
-                            <button onClick={navigateTAButton} className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
+                            {/* <button onClick={navigateTAButton} className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
                                 View All
-                            </button>
+                            </button> */}
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
-                            {/* <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                                <p className="pb-3 text-sm md:text-base">Alerts Status Pie Chart</p>
-                                <iframe src="http://localhost:5601/app/dashboards#/view/3b6670c0-76a7-11ef-b502-b1fce63ea091?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-9a74ac85-340d-4713-8ec1-7271f35ed391,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('9a74ac85-340d-4713-8ec1-7271f35ed391':(columnOrder:!('67dbed2a-05c5-4967-a417-623f180be435','65a1c139-1727-4171-b936-338a6a04046f'),columns:('65a1c139-1727-4171-b936-338a6a04046f':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records),'67dbed2a-05c5-4967-a417-623f180be435':(dataType:string,isBucketed:!t,label:'Top%20values%20of%20class.keyword',operationType:terms,params:(missingBucket:!f,orderBy:(columnId:'65a1c139-1727-4171-b936-338a6a04046f',type:column),orderDirection:desc,otherBucket:!t,size:5),scale:ordinal,sourceField:class.keyword)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(layers:!((categoryDisplay:hide,groups:!('67dbed2a-05c5-4967-a417-623f180be435'),layerId:'9a74ac85-340d-4713-8ec1-7271f35ed391',layerType:data,legendDisplay:show,metric:'65a1c139-1727-4171-b936-338a6a04046f',nestedLegend:!f,numberDisplay:percent)),palette:(name:kibana_palette,type:palette),shape:donut)),title:'',type:lens,visualizationType:lnsPie),enhancements:(),hidePanelTitles:!t),gridData:(h:18,i:'084c267f-17c4-4e76-9117-0e083b2ad9fc',w:48,x:0,y:0),panelIndex:'084c267f-17c4-4e76-9117-0e083b2ad9fc',type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Eyeseeyou%20class%20',viewMode:view)&hide-filter-bar=true" height="600" width="800"></iframe>
-                                <div className="h-56">
-
-                                </div>
-                            </div> */}
 
                             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
                                 <div className="flex justify-between pb-3">
@@ -194,8 +185,6 @@ function MDashboardUI() {
                                         width="100%"
                                         frameborder="0">
                                     </iframe>
-                                    {/* <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={500} height={230} /> */}
-                                {/* </div> */}
                             </div>  
 
                             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
