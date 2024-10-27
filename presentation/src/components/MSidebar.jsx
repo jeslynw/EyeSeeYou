@@ -44,8 +44,8 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
       const navItemsTop = [
         { path: "/mdashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
         { path: "/malerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
-        { path: "/summarisedpdf", name: "Report", icon: DescriptionOutlinedIcon },
         { path: "/trendingattacks", name: "Trending Attacks", icon: TrendingUpIcon },
+        { path: "/summarisedpdf", name: "Report", icon: DescriptionOutlinedIcon },
     ];
 
     // Navigation items for bottom

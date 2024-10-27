@@ -17,10 +17,10 @@ import pandas as pd
 
 predict_bp = Blueprint('predict', __name__)
 
-model_path = os.path.join(os.getcwd(), 'MachineLearning', 'lstm_model.h5')
-encoder_path = os.path.join(os.getcwd(), 'MachineLearning', 'one_hot_encoder.pkl')
-scaler_path = os.path.join(os.getcwd(), 'MachineLearning', 'scaler.pkl')
-class_label_path = os.path.join(os.getcwd(), 'MachineLearning', 'class_labels.pkl')
+model_path = os.path.join(os.getcwd(), 'MachineLearning', 'lstm_model2.h5')
+encoder_path = os.path.join(os.getcwd(), 'MachineLearning', 'one_hot_encoder2.pkl')
+scaler_path = os.path.join(os.getcwd(), 'MachineLearning', 'scaler2.pkl')
+class_label_path = os.path.join(os.getcwd(), 'MachineLearning', 'class_labels2.pkl')
 
 model = load_model(model_path)
 encoder = joblib.load(encoder_path)
@@ -28,12 +28,8 @@ scaler = joblib.load(scaler_path)
 class_labels = joblib.load(class_label_path)
 
 def future_predict():
-    # current_user = get_jwt_identity()
-    
     features = get_features()
     data = pd.DataFrame(features)
-    # print("DATAAA:   ", data)
-    # print("features: ", features)
 
     categorical_features = ['Protocol']
     encoded_categorical = encoder.transform(data[categorical_features])

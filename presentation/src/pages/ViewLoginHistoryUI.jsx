@@ -68,10 +68,10 @@ function NALogInHistory() {
     }, []);
 
 
-    const breadcrumbItems = [
-        { path: '/nadashboard', name: 'Dashboard' },
-        { path: '/naloginhistory', name: 'Log In History' },
-    ];
+    // const breadcrumbItems = [
+    //     { path: '/nadashboard', name: 'Dashboard' },
+    //     { path: '/naloginhistory', name: 'Log In History' },
+    // ];
 
     return (
         <div className={`${darkMode ? 'dark' : ''}`}>
@@ -81,7 +81,7 @@ function NALogInHistory() {
                     <p className="text-2xl">LOG IN HISTORY</p>
                     <p className="text-base">{currentDate}</p>
                 </div>
-                <div>
+                {/* <div>
                     <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
                         {breadcrumbItems.map((item) => (
                             <Link
@@ -94,13 +94,13 @@ function NALogInHistory() {
                             </Link>
                         ))}
                     </Breadcrumbs>
-                </div>
+                </div> */}
 
                 <div className="py-2"></div>
 
                 <div className="w-full">
-                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                        <p className="pb-3 text-sm md:text-base">User Logs</p>
+                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+                        <p className="pb-5 text-sm md:text-base">User Logs</p>
                         <div className="h-[415px]">
                             <div className="max-h-[400px] overflow-y-auto">
                                 <Table className="min-w-full">

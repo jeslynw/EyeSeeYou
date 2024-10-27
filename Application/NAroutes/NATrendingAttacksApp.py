@@ -6,10 +6,10 @@ import dbAccess as db
 from flask_jwt_extended import get_jwt_identity
 from auth_decorators import token_required
 
-natrendingattacks_bp = Blueprint('natrendingattacks', __name__)
+trendingattacks_bp = Blueprint('trendingattacks', __name__)
 
 # top source ip address
-@natrendingattacks_bp.route('/natrendingattacks', methods=['GET'])
+@trendingattacks_bp.route('/trendingattacks', methods=['GET'])
 @token_required
 def fetch_trending_attacks():
     current_user = get_jwt_identity()

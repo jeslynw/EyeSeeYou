@@ -127,13 +127,13 @@ function NADashboardUI() {
             {/* 1st row */}
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
               {/* Alerts Overview */}
-              <div className="col-span-4 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
+              <div className="col-span-4 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628]">
+                <p className="pb-5 text-sm md:text-base">Alerts Overview</p>
                 <AlertOverview alert={alertsOverview} />
               </div>
 
-              <div className="col-span-8 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent w-full">
-                <p className="text-sm md:text-base">Alerts Over Time</p>
+              <div className="col-span-8 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628] w-full">
+                <p className="pb-5 text-sm md:text-base">Alerts Over Time</p>
                 <iframe
                   src="http://localhost:5601/app/dashboards#/view/7526f520-76aa-11ef-b502-b1fce63ea091?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-89c6c963-a14e-4495-9344-8e8a48c388d2,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('89c6c963-a14e-4495-9344-8e8a48c388d2':(columnOrder:!('3f6477e2-3529-498f-b7cf-a6a82067c993','77626785-9295-4fa0-95cb-9c2434d7fb32'),columns:('3f6477e2-3529-498f-b7cf-a6a82067c993':(customLabel:!t,dataType:date,isBucketed:!t,label:'Alerts%20over%20time',operationType:date_histogram,params:(interval:auto),scale:interval,sourceField:'@timestamp'),'77626785-9295-4fa0-95cb-9c2434d7fb32':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(axisTitlesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),fittingFunction:None,gridlinesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),labelsOrientation:(x:0,yLeft:0,yRight:0),layers:!((accessors:!('77626785-9295-4fa0-95cb-9c2434d7fb32'),layerId:'89c6c963-a14e-4495-9344-8e8a48c388d2',layerType:data,position:top,seriesType:line,showGridlines:!f,xAccessor:'3f6477e2-3529-498f-b7cf-a6a82067c993')),legend:(isVisible:!t,position:right),preferredSeriesType:line,tickLabelsVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),valueLabels:hide,yLeftExtent:(mode:full),yRightExtent:(mode:full))),title:'',type:lens,visualizationType:lnsXY),enhancements:(),hidePanelTitles:!t),gridData:(h:15,i:b0fe4013-ef43-4364-9892-100a55e74df3,w:48,x:0,y:0),panelIndex:b0fe4013-ef43-4364-9892-100a55e74df3,type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Snort%20line',viewMode:view)&hide-filter-bar=true"
                   height="400"
@@ -147,7 +147,7 @@ function NADashboardUI() {
             <div className="py-2"></div>
 
             {/* 4th row */}
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628]">
               <p className="pb-3 text-sm md:text-base">Recent Alerts</p>
               <div className="h-96">
                 <RecentAlertsTable alerts={alerts} />
@@ -159,8 +159,8 @@ function NADashboardUI() {
 
           {/* 3rd row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+              <p className="pb-5 text-sm md:text-base">Top Threat Sources</p>
               <div className="pb-4">
                 <iframe
                   src="http://localhost:5601/app/dashboards#/view/811a7cb0-7715-11ef-a5fb-e755f6ca9b2d?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-3h%2Cto%3Anow))&hide-filter-bar=true"
@@ -172,8 +172,8 @@ function NADashboardUI() {
               </div>
             </div>
 
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+              <p className="pb-5 text-sm md:text-base">
                 Top Threat Destination
               </p>
               <div className="pb-4">
@@ -192,12 +192,12 @@ function NADashboardUI() {
 
           {/* 2nd row */}
           <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
               <div className="flex justify-between pb-3">
                 <p className="pb-3 text-sm md:text-base">Trending Attacks</p>
                 {/* <button
                   onClick={navigateTAButton}
-                  className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md"
+                  className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-[#252628] hover:bg-slate-200 dark:hover:bg-[#444] rounded-md"
                 >
                   View All
                 </button> */}
