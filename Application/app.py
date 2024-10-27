@@ -146,7 +146,6 @@ def update_account():
 #     current_user = get_jwt_identity()
 #     return jsonify(logged_in_as=current_user), 200
 
-
 app.register_blueprint(feedback_bp)
 app.register_blueprint(nadashboard_bp)
 app.register_blueprint(naalerts_bp)

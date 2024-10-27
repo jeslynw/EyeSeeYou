@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useTheme } from "../components/ThemeProvider";
+import { useTheme } from "./ThemeProvider";
 
 import LogoutUI from "./LogoutUI";
 import logo from "../images/logo.png"

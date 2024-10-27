@@ -59,9 +59,47 @@ function TrendingAttacksUI() {
 
     const [prevData, setPrevData] = useState([]);
     const tableRef = useRef(null);
+    // useEffect(() => {
+    //     const access_token = sessionStorage.getItem('accesstoken');
+
+    //     const fetchData = () => {
+    //         axios.get('http://127.0.0.1:5000/natrendingattacks', {
+    //             headers: {
+    //                 'Authorization': `Bearer ${access_token}`
+    //             }
+    //         })
+    //         .then(response => {
+    //             if (response.status === 200) {
+    //                 //  trending attacks data
+    //                 // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
+    //                 // const classCounts = response.data.trending_attacks.map(alert => alert.count);
+    //                 // setTrendAttackCategory(alertClasses);
+    //                 // setTrendAttackData([{ data: classCounts }]);
+    //                 // console.log('attackcategory', trendAttackCategory)
+    //                 // console.log("attackcount", trendAttackData)
+
+    //                 setPrevData(trendAttackCategory);
+    //                 setTrendAttackCategory(response.data.trending_attacks);
+    //             } else {
+    //                 setError('No data available');
+    //             }
+    //             const temp = response.data.alert_classes;
+    //             console.log("Alert classes:", temp);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching threat info:', error);
+    //             setError('Error fetching data');
+    //         });
+    //     } 
+    //     fetchData();
+    //     const interval = setInterval(fetchData, 5000);
+
+    //     return () => clearInterval(interval);
+    // }, []);
+
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
-
+    
         const fetchData = () => {
             axios.get('http://127.0.0.1:5000/natrendingattacks', {
                 headers: {
@@ -70,16 +108,12 @@ function TrendingAttacksUI() {
             })
             .then(response => {
                 if (response.status === 200) {
-                    //  trending attacks data
-                    // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
-                    // const classCounts = response.data.trending_attacks.map(alert => alert.count);
-                    // setTrendAttackCategory(alertClasses);
-                    // setTrendAttackData([{ data: classCounts }]);
-                    // console.log('attackcategory', trendAttackCategory)
-                    // console.log("attackcount", trendAttackData)
-
                     setPrevData(trendAttackCategory);
-                    setTrendAttackCategory(response.data.trending_attacks);
+    
+                    // Sort trending attacks by count in descending order
+                    const sortedAttacks = response.data.trending_attacks.sort((a, b) => b.count - a.count);
+    
+                    setTrendAttackCategory(sortedAttacks);
                 } else {
                     setError('No data available');
                 }
@@ -90,12 +124,13 @@ function TrendingAttacksUI() {
                 console.error('Error fetching threat info:', error);
                 setError('Error fetching data');
             });
-        } 
+        }; 
         fetchData();
         const interval = setInterval(fetchData, 5000);
-
+    
         return () => clearInterval(interval);
     }, []);
+    
 
     const getRowStyles = (currentIndex, prevIndex) => {
         if (prevIndex === -1) return {}; // New item
@@ -164,6 +199,7 @@ function TrendingAttacksUI() {
                             <table className="min-w-full" ref={tableRef}>
                                 <thead className="sticky top-0 bg-slate-200 dark:bg-gray-700">
                                 <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">No.</th>
                                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">Attack Type</th>
                                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-900 uppercase tracking-wider">Count</th>
                                 </tr>
@@ -180,14 +216,10 @@ function TrendingAttacksUI() {
                                             exit={{ opacity: 0 }}
                                             className="text-sm text-[#6b7280] dark:text-[#9ca3af] dark:border-gray-700 font-light"
                                             >
+                                            <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{attack.class}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right">
                                                 {attack.count}
-                                                {prevIndex !== -1 && prevData[prevIndex].count !== attack.count && (
-                                                <span className={`ml-2 ${attack.count > prevData[prevIndex].count ? 'text-green-500' : 'text-red-500'}`}>
-                                                    {attack.count > prevData[prevIndex].count ? '▲' : '▼'}
-                                                </span>
-                                                )}
                                             </td>
                                             </motion.tr>
                                         );
