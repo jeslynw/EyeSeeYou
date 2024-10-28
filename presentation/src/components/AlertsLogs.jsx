@@ -12,7 +12,7 @@ const getPriorityStyle = (priority) => {
         case "Medium":
             return { label: 'Medium', color: 'bg-[#f7d025]'};
         case "Low":
-            return { label: 'Low', color: 'bg-green-500' }; 
+            return { label: 'Low', color: 'bg-green-500' };
         case "Unknown":
             return { label: 'Unknown', color: 'bg-gray-500' };  
     }
@@ -36,12 +36,12 @@ const getPriorityStyle = (priority) => {
 //         throw new Error('Failed to update alert status');
 //       }
   
-      const result = await response.json();
+    //   const result = await response.json();
     //   console.log(result.message);  // Log success message
-    } catch (error) {
-      console.error('Error updating alert status:', error);
-    }
-  };
+//     } catch (error) {
+//       console.error('Error updating alert status:', error);
+//     }
+//   };
   
 
 function AlertsLogs({alerts}) {

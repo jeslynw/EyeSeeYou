@@ -161,31 +161,32 @@ class Alerts:
             params = []
             conditions = []
 
-        conn = db.get_connection()
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute(query, params)
-                result = cursor.fetchall()
-                if not result:
-                    print(f"No alerts found")
-                    return []
-                alerts = [
-                    {
-                        'timestamp': row[0],
-                        'src_addr': row[1],
-                        'dst_addr': row[2],
-                        'class': row[3],
-                        'priority': row[4]
-                    }
-                    for row in result
-                ]
-                return alerts
-        except Exception as e:
-            print(f"Get alert details error: {e}")
-            return []
-        finally:
-            if conn:
-                conn.close()
+            conn = db.get_connection()
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(query, params)
+                    result = cursor.fetchall()
+                    if not result:
+                        print(f"No alerts found")
+                        return []
+                    alerts = [
+                        {
+                            'timestamp': row[0],
+                            'src_addr': row[1],
+                            'dst_addr': row[2],
+                            'class': row[3],
+                            'priority': row[4],
+                            'status' : row[5]
+                        }
+                        for row in result
+                    ]
+                    return alerts
+            except Exception as e:
+                print(f"Get alert details error: {e}")
+                return []
+            finally:
+                if conn:
+                    conn.close()
 
     def get_critical_alert():
         query = """
