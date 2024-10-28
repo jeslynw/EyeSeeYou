@@ -143,8 +143,6 @@ function GeneratePDF() {
     }
 
 
-    // console.log('delay trendattack: ', trendAttacks)
-
 
     // gemini API chatbot
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -228,8 +226,6 @@ function GeneratePDF() {
 
     const handlePrint = () => {
         PDF(alertsOverview.critical, alertsOverview.high, alertsOverview.med, alertsOverview.low, trendAttacks, networkStatus, srcAndDstIP, answerRecommendation, answerConclusion, asnwerTrend)
-        console.log("Conclusion:", answerConclusion);
-        console.log("Recommendation:", answerRecommendation);
     };
 
     
@@ -241,9 +237,9 @@ function GeneratePDF() {
                 <div className="flex mt-4 mb-4">
                     <p className="min-w-max text-2xl">PDF REPORT</p>
                     <button onClick={handlePrint} className='ml-2 ' title='Download here'  disabled={isLoading}>
-                        <svg className="w-6 h-6 text-gray-800 hover:text-blue-700 dark:text-white transition duration-300 justify-start" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z" clip-rule="evenodd"/>
-                            <path fill-rule="evenodd" d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clip-rule="evenodd"/>
+                        <svg className="w-6 h-6 text-gray-800 hover:text-blue-700 dark:text-white dark:hover:text-blue-700 justify-start transition duration-300 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fillRule="evenodd" d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z" clipRule="evenodd"/>
+                            <path fillRule="evenodd" d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clipRule="evenodd"/>
                         </svg>
                     </button>
                     <p className="flex  items-center w-full text-base justify-end">{currentDate}</p>
@@ -254,15 +250,15 @@ function GeneratePDF() {
                 <div className='flex w-full justify-center'>
                     <div className="grid grid-cols-1 gap-8 lg:w-2/3 text-black">
                         {isLoading && (
-                        <div className="fixed inset-0 bg-white/80 dark:bg-gray-900/80 z-50 flex items-center justify-center">
-                            <div className="flex flex-col items-center space-y-4">
-                                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Loading report...
-                                </p>
+                            <div className="fixed inset-0 bg-white/80 dark:bg-gray-900/80 z-50 flex items-center justify-center">
+                                <div className="flex flex-col items-center space-y-4">
+                                    <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        Loading report...
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-            )}
+                        )}
 
                         {/* Page 1 */}
                         <div className="max-h-full bg-white shadow-lg rounded-lg px-14 py-10 ">

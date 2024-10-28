@@ -50,8 +50,6 @@ function UpdateAccountDetailsUI() {
         .then((response) => {
           if (response.status === 200) {
             const currentUser = response.data;
-            const user_id = response.data.logged_in_as;
-            // console.log(`User: ${user_id}`);
             setFullname(currentUser.full_name);
             setUsername(currentUser.username);
             setEmail(currentUser.email);
@@ -71,7 +69,6 @@ function UpdateAccountDetailsUI() {
 
   useEffect(() => {
     if (formFilled) {
-      // Reset formFilled after validation
       setFormFilled(false);
     }
   }, [formFilled]);
@@ -112,7 +109,6 @@ function UpdateAccountDetailsUI() {
           }
         )
         .then((response) => {
-          // console.log('Account details updated successfully:', response.data);
           if (response.data) {
             displaySuccessMessage();
           } else {
@@ -146,14 +142,12 @@ function UpdateAccountDetailsUI() {
         className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-8 md:px-12 pb-0"
         style={{ minHeight: 'calc(100vh - 60px)' }}
       >
-        {/* NOTE: edit the form action attribute to handle where the data being submitted*/}
         <form action="{handleSubmit}">
           {/* account details text */}
           <div className="flex w-full justify-between  items-center mt-4 mb-4">
             <p className="text-2xl">ACCOUNT DETAILS</p>
           </div>
 
-          {/* NOTE: having trouble adjusting the width on this line below, rmb to test the dynamic part as well. */}
           <div className="bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white items-center rounded-xl shadow-lg dark:shadow-[#353535]  w-full px-6 py-4 ">
             <p className="text-xl mt-5 mb-8">Personal Information</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
@@ -265,13 +259,13 @@ function UpdateAccountDetailsUI() {
           <div className="w-full flex justify-end mt-4 gap-4">
             <button
               onClick={navigateToAccountDetails}
-              className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none cursor-pointer"
+              className="px-4 py-2 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none cursor-pointer transition duration-300 "
             >
               Cancel
             </button>
             <input
               type="submit"
-              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
+              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer transition duration-300 "
               value="Save Changes"
               onClick={validatesAccountDetails}
             />

@@ -36,8 +36,8 @@ const getPriorityStyle = (priority) => {
 //         throw new Error('Failed to update alert status');
 //       }
   
-    //   const result = await response.json();
-    //   console.log(result.message);  // Log success message
+//   const result = await response.json();
+//   console.log(result.message);  // Log success message
 //     } catch (error) {
 //       console.error('Error updating alert status:', error);
 //     }

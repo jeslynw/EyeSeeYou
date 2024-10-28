@@ -74,10 +74,10 @@ function NAAlerts() {
     low: 0,
   });
 
-  const breadcrumbItems = [
-    { path: "/nadashboard", name: "Dashboard" },
-    { path: "/naalerts", name: "Alerts" },
-  ];
+  // const breadcrumbItems = [
+  //   { path: "/nadashboard", name: "Dashboard" },
+  //   { path: "/naalerts", name: "Alerts" },
+  // ];
 
   // search alerts box
   const [showSearchPopUp, setShowSearchPopUp] = useState(false);
@@ -190,7 +190,7 @@ function NAAlerts() {
           <p className="text-2xl">ALERTS</p>
           <p className="text-base">{currentDate}</p>
         </div>
-        <div>
+        {/* <div>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" color="primary" />}
             aria-label="breadcrumb">
@@ -205,30 +205,30 @@ function NAAlerts() {
               </Link>
             ))}
           </Breadcrumbs>
-        </div>
+        </div> */}
 
         <div className="py-2"></div>
 
         <div className="w-full">
           {/* Overall Alerts */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <p className="pb-3 text-sm md:text-base">Overall Alerts</p>
+          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+            <p className="pb-5 text-sm md:text-base">Overall Alerts</p>
             <AlertPageOverview alert={alertsOverview} />
           </div>
 
           <div className="py-4"></div>
 
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <p className="pb-3 text-sm md:text-base">Threat Map</p>
+          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+              <p className="pb-5 text-sm md:text-base">Threat Map</p>
             <div className="p-[300px]"></div>
           </div>
 
           <div className="py-4"></div>
 
           {/* Alerts Logs */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <div className="flex justify-between pb-3">
-              <p className="pb-3 text-sm md:text-base">Alerts Logs</p>
+          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+            <div className="flex justify-between">
+              <p className="text-sm md:text-base">Alerts Logs</p>
               <button
                 onClick={toggleSearchPopUp}
                 className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
