@@ -19,6 +19,7 @@ import MLayout from "./components/MLayout";
 import MDashboardUI from "./pages/MDashboardUI";
 import MAlerts from "./pages/ViewSimplifiedAlertsUI";
 // import MTroubleshootChat from "./pages/MTroubleshootChat";
+import GeneratePDF from "./pages/GeneratePDF";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -151,6 +152,7 @@ function App() {
             <Route path="/mdashboard" element={<MDashboardUI />} />
             <Route path="/malerts" element={<MAlerts />} />
             {/* <Route path="/mtroubleshootchat" element={<MTroubleshootChat />} /> */}
+            <Route path="/summarisedpdf" element={<GeneratePDF />} />
             <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
             <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
             <Route path="/feedback" element={<FeedbackPage />} />

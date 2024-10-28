@@ -40,9 +40,9 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
     if (name === "AnyStatus") {
       setFormData((prevData) => ({
         ...prevData,
-        status: checked ? ["Resolved", "InProgress", "Open", "FalsePositive"] : [],
+        status: checked ? ["Resolved", "In Progress", "Open", "False Positive"] : [],
       }));
-    } else if (["Resolved", "InProgress", "Open", "FalsePositive"].includes(name)) {
+    } else if (["Resolved", "In Progress", "Open", "False Positive"].includes(name)) {
       setFormData((prevData) => ({
         ...prevData,
         status: checked
@@ -242,8 +242,8 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
             <label className="flex items-center space-x-1">
               <input
                 type="checkbox"
-                name="InProgress"
-                checked={formData.status.includes("InProgress")}
+                name="In Progress"
+                checked={formData.status.includes("In Progress")}
                 onChange={handleCheckboxChange}
               />
               <span>In Progress</span>
@@ -260,8 +260,8 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
             <label className="flex items-center space-x-1">
               <input
                 type="checkbox"
-                name="FalsePositive"
-                checked={formData.status.includes("FalsePositive")}
+                name="False Positive"
+                checked={formData.status.includes("False Positive")}
                 onChange={handleCheckboxChange}
               />
               <span>False Positive</span>
