@@ -14,7 +14,7 @@ import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import BasicPlanDisabling from "./components/BasicPlanDisabling";
 
 // import SimulateAlert from "./components/SimulateAlert";
-import { Toaster } from 'react-hot-toast';
+// import { Toaster } from 'react-hot-toast';
 // import { AlertNotificationProvider } from "./components/AlertNotificationContext";
 
 // management
@@ -108,7 +108,7 @@ function App() {
           <div className="text-center">
             {/* <SimulateAlert/> */}
           </div>
-          <Toaster />
+          {/* <Toaster /> */}
           {/* <Router> */}
             <Routes>
               {/* <Route path="/Simulate" element={<SimulateAlert />} /> */}
@@ -160,7 +160,7 @@ function App() {
       <ThemeProvider>
         {/* <AlertNotificationProvider> */}
           {/* <SimulateAlert/> */}
-          <Toaster />
+          {/* <Toaster /> */}
           {/* <Router> */}
             <Routes>
               <Route path="/" element={<LandingPage />} />

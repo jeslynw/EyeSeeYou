@@ -35,6 +35,8 @@ from Mroutes.MDashboardApp import m_dashboard_bp
 from Mroutes.MAlertsApp import m_alerts_bp
 from Mroutes.MSummarisedPDFApp import m_summarisedpdf_bp
 
+# from config.py import app, mail
+
 app = Flask(__name__)
 jwt = JWTManager(app)
 CORS(app, origins=['http://localhost:3000'])
@@ -78,14 +80,13 @@ app.config['SECRET_KEY'] = getkey()
 #         conn.close()
 #     return jsonify(data)
 
-
+@app.route('/sendotp', methods=['POST'])
 def send_otp():
     data = request.get_json()
-    if not data or 'username' not in data:
-        return jsonify({"message": "Invalid request"}), 400
-    
     username = data.get('username')
+
     email = User.get_email(username)
+    print(email)
     otp = randint(100000, 999999)
     User.update_otp(username, otp)
 
@@ -94,13 +95,15 @@ def send_otp():
         'One-Time Password', 
         sender = 'eyeseeyoufyp@gmail.com', 
         recipients = [email])
-    msg.body = 'Your One-Time Password is ', otp
+    msg.body = f'Your One-Time Password is {otp}'
 
     try:
         mail.send(msg)
         print("success")
+        return jsonify({"message": "OTP sent"}), 200
     except Exception as e:
         print(f"Failed to send email: {e}")
+        return jsonify({"message": "Invalid request"}), 400
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -111,8 +114,9 @@ def login():
     
     username = data.get('username')
     password = data.get('password')
+    otp = data.get('otp')
     
-    if User.authenticate(username, password):
+    if User.authenticate(username, password, otp):
         # token = token_expiration(username)
         user_id = User.get_id(username)
         profile_id = User.get_profile_id(username)

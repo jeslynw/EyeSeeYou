@@ -3,8 +3,8 @@ import dbAccess as db
 from datetime import datetime
 
 class User:
-    def authenticate(username, password):
-        query = "SELECT password FROM user WHERE username = %s"
+    def authenticate(username, password, otp):
+        query = "SELECT password, otp FROM user WHERE username = %s"
         values = (username,)
         conn = db.get_connection()
         try:
@@ -17,18 +17,22 @@ class User:
                 
                 #retrieve hashed password
                 stored_password = result[0]
+                stored_otp = result[1]
                 
                 #check if the provided password matches the stored hashed password
-                if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+                if (bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))) and (bcrypt.checkpw(str(otp).encode('utf-8'), str(stored_otp).encode('utf-8'))):
                     print(f"Authenticate: username={username}, login successful")
                     User.log_login_attempt(username, 'Successful Login')
+                    User.clear_otp(username)
                     return True
                 else:
                     print(f"Authenticate: username={username}, incorrect password")
+                    # print(f"entered: {str(otp).encode('utf-8')}")
+                    # print(f"stored: {str(stored_otp).encode('utf-8')}")
                     User.log_login_attempt(username, 'Unsuccessful Login')
                     return False
         except Exception as e:
-            print.error(f"Authentication error: {e}")
+            print(f"Authentication error: {e}")
             User.log_login_attempt(username, 'Unsuccessful Login')
             return False
         finally:
@@ -36,6 +40,23 @@ class User:
                 conn.close()
     
     
+    def clear_otp(username):
+        query = "UPDATE user SET otp = NULL WHERE user_id = %s"
+        user_id = User.get_id(username)
+        values = (user_id,)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                conn.commit()
+                return True
+        except Exception as e:
+            print(f"Get by username error: {e}")
+            return False
+        finally:
+            if conn:
+                conn.close()
+
     def get_id(username):
         query = "SELECT user_id FROM user WHERE username = %s"
         values = (username,)
@@ -74,13 +95,13 @@ class User:
             if conn:
                 conn.close()
 
-    # Change password to OTP
+    # Change OTP
     def update_otp(username, otp):
+        hashed_otp = bcrypt.hashpw(str(otp).encode('utf-8'),bcrypt.gensalt())
         query = "UPDATE user SET otp = %s WHERE username = %s"
-        values = (otp, username)
+        values = (hashed_otp, username)
         conn = db.get_connection()
         cursor = conn.cursor()
-        
         try:
             cursor.execute(query, values)
             conn.commit()
