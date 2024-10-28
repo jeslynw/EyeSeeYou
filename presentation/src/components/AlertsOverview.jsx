@@ -40,7 +40,7 @@ function AlertOverview({alert}) {
     }
 
     return (
-    <div className="flex justify-between flex-col md:flex-row bg-[#efe8ff] dark:bg-[#252525] rounded-xl p-5 pl-10 pr-10 items-center h-96">
+    <div className="flex justify-between flex-col md:flex-row  rounded-xl p-5 pl-10 pr-10 items-center h-96">
         <div className="flex flex-col gap-10">
             <div className="flex items-center">
             {emoji}

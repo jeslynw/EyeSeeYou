@@ -27,13 +27,16 @@ from routes.FeedbackApp import feedback_bp
 # NA Routes
 from NAroutes.NADashboardApp import nadashboard_bp
 from NAroutes.NAAlertsApp import naalerts_bp
-from NAroutes.NATrendingAttacksApp import natrendingattacks_bp
+# from NAroutes.NATrendingAttacksApp import natrendingattacks_bp
 from NAroutes.ViewLoginHistoryApp import viewloginhistory_bp
 
 # M routes
 from Mroutes.MDashboardApp import m_dashboard_bp
 from Mroutes.MAlertsApp import m_alerts_bp
 from Mroutes.MSummarisedPDFApp import m_summarisedpdf_bp
+
+from routes.TrendingAttacksApp import trendingattacks_bp
+from MachineLearning.FuturePrediction import predict_bp
 
 app = Flask(__name__)
 jwt = JWTManager(app)
@@ -186,14 +189,15 @@ def update_account():
 #     current_user = get_jwt_identity()
 #     return jsonify(logged_in_as=current_user), 200
 
-
 app.register_blueprint(feedback_bp)
+app.register_blueprint(trendingattacks_bp)
 app.register_blueprint(nadashboard_bp)
 app.register_blueprint(naalerts_bp)
-app.register_blueprint(natrendingattacks_bp)
+# app.register_blueprint(natrendingattacks_bp)
 app.register_blueprint(m_dashboard_bp)
 app.register_blueprint(m_summarisedpdf_bp)
 app.register_blueprint(m_alerts_bp)
+app.register_blueprint(predict_bp)
 app.register_blueprint(viewloginhistory_bp)
 
 if __name__ == '__main__':

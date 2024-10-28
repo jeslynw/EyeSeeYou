@@ -30,40 +30,70 @@ function PricingPlan() {
         }
     ]
 
+    const Tooltip = ({ title, children }) => {
+        const [visible, setVisible] = React.useState(false);
+    
+        return (
+            <span
+                onMouseEnter={() => setVisible(true)}
+                onMouseLeave={() => setVisible(false)}
+                className="relative inline-block"
+            >
+                {children}
+                {visible && (
+                    <div className="absolute z-10 bg-gray-700 text-white text-sm rounded py-1 px-2 bottom-full mb-1 transform translate-x-[-50%] left-1/2">
+                        {title}
+                    </div>
+                )}
+            </span>
+        );
+    };
+
     // Function to render items with icons
     const renderItems = (items = [], type) => {
-        return items.map((item, index) => (
-            <li key={index} className="flex items-center mb-2">
-                {type === 'include' && (
+        return items.map((item, index) => {
+            let icon, title;
+    
+            if (type === 'include') {
+                icon = (
                     <svg className="w-4 h-4 mr-2 text-[#00bfff]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                )}
-                {type === 'limited' && (
+                );
+                title = 'Included Feature';
+            } else if (type === 'limited') {
+                icon = (
                     <svg className="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 3a7 7 0 100 14 7 7 0 000-14zm-1 10a1 1 0 112-0 1 1 0 01-2 0zm1-6a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
-                )}
-                {type === 'notIncluded' && (
+                );
+                title = 'Limited Feature';
+            } else if (type === 'notIncluded') {
+                icon = (
                     <svg className="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 3a7 7 0 100 14 7 7 0 000-14zm-1 10a1 1 0 112-0 1 1 0 01-2 0zm1-6a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
-                )}
-                {item}
-            </li>
-        ));
+                );
+                title = 'Not Included Feature';
+            }
+    
+            return (
+                <li key={index} className="flex items-center mb-2 ">
+                    <Tooltip title={title}>{icon}</Tooltip>
+                    {item}
+                </li>
+            );
+        });
     };
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-12 gap-6 px-8 lg:px-5'>
             {pricingPlan.map((plan, index) => (
-                <div key={index} className="relative w-64 bg-transparent border-[1px] border-[#ffffff3f] text-white p-6 rounded-lg overflow-hidden">
+                <div key={index} className="relative w-64 bg-transparent border-[1px] border-[#ffffff3f] text-white p-6 rounded-lg overflow-hidden hover:shadow-lg hover:shadow-[#00bfff]">
                     {/* Larger light corner effects */}
                     <div  
                         className="absolute top-0 left-0 w-28 h-32" 
                         style={{
-                        // background: 'radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 70%)'
-                        // background: 'radial-gradient(circle at 0 0, rgba(147, 51, 234, 0.3) 0%, rgba(147, 51, 234, 0.1) 40%, transparent 70%)'
                         background: 'radial-gradient(circle at 0 0, rgba(0, 192, 255, 0.72) 0%, rgba(0, 191, 255, 0.24) 40%, transparent 70%)'
 
                     }}
@@ -71,8 +101,6 @@ function PricingPlan() {
                     <div 
                         className="absolute bottom-0 right-0 w-28 h-32" 
                         style={{
-                        // background: 'radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 70%)'
-                        // background: 'radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.3) 0%, rgba(147, 51, 234, 0.1) 40%, transparent 70%)'
                         background: 'radial-gradient(circle at 100% 100%, rgba(0, 191, 255, 0.72) 0%, rgba(0, 191, 255, 0.24) 40%, transparent 70%)'
 
                     }}
@@ -89,7 +117,7 @@ function PricingPlan() {
                     <ul className="space-y-2 mt-2 text-sm">
                         {renderItems(plan.limited, 'limited')}
                     </ul>
-                    <ul className="space-y-2 mt-2 text-sm">
+                    <ul className="space-y-2 mt-2 text-sm line-through">
                         {renderItems(plan.notIncluded, 'notIncluded')}
                     </ul>
                 </div>
