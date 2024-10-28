@@ -16,6 +16,7 @@ import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const MSidebar = ({ isOpen, toggleSidebar }) => {
     const { darkMode } = useTheme();
@@ -43,6 +44,7 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
       const navItemsTop = [
         { path: "/mdashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
         { path: "/malerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
+        { path: "/trendingattacks", name: "Trending Attacks", icon: TrendingUpIcon },
         { path: "/summarisedpdf", name: "Report", icon: DescriptionOutlinedIcon },
     ];
 

@@ -12,11 +12,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
     const { darkMode } = useTheme();
@@ -46,7 +46,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       const navItemsTop = [
         { path: "/nadashboard", name: "Dashboard", icon: DashboardOutlinedIcon },
         { path: "/naalerts", name: "Alerts", icon: NotificationsNoneOutlinedIcon },
-        // { path: "/naevents", name: "Events", icon: TodayOutlinedIcon },
+        { path: "/trendingattacks", name: "Trending Attacks", icon: TrendingUpIcon },
         { path: "/naloginhistory", name: "Log In History", icon: HistoryOutlinedIcon },
     ];
 
@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     )}
                     <button
                         onClick={toggleSidebar}
-                        className="px-1 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        className="px-1 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition duration-300"
                     >
                         {isOpen ? (
                             <CloseIcon className="text-black dark:text-white" />
@@ -96,7 +96,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                         className={`flex items-center px-2 py-2 h-12 rounded-xl cursor-pointer text-[20px] ${
                                             location.pathname === item.path
                                                 ? "bg-gray-300 dark:bg-gray-400 text-gray-800"
-                                                : "hover:bg-gray-300 dark:hover:bg-gray-400 transition-colors duration-200"
+                                                : "hover:bg-gray-300 dark:hover:bg-gray-400 transition-colors duration-300"
                                         }`}
                                         style={{
                                             maxWidth: isOpen ? "100%" : "65px",
@@ -128,7 +128,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                         className={`flex items-center px-2 py-2 h-12 rounded-xl cursor-pointer text-[20px] ${
                                             location.pathname === item.path
                                                 ? "bg-gray-300 dark:bg-gray-400 text-gray-800"
-                                                : "hover:bg-gray-300 dark:hover:bg-gray-400 transition-colors duration-200"
+                                                : "hover:bg-gray-300 dark:hover:bg-gray-400 transition-colors duration-300"
                                         }`}
                                         style={{
                                             maxWidth: isOpen ? "100%" : "65px",

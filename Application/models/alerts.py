@@ -144,22 +144,22 @@ class Alerts:
     #             conn.close()
 
     def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
-            query = """
-                    SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, src_addr, dst_addr, class, 
-                    CASE priority
-                            WHEN 1 THEN 'Critical'
-                            WHEN 2 THEN 'High'
-                            WHEN 3 THEN 'Medium'
-                            WHEN 4 THEN 'Low'
-                            ELSE 'unknown'
-                        END AS priority, status
-                    FROM alerts
-                    WHERE class != "none"
-                """
-            
-            # if user input exists in respective fields, add that statement to the query
-            params = []
-            conditions = []
+        query = """
+                SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, src_addr, dst_addr, class, 
+                CASE priority
+                        WHEN 1 THEN 'Critical'
+                        WHEN 2 THEN 'High'
+                        WHEN 3 THEN 'Medium'
+                        WHEN 4 THEN 'Low'
+                        ELSE 'unknown'
+                    END AS priority, status
+                FROM alerts
+                WHERE class != "none"
+            """
+        
+        # if user input exists in respective fields, add that statement to the query
+        params = []
+        conditions = []
 
         conn = db.get_connection()
         try:
@@ -245,6 +245,67 @@ class Alerts:
         except Exception as e:
             print(f"Get critical alert error: {e}")
             return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_features():
+    # First concat current year with timestamp to make it complete
+        query = """
+                SELECT UNIX_TIMESTAMP(
+                        STR_TO_DATE(
+                            CONCAT(YEAR(CURRENT_DATE()), '/', timestamp), 
+                            '%Y/%m/%d-%H:%i:%s.%f'
+                        )
+                    ) AS unix_timestamp,
+                    LOWER(protocol) AS protocol, 
+                    src_port,
+                    dst_port,
+                    timestamp as original_timestamp  -- Keep original for verification
+                FROM alerts
+                WHERE `class` != "none" AND protocol != 'icmp'
+                ORDER BY timestamp DESC
+                LIMIT 26
+                """
+        
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+                if not result:
+                    print(f"No alerts found")
+                    return []
+                
+                feature = []
+                for row in result:
+                    unix_time = row[0]
+                    # Handle case where timestamp might be from previous year
+                    if unix_time is None:
+                        # Try with previous year if current year fails
+                        alternative_query = f"""
+                            SELECT UNIX_TIMESTAMP(
+                                STR_TO_DATE(
+                                    CONCAT(YEAR(CURRENT_DATE()) - 1, '/', %s), 
+                                    '%Y/%m/%d-%H:%i:%s.%f'
+                                )
+                            )
+                            """
+                        cursor.execute(alternative_query, (row[4],))
+                        unix_time = cursor.fetchone()[0]
+                    
+                    feature.append({
+                        'Start time': int(unix_time),
+                        'Protocol': row[1],
+                        'Source Port': row[2],
+                        'Destination Port': row[3]
+                    })
+                
+                return feature
+                
+        except Exception as e:
+            print(f"Get alert details error: {e}")
+            return []
         finally:
             if conn:
                 conn.close()
