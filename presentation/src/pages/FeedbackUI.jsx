@@ -25,7 +25,6 @@ function FeedbackPage() {
 
     checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
 
-    // const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
       axios
@@ -135,7 +134,7 @@ function FeedbackPage() {
             <div className="flex justify-end mt-4">
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none transition duration-300 "
                 type="submit">
                 Submit
               </button>

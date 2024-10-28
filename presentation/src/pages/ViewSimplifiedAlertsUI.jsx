@@ -15,7 +15,6 @@ function MAlerts() {
     const access_token = sessionStorage.getItem('accesstoken');
     const refresh_token = sessionStorage.getItem('refreshtoken');
     if (access_token) {
-        // console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/malerts', {
         headers: {
             'Authorization': `Bearer ${access_token}`
@@ -24,7 +23,6 @@ function MAlerts() {
         .then(response => {
         if (response.status === 200) {
                 const user_id = response.data.logged_in_as;
-                // console.log(`User: ${user_id}`);
         }
         })
         .catch(error => {
@@ -62,10 +60,10 @@ function MAlerts() {
         low: 0,
       });
     
-    const breadcrumbItems = [
-        {path: '/mdashboard', name:'Dashboard'},
-        {path: '/malerts', name: "Alerts"}
-    ]
+    // const breadcrumbItems = [
+    //     {path: '/mdashboard', name:'Dashboard'},
+    //     {path: '/malerts', name: "Alerts"}
+    // ]
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
@@ -107,7 +105,7 @@ function MAlerts() {
             <p className="text-2xl">ALERTS</p>
             <p className="text-base">{currentDate}</p>
         </div>
-        <div>
+        {/* <div>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
             {breadcrumbItems.map((item) => (
                   <Link
@@ -122,13 +120,13 @@ function MAlerts() {
               
             ))}
             </Breadcrumbs>
-        </div>
+        </div> */}
         
         <div className="py-2"></div>
 
         <div className="w-full">
             {/* Overall Alerts */}
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
                 <p className="pb-3 text-sm md:text-base">Alerts Status</p>
                 {/* <AlertPageOverview alert={alertsOverview} /> */}
             </div>
@@ -136,7 +134,7 @@ function MAlerts() {
             <div className="py-4"></div>
 
             {/* Alerts Logs */}
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
                 <p className="pb-3 text-sm md:text-base">Alerts Reports</p>
                 {/* <AlertsLogs alerts={alerts}/> */}
             </div>

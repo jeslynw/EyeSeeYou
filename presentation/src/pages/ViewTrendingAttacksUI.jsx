@@ -8,9 +8,9 @@ import axios from "axios";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
 import { checkIfTokenExpired } from "../App";
+import FutureAttacks from '../components/FutureAttacks';
 
 function TrendingAttacksUI() {
-
     const navigate = useNavigate();
     // redirect to login page if no access token
     if (!sessionStorage.getItem('accesstoken')) {
@@ -22,7 +22,6 @@ function TrendingAttacksUI() {
     const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
-        // console.log('Access found:', access_token);
         axios.get('http://127.0.0.1:5000/loginhistory', {
         headers: {
             'Authorization': `Bearer ${access_token}`
@@ -50,52 +49,85 @@ function TrendingAttacksUI() {
     const currentDate = showDate + ' , ' + showTime
 
     const [error, setError] = useState(null);
-    // const [trendAttackCategory, setTrendAttackCategory] = useState([]);
-    // const [trendAttackData, setTrendAttackData] = useState([]);
-    // console.log("trendAttackCategory:", trendAttackCategory);
-    // console.log("trendAttackData:", trendAttackData);
     const [trendAttackCategory, setTrendAttackCategory] = useState([]);
+    const [predictedAttack, setPredictedAttack] = useState('');
+    const [confidenceLevel, setConfidenceLevel] = useState(0);
 
 
     const [prevData, setPrevData] = useState([]);
     const tableRef = useRef(null);
+    // useEffect(() => {
+    //     const access_token = sessionStorage.getItem('accesstoken');
+
+    //     const fetchData = () => {
+    //         axios.get('http://127.0.0.1:5000/natrendingattacks', {
+    //             headers: {
+    //                 'Authorization': `Bearer ${access_token}`
+    //             }
+    //         })
+    //         .then(response => {
+    //             if (response.status === 200) {
+    //                 //  trending attacks data
+    //                 // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
+    //                 // const classCounts = response.data.trending_attacks.map(alert => alert.count);
+    //                 // setTrendAttackCategory(alertClasses);
+    //                 // setTrendAttackData([{ data: classCounts }]);
+    //                 // console.log('attackcategory', trendAttackCategory)
+    //                 // console.log("attackcount", trendAttackData)
+
+    //                 setPrevData(trendAttackCategory);
+    //                 setTrendAttackCategory(response.data.trending_attacks);
+    //             } else {
+    //                 setError('No data available');
+    //             }
+    //             const temp = response.data.alert_classes;
+    //             console.log("Alert classes:", temp);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching threat info:', error);
+    //             setError('Error fetching data');
+    //         });
+    //     } 
+    //     fetchData();
+    //     const interval = setInterval(fetchData, 5000);
+
+    //     return () => clearInterval(interval);
+    // }, []);
+
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
-
+    
         const fetchData = () => {
-            axios.get('http://127.0.0.1:5000/natrendingattacks', {
+            axios.get('http://127.0.0.1:5000/trendingattacks', {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
             })
             .then(response => {
                 if (response.status === 200) {
-                    //  trending attacks data
-                    // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
-                    // const classCounts = response.data.trending_attacks.map(alert => alert.count);
-                    // setTrendAttackCategory(alertClasses);
-                    // setTrendAttackData([{ data: classCounts }]);
-                    // console.log('attackcategory', trendAttackCategory)
-                    // console.log("attackcount", trendAttackData)
-
                     setPrevData(trendAttackCategory);
-                    setTrendAttackCategory(response.data.trending_attacks);
+    
+                    // Sort trending attacks by count in descending order
+                    const sortedAttacks = response.data.trending_attacks.sort((a, b) => b.count - a.count);
+                    setTrendAttackCategory(sortedAttacks);
+                    const futurePrediction = response.data.future_prediction[0]; 
+                    setPredictedAttack(futurePrediction.label);
+                    setConfidenceLevel(futurePrediction.confidence);
                 } else {
                     setError('No data available');
                 }
-                const temp = response.data.alert_classes;
-                console.log("Alert classes:", temp);
             })
             .catch(error => {
                 console.error('Error fetching threat info:', error);
                 setError('Error fetching data');
             });
-        } 
+        }; 
         fetchData();
         const interval = setInterval(fetchData, 5000);
-
+    
         return () => clearInterval(interval);
     }, []);
+    
 
     const getRowStyles = (currentIndex, prevIndex) => {
         if (prevIndex === -1) return {}; // New item
@@ -106,10 +138,14 @@ function TrendingAttacksUI() {
         };
     };
 
-    const breadcrumbItems = [
-        {path: '/mdashboard', name:'Dashboard'},
-        {path: '/trendingattacks', name: "Trending Attacks"}
-    ]
+    // Calculate the confidence level to percentage
+    const formattedConfidence = (confidenceLevel * 100).toFixed(2);
+
+
+    // const breadcrumbItems = [
+    //     {path: '/mdashboard', name:'Dashboard'},
+    //     {path: '/trendingattacks', name: "Trending Attacks"}
+    // ]
 
     
     return (
@@ -122,7 +158,7 @@ function TrendingAttacksUI() {
                     <p className="text-2xl">TRENDING ATTACKS</p>
                     <p className="text-base">{currentDate}</p>
                 </div>
-                <div>
+                {/* <div>
                     <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
                     {breadcrumbItems.map((item) => (
                         <Link
@@ -137,14 +173,19 @@ function TrendingAttacksUI() {
                     
                     ))}
                     </Breadcrumbs>
-                </div>
+                </div> */}
                 
                 <div className="py-2"></div>
 
                 <div className="w-full">
+                    {/* future attack */}
+                    <FutureAttacks predictedAttack={predictedAttack} confidenceLevel={formattedConfidence} />
+                    
+                    <div className="py-4"></div>
+
                     {/* Bar Chart */}
-                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                        <p className="pb-3 text-sm md:text-base">Trending Attacks Bar Chart</p>
+                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+                        <p className="pb-5 text-sm md:text-base">Trending Attacks Bar Chart</p>
                         <div className="pb-4 px-8">
                             {/* <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={1000} height={380} /> */}
                             {/* <iframe src="http://localhost:5601/goto/140a3ac0-94de-11ef-a0c8-f3e2108b99c7" height="600" width="800"></iframe>*/}
@@ -159,14 +200,15 @@ function TrendingAttacksUI() {
                     <div className="py-4"></div>
 
                     {/* Table */}
-                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                        <p className="pb-3 text-sm md:text-base">Trending Attacks Table</p>
+                    <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+                        <p className="pb-5 text-sm md:text-base">Trending Attacks Table</p>
                         <div className="h-80 overflow-y-auto rounded-md">
                             <table className="min-w-full" ref={tableRef}>
                                 <thead className="sticky top-0 bg-slate-200 dark:bg-gray-700">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">Attack Type</th>
-                                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-900 uppercase tracking-wider">Count</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#6b7280] dark:text-[#9ca3af] uppercase tracking-wider">No.</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#6b7280] dark:text-[#9ca3af] uppercase tracking-wider">Attack Type</th>
+                                    <th className="px-6 py-3 text-right text-xs font-semibold text-[#6b7280] dark:text-[#9ca3af] uppercase tracking-wider">Count</th>
                                 </tr>
                                 </thead>
                                 <tbody className="divide-y bg-slate-100 dark:bg-gray-800">
@@ -181,14 +223,10 @@ function TrendingAttacksUI() {
                                             exit={{ opacity: 0 }}
                                             className="text-sm text-[#6b7280] dark:text-[#9ca3af] dark:border-gray-700 font-light"
                                             >
+                                            <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{attack.class}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right">
                                                 {attack.count}
-                                                {prevIndex !== -1 && prevData[prevIndex].count !== attack.count && (
-                                                <span className={`ml-2 ${attack.count > prevData[prevIndex].count ? 'text-green-500' : 'text-red-500'}`}>
-                                                    {attack.count > prevData[prevIndex].count ? '▲' : '▼'}
-                                                </span>
-                                                )}
                                             </td>
                                             </motion.tr>
                                         );

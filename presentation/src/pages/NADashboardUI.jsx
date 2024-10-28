@@ -15,9 +15,9 @@ function NADashboardUI() {
 
   // navigation button
   const navigate = useNavigate();
-  const navigateTAButton = () => {
-    navigate("/trendingattacks");
-  };
+  // const navigateTAButton = () => {
+  //   navigate("/trendingattacks");
+  // };
   const navigateAlertsButton = () => {
     navigate("/naalerts");
   };
@@ -95,8 +95,8 @@ function NADashboardUI() {
       setError("Error fetching data");
     });
   };
-  fetchData(); // Initial fetch
-  const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+  fetchData();
+  const interval = setInterval(fetchData, 5000);
 
   return () => clearInterval(interval);
   }, []);
@@ -127,11 +127,15 @@ function NADashboardUI() {
             {/* 1st row */}
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
               {/* Alerts Overview */}
-              <div className="col-span-4 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                <p className="pb-3 text-sm md:text-base">Alerts Overview</p>
+              <div className="col-span-4 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628]">
+                <p className="pb-5 text-sm md:text-base">Alerts Overview</p>
                 <AlertOverview alert={alertsOverview} />
               </div>
 
+              <div className="col-span-8 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628] w-full">
+                <p className="pb-5 text-sm md:text-base">Alerts Over Time</p>
+                <iframe
+                  src="http://localhost:5601/app/dashboards#/view/7526f520-76aa-11ef-b502-b1fce63ea091?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-89c6c963-a14e-4495-9344-8e8a48c388d2,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('89c6c963-a14e-4495-9344-8e8a48c388d2':(columnOrder:!('3f6477e2-3529-498f-b7cf-a6a82067c993','77626785-9295-4fa0-95cb-9c2434d7fb32'),columns:('3f6477e2-3529-498f-b7cf-a6a82067c993':(customLabel:!t,dataType:date,isBucketed:!t,label:'Alerts%20over%20time',operationType:date_histogram,params:(interval:auto),scale:interval,sourceField:'@timestamp'),'77626785-9295-4fa0-95cb-9c2434d7fb32':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(axisTitlesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),fittingFunction:None,gridlinesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),labelsOrientation:(x:0,yLeft:0,yRight:0),layers:!((accessors:!('77626785-9295-4fa0-95cb-9c2434d7fb32'),layerId:'89c6c963-a14e-4495-9344-8e8a48c388d2',layerType:data,position:top,seriesType:line,showGridlines:!f,xAccessor:'3f6477e2-3529-498f-b7cf-a6a82067c993')),legend:(isVisible:!t,position:right),preferredSeriesType:line,tickLabelsVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),valueLabels:hide,yLeftExtent:(mode:full),yRightExtent:(mode:full))),title:'',type:lens,visualizationType:lnsXY),enhancements:(),hidePanelTitles:!t),gridData:(h:15,i:b0fe4013-ef43-4364-9892-100a55e74df3,w:48,x:0,y:0),panelIndex:b0fe4013-ef43-4364-9892-100a55e74df3,type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Snort%20line',viewMode:view)&hide-filter-bar=true"
               <div className="col-span-8 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent w-full">
                 <p className="text-sm md:text-base">Alerts Over Time</p>
                 {/* <iframe 
@@ -154,7 +158,7 @@ function NADashboardUI() {
             <div className="py-2"></div>
 
             {/* 4th row */}
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628]">
               <p className="pb-3 text-sm md:text-base">Recent Alerts</p>
               <div className="h-96">
                 <RecentAlertsTable alerts={alerts} />
@@ -166,32 +170,30 @@ function NADashboardUI() {
 
           {/* 3rd row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">Top Threat Sources</p>
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+              <p className="pb-5 text-sm md:text-base">Top Threat Sources</p>
               <div className="pb-4">
                 <iframe
                   src="http://localhost:5601/goto/7d913900-94dc-11ef-a0c8-f3e2108b99c7"
                   height="300"
                   width="100%"
                   scrolling="no"
-                  frameborder="0"
+                  frameBorder="0"
                 ></iframe>
-                {/* <TopThreatSrc threats={threatSrc} error={error}/> */}
               </div>
             </div>
 
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-              <p className="pb-3 text-sm md:text-base">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+              <p className="pb-5 text-sm md:text-base">
                 Top Threat Destination
               </p>
               <div className="pb-4">
-                {/* <TopThreatDest threats={threatDest} error={error} /> */}
                 <iframe
                   src="http://localhost:5601/goto/b78b7260-94dc-11ef-a0c8-f3e2108b99c7"
                   height="300"
                   width="100%"
                   scrolling="no"
-                  frameborder="0"
+                  frameBorder="0"
                 ></iframe>
               </div>
             </div>
@@ -201,33 +203,22 @@ function NADashboardUI() {
 
           {/* 2nd row */}
           <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
-            {/* <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-                            <p className="pb-3 text-sm md:text-base">Alerts Status Pie Chart</p>
-                            <iframe src="http://localhost:5601/app/dashboards#/view/3b6670c0-76a7-11ef-b502-b1fce63ea091?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-9a74ac85-340d-4713-8ec1-7271f35ed391,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('9a74ac85-340d-4713-8ec1-7271f35ed391':(columnOrder:!('67dbed2a-05c5-4967-a417-623f180be435','65a1c139-1727-4171-b936-338a6a04046f'),columns:('65a1c139-1727-4171-b936-338a6a04046f':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records),'67dbed2a-05c5-4967-a417-623f180be435':(dataType:string,isBucketed:!t,label:'Top%20values%20of%20class.keyword',operationType:terms,params:(missingBucket:!f,orderBy:(columnId:'65a1c139-1727-4171-b936-338a6a04046f',type:column),orderDirection:desc,otherBucket:!t,size:5),scale:ordinal,sourceField:class.keyword)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(layers:!((categoryDisplay:hide,groups:!('67dbed2a-05c5-4967-a417-623f180be435'),layerId:'9a74ac85-340d-4713-8ec1-7271f35ed391',layerType:data,legendDisplay:show,metric:'65a1c139-1727-4171-b936-338a6a04046f',nestedLegend:!f,numberDisplay:percent)),palette:(name:kibana_palette,type:palette),shape:donut)),title:'',type:lens,visualizationType:lnsPie),enhancements:(),hidePanelTitles:!t),gridData:(h:18,i:'084c267f-17c4-4e76-9117-0e083b2ad9fc',w:48,x:0,y:0),panelIndex:'084c267f-17c4-4e76-9117-0e083b2ad9fc',type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Eyeseeyou%20class%20',viewMode:view)&hide-filter-bar=true" height="600" width="800"></iframe>
-                            <div className="h-56">
-
-                            </div>
-                        </div> */}
-
-            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
               <div className="flex justify-between pb-3">
                 <p className="pb-3 text-sm md:text-base">Trending Attacks</p>
-                <button
+                {/* <button
                   onClick={navigateTAButton}
-                  className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md"
+                  className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-[#252628] hover:bg-slate-200 dark:hover:bg-[#444] rounded-md"
                 >
                   View All
-                </button>
+                </button> */}
               </div>
-              {/* <div className="h-56"> */}
               <iframe
                 src="http://localhost:5601/goto/76ee6440-94de-11ef-a0c8-f3e2108b99c7"
                 height="400"
                 width="100%"
-                frameborder="0"
+                frameBorder="0"
               ></iframe>
-              {/* <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={500} height={230} /> */}
-              {/* </div> */}
             </div>
           </div>
         </div>
