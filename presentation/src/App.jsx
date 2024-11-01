@@ -22,16 +22,13 @@ import Geolocation from "./components/Geolocation";
 import MLayout from "./components/MLayout";
 import MDashboardUI from "./pages/MDashboardUI";
 import MAlerts from "./pages/ViewSimplifiedAlertsUI";
-// import MTroubleshootChat from "./pages/MTroubleshootChat";
 import GeneratePDF from "./pages/GeneratePDF";
-
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import GeneratePDF from "./pages/GeneratePDF";
 
 // backup
 // function App() {

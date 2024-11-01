@@ -145,7 +145,7 @@ class Alerts:
 
     def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
         query = """
-                SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, src_addr, dst_addr, class, 
+                SELECT id, DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, src_addr, dst_addr, class, 
                 CASE priority
                         WHEN 1 THEN 'Critical'
                         WHEN 2 THEN 'High'
@@ -154,7 +154,7 @@ class Alerts:
                         ELSE 'unknown'
                     END AS priority, status
                 FROM alerts
-                WHERE class != "none"
+                WHERE `class` != "none"
             """
         
         # if user input exists in respective fields, add that statement to the query
