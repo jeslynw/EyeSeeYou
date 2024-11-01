@@ -96,6 +96,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
       dst_addr: "",
       status: [],
     });
+
     onClose(); // close the search box
   };
 
@@ -222,9 +223,9 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
                 checked={
                   formData.status.length === 4 &&
                   formData.status.includes("Resolved") &&
-                  formData.status.includes("InProgress") &&
+                  formData.status.includes("In Progress") &&
                   formData.status.includes("Open") &&
-                  formData.status.includes("FalsePositive")
+                  formData.status.includes("False Positive")
                 }
                 onChange={handleCheckboxChange}
               />

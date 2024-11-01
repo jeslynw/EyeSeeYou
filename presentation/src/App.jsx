@@ -13,6 +13,10 @@ import NALogInHistory from "./pages/ViewLoginHistoryUI";
 import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import BasicPlanDisabling from "./components/BasicPlanDisabling";
+import Geolocation from "./components/Geolocation";
+
+// import SimulateAlert from "./components/SimulateAlert";
+// import { AlertNotificationProvider } from "./components/AlertNotificationContext";
 
 // management
 import MLayout from "./components/MLayout";
@@ -27,6 +31,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import GeneratePDF from "./pages/GeneratePDF";
 
 // backup
 // function App() {
@@ -100,7 +105,7 @@ function App() {
   if (userRole === "1") {
     return (
       <ThemeProvider>
-        {/* <Router> */}
+        <div className="text-center"></div>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/loginUI" element={<LoginUI />} />
@@ -130,16 +135,21 @@ function App() {
               }
             />
             <Route path="/feedback" element={<FeedbackPage />} />
-            <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+            <Route
+              path="/trendingattacks"
+              element={
+                <BasicPlanDisabling>
+                  <TrendingAttacksUI />
+                </BasicPlanDisabling>
+              }
+            />
           </Route>
         </Routes>
-        {/* </Router> */}
       </ThemeProvider>
     );
   } else if (userRole === "2") {
     return (
       <ThemeProvider>
-        {/* <Router> */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/loginUI" element={<LoginUI />} />
@@ -151,15 +161,13 @@ function App() {
             }>
             <Route path="/mdashboard" element={<MDashboardUI />} />
             <Route path="/malerts" element={<MAlerts />} />
-            {/* <Route path="/mtroubleshootchat" element={<MTroubleshootChat />} /> */}
-            <Route path="/summarisedpdf" element={<GeneratePDF />} />
             <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
             <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
+            <Route path="/summarisedpdf" element={<GeneratePDF />} />
           </Route>
         </Routes>
-        {/* </Router> */}
       </ThemeProvider>
     );
   }
@@ -168,13 +176,11 @@ function App() {
   return (
     <div>
       <ThemeProvider>
-        {/* <Router> */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/loginUI" element={<LoginUI />} />
-          {/* then system will check for user role here and redirect to appropriate page */}
+          <Route path="/geo" element={<Geolocation />} />
         </Routes>
-        {/* </Router> */}
       </ThemeProvider>
     </div>
   );

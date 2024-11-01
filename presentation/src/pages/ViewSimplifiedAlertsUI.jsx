@@ -11,18 +11,11 @@ import SearchAlerts from "../components/SearchAlerts";
 import { checkIfTokenExpired } from "../App";
 
 function MAlerts() {
-  const navigate = useNavigate();
-  // redirect to login page if no access token
-  if (!sessionStorage.getItem("accesstoken")) {
-    navigate("/loginUI");
-  }
-
-  checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
-
+  //debugging for user
   const access_token = sessionStorage.getItem("accesstoken");
-
+  const refresh_token = sessionStorage.getItem("refreshtoken");
   if (access_token) {
-    console.log("Access found:", access_token);
+    // console.log('Access found:', access_token);
     axios
       .get("http://127.0.0.1:5000/malerts", {
         headers: {
@@ -32,7 +25,7 @@ function MAlerts() {
       .then((response) => {
         if (response.status === 200) {
           const user_id = response.data.logged_in_as;
-          console.log(`User: ${user_id}`);
+          // console.log(`User: ${user_id}`);
         }
       })
       .catch((error) => {
@@ -77,17 +70,6 @@ function MAlerts() {
     { path: "/mdashboard", name: "Dashboard" },
     { path: "/malerts", name: "Alerts" },
   ];
-
-  // search alerts box
-  const [showSearchPopUp, setShowSearchPopUp] = useState(false);
-  const toggleSearchPopUp = () => {
-    setShowSearchPopUp((prevState) => !prevState);
-  };
-
-  // For fetching search results
-  const onSearchResults = (searchResults) => {
-    setAlerts(searchResults);
-  };
 
   useEffect(() => {
     const access_token = sessionStorage.getItem("accesstoken");
@@ -157,22 +139,8 @@ function MAlerts() {
 
           {/* Alerts Logs */}
           <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <div className="flex justify-between pb-3">
-              <p className="pb-3 text-sm md:text-base">Alerts Reports</p>
-              <button
-                onClick={toggleSearchPopUp}
-                className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
-                Search By
-              </button>
-            </div>
-
-            {/* Search PopUp */}
-            <SearchAlerts
-              isVisible={showSearchPopUp}
-              onClose={toggleSearchPopUp}
-              onSearchResults={onSearchResults}
-            />
-            <AlertsLogs alerts={alerts} />
+            <p className="pb-3 text-sm md:text-base">Alerts Reports</p>
+            {/* <AlertsLogs alerts={alerts}/> */}
           </div>
         </div>
 
