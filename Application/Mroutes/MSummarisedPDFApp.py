@@ -12,7 +12,7 @@ m_summarisedpdf_bp = Blueprint('summarisedpdf', __name__)
 # top source ip address
 @m_summarisedpdf_bp.route('/summarisedpdf', methods=['GET'])
 @token_required
-def fetch_dashboard():
+def fetch_data():
     current_user = get_jwt_identity()
     trending_attacks = get_trending_attacks()
     overview = alert_overview()

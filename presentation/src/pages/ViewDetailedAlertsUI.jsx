@@ -3,12 +3,11 @@ import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AlertPageOverview from "../components/AlertsPageOverview";
 import AlertsLogs from "../components/AlertsLogs";
 import SearchAlerts from "../components/SearchAlerts";
-import { useNavigate } from "react-router-dom";
 import { checkIfTokenExpired } from "../App";
 
 function NAAlerts() {
@@ -165,8 +164,7 @@ function NAAlerts() {
             });
             if (!isSearchActive) {
               setAlerts(response.data.recent_alerts || []);
-            }
-            else{
+            } else {
               setAlerts(searchQuery);
               console.log(searchQuery);
             }
@@ -219,7 +217,7 @@ function NAAlerts() {
           <div className="py-4"></div>
 
           <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
-              <p className="pb-5 text-sm md:text-base">Threat Map</p>
+            <p className="pb-5 text-sm md:text-base">Threat Map</p>
             <div className="p-[300px]"></div>
           </div>
 
