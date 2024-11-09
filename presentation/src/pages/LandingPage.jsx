@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 import '../App.css';
 import '../index.css';
@@ -26,6 +27,22 @@ function LandingPage() {
   const navigateLogin = () => {
     navigate('/loginUI');
   }
+
+  const [feedback, setFeedback] = useState('');
+  console.log("feedback:   ", feedback)
+
+  useEffect(()=>{
+      axios.get('http://127.0.0.1:5000/', {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then (response => {
+          if (response.status === 200) {
+              setFeedback(response.data)
+          }
+      })
+  })
 
   // animated background
   useEffect(() => {
@@ -188,7 +205,7 @@ function LandingPage() {
           <div className='pt-16 pointer-events-none'></div>
 
           {/* User feedback */}
-          <FeedbackContainer />
+          <FeedbackContainer feedback={feedback}/>
 
           <div className='pt-16 pointer-events-none'></div>
 

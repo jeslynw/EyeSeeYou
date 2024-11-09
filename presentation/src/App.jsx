@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider";
 import Layout from "./components/Layout";
@@ -8,17 +9,12 @@ import UpdateAccountDetailsUI from "./pages/UpdateAccountDetailsUI";
 import ViewAccountDetailsUI from "./pages/ViewAccountDetailsUI";
 import NADashboardUI from "./pages/NADashboardUI";
 import NAAlerts from "./pages/ViewDetailedAlertsUI";
-// import NAEvents from "./pages/ViewDetailedEventsUI";
 import NALogInHistory from "./pages/ViewLoginHistoryUI";
 import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import BasicPlanDisabling from "./components/BasicPlanDisabling";
 import Geolocation from "./components/Geolocation";
 
-// import SimulateAlert from "./components/SimulateAlert";
-// import { AlertNotificationProvider } from "./components/AlertNotificationContext";
-
-// management
 import MLayout from "./components/MLayout";
 import MDashboardUI from "./pages/MDashboardUI";
 import MAlerts from "./pages/ViewSimplifiedAlertsUI";
@@ -26,48 +22,30 @@ import GeneratePDF from "./pages/GeneratePDF";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import axios from "axios";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-// backup
-// function App() {
-//   return (
-//     <ThemeProvider>
-//       {/* <Router>   */}
-//         <Routes>
-//           <Route path="/" element={<LandingPage />} />
-//           <Route path="/loginUI" element={<LoginUI />} />
-//           <Route element={<Layout />}>
-//             <Route path="/nadashboard" element={<NADashboardUI />} />
-//             <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
-//             <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
-//             <Route path="/naalerts" element={<NAAlerts />} />
-//             <Route path="/naloginhistory" element={<NALogInHistory />} />
-//             {/* <Route path="/naevents" element={<NAEvents />} /> */}
-//             <Route path="/feedback" element={<FeedbackPage />} />
-//             <Route path="/trendingattacks" element={<TrendingAttacksUI />} />
-//           </Route>
-//         </Routes>
-//       {/* </Router>    */}
-//     </ThemeProvider>
-//   );
-// }
+// Notification Component
+const Notification = ({ notifications, onClose }) => (
+  <div className="notification-container">
+    {notifications.map((notification) => (
+      <div key={notification.id} className="notification">
+        <p>{notification.message}</p>
+        <button onClick={() => onClose(notification.id)}>Close</button>
+      </div>
+    ))}
+  </div>
+);
 
 function App() {
-  const userRole = sessionStorage.getItem("userrole"); // Or get from React Context/Redux
-
-  console.log("userRole: ", userRole); // Debugging log
-
+  const userRole = sessionStorage.getItem("userrole");
   const nav = useNavigate();
+  const [notifications, setNotifications] = useState([]);
+
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
       (response) => response,
       async (error) => {
-        // if (error.response.status !== 403 && error.response.status !== 405) {
-        //   return Promise.reject(error);
-        // }
-
         if (!error.response) {
           return Promise.reject(error);
         }
@@ -84,7 +62,6 @@ function App() {
           try {
             const access_token = await RefreshToken();
             originalRequest.headers["Authorization"] = `Bearer ${access_token}`;
-
             return axios.request(originalRequest);
           } catch (error) {
             sessionStorage.clear();
@@ -99,6 +76,27 @@ function App() {
     };
   }, [nav]);
 
+  // Fetch notifications
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/alerts");
+        setNotifications(response.data.alerts);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    const intervalId = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleCloseNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((alert) => alert.id !== id)
+    );
+  };
+
   if (userRole === "1") {
     return (
       <ThemeProvider>
@@ -111,7 +109,8 @@ function App() {
               <ProtectedRoute allowedRoles={["1"]}>
                 <Layout />
               </ProtectedRoute>
-            }>
+            }
+          >
             <Route path="/nadashboard" element={<NADashboardUI />} />
             <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
             <Route path="/updateaccountdetails" element={<UpdateAccountDetailsUI />} />
@@ -142,6 +141,7 @@ function App() {
             />
           </Route>
         </Routes>
+        <Notification notifications={notifications} onClose={handleCloseNotification} />
       </ThemeProvider>
     );
   } else if (userRole === "2") {
@@ -155,7 +155,8 @@ function App() {
               <ProtectedRoute allowedRoles={["2"]}>
                 <MLayout />
               </ProtectedRoute>
-            }>
+            }
+          >
             <Route path="/mdashboard" element={<MDashboardUI />} />
             <Route path="/malerts" element={<MAlerts />} />
             <Route path="/viewaccountdetails" element={<ViewAccountDetailsUI />} />
@@ -165,6 +166,7 @@ function App() {
             <Route path="/summarisedpdf" element={<GeneratePDF />} />
           </Route>
         </Routes>
+        <Notification notifications={notifications} onClose={handleCloseNotification} />
       </ThemeProvider>
     );
   }
@@ -178,6 +180,7 @@ function App() {
           <Route path="/loginUI" element={<LoginUI />} />
           <Route path="/geo" element={<Geolocation />} />
         </Routes>
+        <Notification notifications={notifications} onClose={handleCloseNotification} />
       </ThemeProvider>
     </div>
   );
@@ -190,7 +193,6 @@ export const checkIfTokenExpired = (token) => {
   return decodedToken.exp < currentTime;
 };
 
-// Function to use the refresh token to get tokens
 export async function RefreshToken() {
   try {
     const refresh_token = sessionStorage.getItem("refreshtoken");

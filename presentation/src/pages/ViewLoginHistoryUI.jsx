@@ -76,7 +76,7 @@ function NALogInHistory() {
     return (
         <div className={`${darkMode ? 'dark' : ''}`}>
             <Header />
-            <div className="flex flex-col bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12">
+            <div className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 sm:px-6 md:px-8 lg:px-12" style={{ minHeight: 'calc(100vh - 60px)' }}>
                 <div className="flex justify-between items-center mt-4 mb-4">
                     <p className="text-2xl">LOG IN HISTORY</p>
                     <p className="text-base">{currentDate}</p>

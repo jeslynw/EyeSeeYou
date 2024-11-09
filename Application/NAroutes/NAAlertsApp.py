@@ -67,6 +67,8 @@ def fetch_dashboard():
     top_threat_dest = get_top_threat_dest()
     trending_attacks = get_trending_attacks()
     recent_alerts = get_recent_alerts()
+    critical_alerts = get_critical_alerts()
+    
 
     list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
     list_top_threat_dest = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
@@ -79,7 +81,8 @@ def fetch_dashboard():
             "dst_addr": alert["dst_addr"],
             "class": alert["class"],
             "priority": alert["priority"],
-            "status": alert["status"]
+            "status": alert["status"],
+            "prediction": alert["prediction"],
         } 
         for alert in recent_alerts
     ]
@@ -90,7 +93,8 @@ def fetch_dashboard():
         "top_threat_dest": list_top_threat_dest,
         "trending_attacks": list_trending_attacks,
         "recent_alerts":list_recent_alerts,
-        "alert_overview": overview
+        "alert_overview": overview,
+        "critical_alerts":critical_alerts
     }), 200
 
 def alert_overview():
@@ -99,7 +103,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
@@ -109,12 +113,9 @@ def alert_overview():
     }
 
 
-def critical_alerts():
+def get_critical_alerts():
     alert = Alerts.get_critical_alert()
-    return {
-        'class': alert['class'],
-        'critical': alert['critical']
-    }
+    return alert
 
 def get_recent_alerts():
     alert = Alerts()

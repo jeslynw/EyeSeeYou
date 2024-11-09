@@ -94,7 +94,10 @@ const FutureAttacks = ({ predictedAttack, confidenceLevel }) => {
   return (
     <div className={`transition-all duration-300 ${animate ? 'opacity-100' : 'opacity-0'}`}>
       <div className="border border-[#e7e7e7] dark:border-[#353535] rounded-xl p-6 bg-white dark:bg-[#252628] shadow-md">
-        <h2 className="pb-5 text-sm md:text-base dark:text-white">Predicted Future Attack</h2>
+        <div className='flex justify-between'>
+          <h2 className="pb-5 text-sm md:text-base dark:text-white">Analysis of Historical Patterns</h2>
+          <h2 className='text-purple-500'>AI DETECTED</h2>
+        </div>
         
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
@@ -131,7 +134,7 @@ const FutureAttacks = ({ predictedAttack, confidenceLevel }) => {
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              This attack is classified as <span className="font-medium">{severity}</span> severity. Immediate action may be required.
+              This incident has been categorized as a <span className={`${styles.text} font-semibold`}>{severity}</span> severity threat. Prompt action is advised to mitigate potential risks.
             </p>
           </div>
         </div>

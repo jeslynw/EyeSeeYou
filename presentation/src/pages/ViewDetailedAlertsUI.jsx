@@ -179,6 +179,9 @@ function NAAlerts() {
     return () => clearInterval(interval);
   }, [isSearchActive, searchQuery]);
 
+
+  console.log("alerts: ", alerts)
+
   return (
     <div className={darkMode ? "dark" : ""}>
       <Header />
