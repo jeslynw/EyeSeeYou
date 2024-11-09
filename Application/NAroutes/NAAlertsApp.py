@@ -67,7 +67,7 @@ def fetch_dashboard():
     top_threat_dest = get_top_threat_dest()
     trending_attacks = get_trending_attacks()
     recent_alerts = get_recent_alerts()
-    critical_alerts = get_critical_alerts()
+    critical_alerts = get_popup()
     
 
     list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
@@ -113,8 +113,8 @@ def alert_overview():
     }
 
 
-def get_critical_alerts():
-    alert = Alerts.get_critical_alert()
+def get_popup():
+    alert = Alerts.get_popup_alert()
     return alert
 
 def get_recent_alerts():
