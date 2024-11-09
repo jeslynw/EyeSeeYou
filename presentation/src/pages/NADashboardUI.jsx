@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import RecentAlertsTable from "../components/RecentAlertsTable";
 import AlertOverview from "../components/AlertsOverview";
 import { checkIfTokenExpired } from "../App";
-
+import BlockIP from "../components/BlockIP"
 
 function NADashboardUI() {
   const { darkMode } = useTheme();
@@ -102,6 +102,18 @@ function NADashboardUI() {
   }, []);
 
 
+  // privacy policy modal pop up
+  const [isPrivacyModalOpen, setPrivacyModalOpen] = useState(false);
+  const openPrivacyModal = (e) => {
+    e.preventDefault(); // Prevents default anchor behavior
+    setPrivacyModalOpen(true);
+  };
+  const closePrivacyModal = () => {
+    setPrivacyModalOpen(false);
+  };
+  
+
+
   return (
     <div className={darkMode ? "dark" : ""}>
       <Header />
@@ -160,7 +172,10 @@ function NADashboardUI() {
           {/* 3rd row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
-              <p className="pb-5 text-sm md:text-base">Top Threat Sources</p>
+              <div className="flex justify-between">
+                <p className="pb-5 text-sm md:text-base">Top Threat Sources</p>
+                <p onClick={openPrivacyModal} className="cursor-default">Block IP?</p>
+              </div>
               <div className="pb-4">
                 <iframe
                   src="http://localhost:5601/app/dashboards#/view/811a7cb0-7715-11ef-a5fb-e755f6ca9b2d?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-3h%2Cto%3Anow))&hide-filter-bar=true"
@@ -214,6 +229,7 @@ function NADashboardUI() {
 
         <div className="p-3"></div>
       </div>
+      <BlockIP isOpen={isPrivacyModalOpen} closeModal={closePrivacyModal}/>
     </div>
   );
 }

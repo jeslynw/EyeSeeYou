@@ -34,6 +34,7 @@ function RecentAlertsTable({alerts}) {
                 <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Destination IP Address</Table.HeadCell>
                 <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Threat Name</Table.HeadCell>
                 <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>Priority</Table.HeadCell>
+                <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'></Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
                 {recentAlerts.map((alert, index) => {
@@ -48,6 +49,22 @@ function RecentAlertsTable({alerts}) {
                                 <div className={`px-2 py-1 text-white rounded-md text-center ${color}`}>
                                     {label}
                                 </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                {alert.class === 'Misc activity' ? (
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-purple-500 font-semibold">AI DETECTED</span>
+                                    <span
+                                    className={`px-2 py-1 text-sm rounded-full font-medium ${
+                                        alert.prediction === 'safe' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                    }`}
+                                    >
+                                    {alert.prediction}
+                                    </span>
+                                </div>
+                                ) : (
+                                <span className="font-semibold">SNORT DETECTED</span>
+                                )}
                             </Table.Cell>
                         </Table.Row>
                     );

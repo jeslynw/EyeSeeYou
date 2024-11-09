@@ -18,4 +18,9 @@ def go_to_feedback():
 @token_required
 def saveRatingAndReview():
     data = request.json
-    return Feedback.submit_feedback(data['user_id'], data['rating'], data['review'])
+    success = Feedback.submit_feedback(data['user_id'], data['rating'], data['review'])
+    
+    if success:
+        return jsonify({"message": "Feedback submitted successfully!"}), 201
+    else:
+        return jsonify({"message": "Error submitting feedback."}), 500
