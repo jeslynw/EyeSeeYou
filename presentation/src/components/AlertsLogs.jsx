@@ -42,7 +42,6 @@ const getPriorityStyle = (priority) => {
 //       console.error('Error updating alert status:', error);
 //     }
 //   };
-  
 
 function AlertsLogs({alerts}) {
     

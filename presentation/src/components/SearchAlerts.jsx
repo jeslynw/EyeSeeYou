@@ -80,7 +80,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          onSearchResults(response.data); // pass data back to parent
+          onSearchResults(response.data);
         }
       })
       .catch((error) => {
