@@ -38,6 +38,38 @@ class User:
         finally:
             if conn:
                 conn.close()
+
+    def check_creds(username, password):
+        query = "SELECT password FROM user WHERE username = %s"
+        values = (username,)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Authenticate: username={username}, no user found")
+                    return False
+                
+                #retrieve hashed password
+                stored_password = result[0]
+                
+                #check if the provided password matches the stored hashed password
+                if (bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))):
+                    print(f"Authenticate: username={username}, login successful")
+                    User.log_login_attempt(username, 'Successful Login')
+                    return True
+                else:
+                    print(f"Authenticate: username={username}, incorrect password")
+                    User.log_login_attempt(username, 'Unsuccessful Login')
+                    return False
+        except Exception as e:
+            print(f"Authentication error: {e}")
+            User.log_login_attempt(username, 'Unsuccessful Login')
+            return False
+        finally:
+            if conn:
+                conn.close()
     
     
     def clear_otp(username):
