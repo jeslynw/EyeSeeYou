@@ -50,6 +50,7 @@ function LoginUI() {
       const response = await axios.post('http://127.0.0.1:5000/login', {
         username: username,
         password: password,
+        otp: otp,
         profileId: profileId
       }, {
         headers: {
@@ -64,9 +65,33 @@ function LoginUI() {
 
         setProfileId(response.data.profileId)
         redirectToDashboard(response.data.profileId)
+        console.log("inside dashboard")
       } else {
         displayErrorMessage()
       }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      setError("Login failed. Please try again.");
+    }
+  };
+
+  const sendOtp = async (event) => {
+    event.preventDefault(); // Prevent form submission
+    if (!username || !password){
+      displayErrorMessage();
+      return;
+    }
+
+    try {      
+      const response = await axios.post('http://127.0.0.1:5000/sendotp', {
+        username: username,
+        password: password,
+        // otp: otp
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     } catch (error) {
       console.error('An error occurred:', error);
       setError("Login failed. Please try again.");
@@ -138,7 +163,7 @@ function LoginUI() {
                         
                         className='w-2/3'
                       />
-                      <button className='ml-3 text-sm bg-[#fff7f7] text-black'>Send OTP</button>          
+                      <button onClick={sendOtp} className='ml-3 text-sm bg-[#fff7f7] text-black'>Send OTP</button>        
                     </div>    
                   </div>
 
