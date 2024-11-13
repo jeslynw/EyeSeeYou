@@ -51,7 +51,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
@@ -60,10 +60,10 @@ def alert_overview():
         "low" : low
     }
 
-
 def get_recent_alerts():
-    alert_details = Alerts.get_alerts_details()
-    return alert_details 
+    alert = Alerts()
+    alert_details = alert.get_search_alerts_details(priority='', class_='', src_addr='', dst_addr='', status='')
+    return alert_details
 
 def get_trending_attacks():
     query = """SELECT class, COUNT(*) as count
@@ -125,3 +125,21 @@ def get_top_threat_dest():
     finally:
         cursor.close()
         conn.close()
+
+
+@m_alerts_bp.route('/malerts/search', methods=['POST'])
+@token_required
+def get_search_alerts_details():
+    alert = Alerts()
+    try:
+        data = request.json
+        priority = data.get('priority')
+        class_ = data.get('class')
+        src_addr = data.get('src_addr')
+        dst_addr = data.get('dst_addr')
+        status = data.get('status')
+        
+        alert_details = alert.get_search_alerts_details(priority, class_, src_addr, dst_addr, status)
+        return jsonify(alert_details)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

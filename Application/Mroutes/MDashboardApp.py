@@ -27,7 +27,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,

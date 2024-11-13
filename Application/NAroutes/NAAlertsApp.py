@@ -19,18 +19,22 @@ def fetch_dashboard():
     top_threat_dest = get_top_threat_dest()
     trending_attacks = get_trending_attacks()
     recent_alerts = get_recent_alerts()
+    critical_alerts = get_popup()
+    
 
     list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
     list_top_threat_dest = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
     list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
     list_recent_alerts = [
         {
+            "id": alert["id"],
             "timestamp": alert["timestamp"],
             "src_addr": alert["src_addr"],
             "dst_addr": alert["dst_addr"],
             "class": alert["class"],
             "priority": alert["priority"],
-            "status": alert["status"]
+            "status": alert["status"],
+            "prediction": alert["prediction"],
         } 
         for alert in recent_alerts
     ]
@@ -41,7 +45,8 @@ def fetch_dashboard():
         "top_threat_dest": list_top_threat_dest,
         "trending_attacks": list_trending_attacks,
         "recent_alerts":list_recent_alerts,
-        "alert_overview": overview
+        "alert_overview": overview,
+        "critical_alerts":critical_alerts
     }), 200
 
 def alert_overview():
@@ -50,7 +55,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
@@ -60,15 +65,13 @@ def alert_overview():
     }
 
 
-def critical_alerts():
-    alert = Alerts.get_critical_alert()
-    return {
-        'class': alert['class'],
-        'critical': alert['critical']
-    }
+def get_popup():
+    alert = Alerts.get_popup_alert()
+    return alert
 
 def get_recent_alerts():
-    alert_details = Alerts.get_search_alerts_details(self=Alerts, priority='', class_='', src_addr='', dst_addr='', status='')
+    alert = Alerts()
+    alert_details = alert.get_search_alerts_details(priority='', class_='', src_addr='', dst_addr='', status='')
     return alert_details
 
 def get_trending_attacks():
@@ -148,3 +151,33 @@ def get_search_alerts_details():
         return jsonify(alert_details)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+@naalerts_bp.route('/naalerts/update_alert_status', methods=['POST'])
+@token_required
+def update_alert_status():
+    try:
+        data = request.json
+        alertId = data.get('alertId')
+        new_status = data.get('status')
+
+        query = "UPDATE alerts SET status = %s WHERE id = %s"
+        conn = db.get_connection()
+        if not conn:
+            raise Exception("Database connection failed")
+        
+        with conn.cursor() as cursor:
+            cursor.execute(query, (new_status, alertId))
+            conn.commit()
+            
+            if cursor.rowcount > 0:
+                return jsonify({"message": "Alert status updated successfully"}), 200
+            else:
+                return jsonify({"error": "Alert not found or status unchanged"}), 404
+    
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()

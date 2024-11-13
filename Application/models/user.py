@@ -56,7 +56,7 @@ class User:
                 conn.close()
 
     def get_profile_id(username):
-        query = "SELECT user_id, profile_id FROM user WHERE username = %s"
+        query = "SELECT profile_id FROM user WHERE username = %s"
         values = (username,)
         conn = db.get_connection()
         try:
@@ -66,8 +66,8 @@ class User:
                 if result is None:
                     print(f"Get by id: username={username}, no user found")
                     return None
-                print(f"profile_id={result[1]}")
-                return result[1]
+                print(f"profile_id={result[0]}")
+                return result[0]
         except Exception as e:
             print(f"Get by id error: {e}")
             return None

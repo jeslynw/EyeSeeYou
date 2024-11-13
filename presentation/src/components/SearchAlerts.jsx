@@ -190,7 +190,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
               value={formData.src_addr}
               onChange={handleInputChange}
               className="w-full border rounded-md p-2 pl-10"
-              placeholder="Enter location"
+              placeholder="Enter source IP address"
             />
             <span className="absolute inset-y-0 left-2 flex items-center">🔍</span>
           </div>
@@ -206,7 +206,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
               value={formData.dst_addr}
               onChange={handleInputChange}
               className="w-full border rounded-md p-2 pl-10"
-              placeholder="Enter location"
+              placeholder="Enter destination IP address"
             />
             <span className="absolute inset-y-0 left-2 flex items-center">🔍</span>
           </div>
