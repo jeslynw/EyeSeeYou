@@ -85,11 +85,15 @@ app.config['SECRET_KEY'] = getkey()
 def send_otp():
     data = request.get_json()
     username = data.get('username')
+    password = data.get('password')
 
     email = User.get_email(username)
     print(email)
     otp = randint(100000, 999999)
     User.update_otp(username, otp)
+
+    if not User.check_creds(username, password):
+        return jsonify({"message": "Incorrect username or password"}), 400
 
     # Construct the email message
     msg = Message(
