@@ -202,16 +202,31 @@ class User:
                 conn.close()
 
     def log_login_attempt(username, status):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        query = "INSERT INTO login_history (username, timestamp, status) VALUES (%s, %s, %s)"
-        values = (username, timestamp, status)
         conn = db.get_connection()
 
+        select_query = "SELECT user_id from user WHERE username = %s"
+        select_values = (username,)
+
+        conn = db.get_connection()
         try:
             with conn.cursor() as cursor:
-                cursor.execute(query, values)
-                conn.commit()
+                cursor.execute(select_query, select_values)
+                result = cursor.fetchone()
+                user_id = result[0]
+                
+                timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                
+                # Insert the login attempt into the login_history table using user_id
+                insert_query = "INSERT INTO login_history (user_id, timestamp, status) VALUES (%s, %s, %s)"
+                insert_values = (user_id, timestamp, status)
+                
+                with conn.cursor() as cursor:
+                    cursor.execute(insert_query, insert_values)
+                    conn.commit()
+                    
+                print(f"Login attempt for user {username} (user_id: {user_id}) logged successfully.")
+                
         except Exception as e:
             print(f"Error logging login attempt: {e}")
         finally:

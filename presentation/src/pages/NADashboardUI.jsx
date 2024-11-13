@@ -47,12 +47,62 @@ function NADashboardUI() {
   const [error, setError] = useState(null);
 
   const [alerts, setAlerts] = useState([]);
+  const [mapIframe, setMapIframe] = useState('');
   const [alertsOverview, setAlertsOverview] = useState({
     critical: 0,
     high: 0,
     med: 0,
     low: 0,
   });
+
+  const [srciFrame, setSrciFrame] = useState();
+
+  // useEffect(() => {
+  //   // redirect to login page if no access token
+  //   if (!sessionStorage.getItem('accesstoken')) {
+  //       navigate('/loginUI');
+  //   }
+
+  //   checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
+
+  //   const fetchData = async () => {
+    
+  //     const access_token = sessionStorage.getItem('accesstoken');
+
+  //     axios.get('http://127.0.0.1:5000/nadashboard', {
+  //         headers: {
+  //             'Authorization': `Bearer ${access_token}`
+  //         }
+  //     })
+  //     .then(response => {
+  //       if (response.status === 200) {
+  //         setAlerts(response.data.recent_alerts || []);
+  //         setMapIframe(response.data.map);
+
+  //     // recent alerts
+  //     const alertsOverview = response.data.alert_overview;
+  //     setAlertsOverview({
+  //       critical: alertsOverview.critical || 0,
+  //       high: alertsOverview.high || 0,
+  //       med: alertsOverview.med || 0,
+  //       low: alertsOverview.low || 0,
+  //     });
+  //     } else {
+  //       setError("No data available");
+  //     }
+
+  //     const temp = response.data.alert_classes;
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error fetching threat info:", error);
+  //     setError("Error fetching data");
+  //   });
+  // };
+  // fetchData();
+  // const interval = setInterval(fetchData, 5000);
+
+  // return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     // redirect to login page if no access token
@@ -62,44 +112,70 @@ function NADashboardUI() {
 
     checkIfTokenExpired(sessionStorage.getItem('accesstoken')); 
 
-    const fetchData = async () => {
-    
-      const access_token = sessionStorage.getItem('accesstoken');
+    const fetchAlertsData = async () => {
+        const access_token = sessionStorage.getItem('accesstoken');
 
-      axios.get('http://127.0.0.1:5000/nadashboard', {
-          headers: {
-              'Authorization': `Bearer ${access_token}`
-          }
-      })
-      .then(response => {
-        if (response.status === 200) {
-          setAlerts(response.data.recent_alerts || []); 
+        axios.get('http://127.0.0.1:5000/nadashboard', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(response => {
+            if (response.status === 200) {
+                // Set alerts and overview
+                setAlerts(response.data.recent_alerts || []);
+                const alertsOverview = response.data.alert_overview;
+                setAlertsOverview({
+                    critical: alertsOverview.critical || 0,
+                    high: alertsOverview.high || 0,
+                    med: alertsOverview.med || 0,
+                    low: alertsOverview.low || 0,
+                });
+            } else {
+                setError("No data available");
+            }
+        })
+        .catch((error) => {
+            console.error("Error fetching alert info:", error);
+            setError("Error fetching data");
+        });
+    };
 
-      // recent alerts
-      const alertsOverview = response.data.alert_overview;
-      setAlertsOverview({
-        critical: alertsOverview.critical || 0,
-        high: alertsOverview.high || 0,
-        med: alertsOverview.med || 0,
-        low: alertsOverview.low || 0,
-      });
-      } else {
-        setError("No data available");
-      }
+    const fetchMapIframe = async () => {
+        const access_token = sessionStorage.getItem('accesstoken');
 
-      const temp = response.data.alert_classes;
-      // console.log("Alert classes:", temp);
-    })
-    .catch((error) => {
-      console.error("Error fetching threat info:", error);
-      setError("Error fetching data");
-    });
-  };
-  fetchData();
-  const interval = setInterval(fetchData, 5000);
+        axios.get('http://127.0.0.1:5000/nadashboard', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        })
+        .then(response => {
+            if (response.status === 200) {
+                setMapIframe(response.data.map);
+            } else {
+                setError("No data available");
+            }
+        })
+        .catch((error) => {
+            console.error("Error fetching map info:", error);
+            setError("Error fetching map");
+        });
+    };
 
-  return () => clearInterval(interval);
-  }, []);
+    // Fetch alerts data every 5 seconds
+    fetchAlertsData();
+    const alertsInterval = setInterval(fetchAlertsData, 5000);
+
+    // Fetch map iframe every 60 seconds
+    fetchMapIframe();
+    const mapInterval = setInterval(fetchMapIframe, 300000);
+
+    return () => {
+        clearInterval(alertsInterval);
+        clearInterval(mapInterval);
+    };
+}, []);
+
 
 
   return (
@@ -135,7 +211,8 @@ function NADashboardUI() {
               <div className="col-span-8 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-[#252628] w-full">
                 <p className="pb-5 text-sm md:text-base">Alerts Over Time</p>
                 <iframe
-                  src="http://localhost:5601/app/dashboards#/view/7526f520-76aa-11ef-b502-b1fce63ea091?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-89c6c963-a14e-4495-9344-8e8a48c388d2,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('89c6c963-a14e-4495-9344-8e8a48c388d2':(columnOrder:!('3f6477e2-3529-498f-b7cf-a6a82067c993','77626785-9295-4fa0-95cb-9c2434d7fb32'),columns:('3f6477e2-3529-498f-b7cf-a6a82067c993':(customLabel:!t,dataType:date,isBucketed:!t,label:'Alerts%20over%20time',operationType:date_histogram,params:(interval:auto),scale:interval,sourceField:'@timestamp'),'77626785-9295-4fa0-95cb-9c2434d7fb32':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(axisTitlesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),fittingFunction:None,gridlinesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),labelsOrientation:(x:0,yLeft:0,yRight:0),layers:!((accessors:!('77626785-9295-4fa0-95cb-9c2434d7fb32'),layerId:'89c6c963-a14e-4495-9344-8e8a48c388d2',layerType:data,position:top,seriesType:line,showGridlines:!f,xAccessor:'3f6477e2-3529-498f-b7cf-a6a82067c993')),legend:(isVisible:!t,position:right),preferredSeriesType:line,tickLabelsVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),valueLabels:hide,yLeftExtent:(mode:full),yRightExtent:(mode:full))),title:'',type:lens,visualizationType:lnsXY),enhancements:(),hidePanelTitles:!t),gridData:(h:15,i:b0fe4013-ef43-4364-9892-100a55e74df3,w:48,x:0,y:0),panelIndex:b0fe4013-ef43-4364-9892-100a55e74df3,type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Snort%20line',viewMode:view)&hide-filter-bar=true"
+                  src="http://localhost:5601/app/dashboards#/view/7526f520-76aa-11ef-b502-b1fce63ea091?embed=true&_g=(filters:!(),refreshInterval:(pause:!f,value:5000),time:(from:now-3h,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,syncColors:!f,useMargins:!t),panels:!((embeddableConfig:(attributes:(references:!((id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-current-indexpattern,type:index-pattern),(id:'48a30000-74d6-11ef-a9fc-7978195c8b08',name:indexpattern-datasource-layer-89c6c963-a14e-4495-9344-8e8a48c388d2,type:index-pattern)),state:(datasourceStates:(indexpattern:(layers:('89c6c963-a14e-4495-9344-8e8a48c388d2':(columnOrder:!('3f6477e2-3529-498f-b7cf-a6a82067c993','77626785-9295-4fa0-95cb-9c2434d7fb32'),columns:('3f6477e2-3529-498f-b7cf-a6a82067c993':(customLabel:!t,dataType:date,isBucketed:!t,label:'Alerts%20over%20time',operationType:date_histogram,params:(interval:auto),scale:interval,sourceField:'@timestamp'),'77626785-9295-4fa0-95cb-9c2434d7fb32':(dataType:number,isBucketed:!f,label:'Count%20of%20records',operationType:count,scale:ratio,sourceField:Records)),incompleteColumns:())))),filters:!(),query:(language:kuery,query:''),visualization:(axisTitlesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),fittingFunction:None,gridlinesVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),labelsOrientation:(x:0,yLeft:0,yRight:0),layers:!((accessors:!('77626785-9295-4fa0-95cb-9c2434d7fb32'),layerId:'89c6c963-a14e-4495-9344-8e8a48c388d2',layerType:data,position:top,seriesType:line,showGridlines:!f,xAccessor:'3f6477e2-3529-498f-b7cf-a6a82067c993')),legend:(isVisible:!t,position:right),preferredSeriesType:line,tickLabelsVisibilitySettings:(x:!t,yLeft:!t,yRight:!t),valueLabels:hide,yLeftExtent:(mode:full),yRightExtent:(mode:full))),title:'',type:lens,visualizationType:lnsXY),enhancements:(),hidePanelTitles:!t),gridData:(h:15,i:b0fe4013-ef43-4364-9892-100a55e74df3,w:48,x:0,y:0),panelIndex:b0fe4013-ef43-4364-9892-100a55e74df3,type:lens,version:'7.17.22')),query:(language:kuery,query:''),tags:!(),timeRestore:!f,title:'Snort%20line',viewMode:view)&hide-filter-bar=true"></iframe>
+              </div>
               <div className="col-span-8 border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent w-full">
                 <p className="text-sm md:text-base">Alerts Over Time</p>
                 {/* <iframe 
@@ -222,8 +299,10 @@ function NADashboardUI() {
             </div>
           </div>
         </div>
+        <div className="p-3">
+        </div>
+        <div className="map-container" dangerouslySetInnerHTML={{ __html: mapIframe }}></div>
 
-        <div className="p-3"></div>
       </div>
     </div>
   );
