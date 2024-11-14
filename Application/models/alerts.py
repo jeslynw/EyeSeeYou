@@ -218,17 +218,18 @@ class Alerts:
 
     def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
         query = """
-                SELECT id, DATE_FORMAT(STR_TO_DATE(start_timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, src_addr, dst_addr, class, 
+                SELECT id, DATE_FORMAT(STR_TO_DATE(start_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as formatted_timestamp, LOWER(protocol) AS protocol, src_addr, dst_addr, class, 
                 CASE priority
                         WHEN 1 THEN 'Critical'
                         WHEN 2 THEN 'High'
                         WHEN 3 THEN 'Medium'
                         WHEN 4 THEN 'Low'
                         ELSE 'unknown'
-                    END AS priority, status
+                    END AS priority, status, DATE_FORMAT(STR_TO_DATE(end_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as end_timestamp
                 FROM alerts
-                WHERE `class` != "none"
+                WHERE class != 'none'
                 ORDER BY formatted_timestamp DESC
+                LIMIT 50
             """
         
         params = []
@@ -251,6 +252,7 @@ class Alerts:
                         'class': row[5],
                         'priority': row[6],
                         'status': row[7],
+                        'end_timestamp': row[8],
                         'prediction': 'N/A'  # Default prediction value for all entries
                     }
                     for row in result
@@ -272,14 +274,14 @@ class Alerts:
                 # Run ML model predictions if there's data to predict on
                 if miscActivityData:
                     predictions = scan_attack(miscActivityData)
-                    print("predictions: ", predictions)
+                    # print("predictions: ", predictions)
 
                     # Update only the prediction field, keeping the original class unchanged
                     for misc_idx, prediction in zip(misc_indices, predictions):
                         feature[misc_idx]['prediction'] = prediction['label']
 
                 # Return all entries with predictions
-                print("\nfeature : ", feature)  
+                # print("\nfeature : ", feature)  
 
                 return feature
 

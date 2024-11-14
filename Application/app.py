@@ -81,6 +81,18 @@ app.config['SECRET_KEY'] = getkey()
 #         conn.close()
 #     return jsonify(data)
 
+def mask_email(email):
+    # Split email into username and domain parts
+    username, domain = email.split("@")
+    
+    # Mask part of the username except the first 3 characters
+    if len(username) > 2:
+        masked_username = username[:3] + "*" * (len(username) - 3)
+    else:
+        # if username is very short, use minimal masking
+        masked_username = username[0] + "*"
+    return masked_username + "@" + domain
+
 @app.route('/sendotp', methods=['POST'])
 def send_otp():
     data = request.get_json()
@@ -105,7 +117,8 @@ def send_otp():
     try:
         mail.send(msg)
         print("success")
-        return jsonify({"message": "OTP sent", "email": email}), 200
+        masked_email = mask_email(email)
+        return jsonify({"message": "OTP sent", "email": masked_email}), 200
     except Exception as e:
         print(f"Failed to send email: {e}")
         return jsonify({"message": "Invalid request"}), 400

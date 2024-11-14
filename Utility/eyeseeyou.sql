@@ -53,7 +53,8 @@ CREATE TABLE alerts (
   `b64_data` text DEFAULT NULL,
   `status` enum('Resolved','Open','In Progress','False Positive') NOT NULL DEFAULT 'Open',
   `count` int(10) DEFAULT NULL,
-  `geoip` text,
+  `geoip_src` text DEFAULT NULL,
+  `geoip_dst` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX idx_class (`class`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -65,6 +66,39 @@ CREATE TABLE alerts (
 -- Dumping data for table `alerts`
 --
 
+INSERT INTO `alerts` (`id`, `start_timestamp`, `end_timestamp`, `pkt_num`, `protocol`, `pkt_gen`, `pkt_len`, `direction`, `src_addr`, `src_port`, `dst_addr`, `dst_port`, `service`, `rule`, `priority`, `class`, `action`, `b64_data`, `status`, `count`, `geoip_src`, `geoip_dst`) VALUES
+(1, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 1, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:366:11', 3, 'Misc activity', 'allow', 'WNklZwAAAACOPgEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 3, '{}', '{}'),
+(2, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 3, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(3, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 4, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 2, '{}', '{}'),
+(4, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 1, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WNklZwAAAACOPgEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(5, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 30, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:384:8', 3, 'Misc activity', 'allow', 'WtklZwAAAAARUAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 10, '{}', '{}'),
+(6, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 5, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WtklZwAAAAARUAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(7, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 34, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:384:8', 3, 'Misc activity', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 7, '{}', '{}'),
+(8, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 7, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'W9klZwAAAAAsWQEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(9, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 70, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:384:8', 3, 'Misc activity', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 6, '{}', '{}'),
+(10, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 9, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(11, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 10, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 3, '{}', '{}'),
+(12, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 26, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WNklZwAAAACOPgEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(13, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 27, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'WNklZwAAAACOPgEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(14, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 28, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(15, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 29, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(16, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 30, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WtklZwAAAAARUAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(17, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 31, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'WtklZwAAAAARUAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(18, '2024-11-14 14:43:23', '2024-11-14 14:43:23', 32, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'W9klZwAAAAAsWQEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(19, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 33, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'W9klZwAAAAAsWQEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(20, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 34, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(21, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 35, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(22, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 44, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WNklZwAAAACOPgEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(23, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 45, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'WNklZwAAAACOPgEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(24, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 70, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(25, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 71, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'WdklZwAAAACLRwEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(26, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 118, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'WtklZwAAAAARUAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(27, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 158, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:366:11', 3, 'Misc activity', 'allow', 'W9klZwAAAAAsWQEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 2, '{}', '{}'),
+(28, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 158, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'W9klZwAAAAAsWQEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(29, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 227, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:366:11', 3, 'Misc activity', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 3, '{}', '{}'),
+(30, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 227, 'ICMP', 'raw', 84, 'C2S', '10.0.2.4', NULL, '10.0.2.7', NULL, 'unknown', '1:29456:3', 2, 'Information Leak', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 1, '{}', '{}'),
+(31, '2024-11-14 14:43:24', '2024-11-14 14:43:24', 228, 'ICMP', 'raw', 84, 'S2C', '10.0.2.7', NULL, '10.0.2.4', NULL, 'unknown', '1:408:8', 3, 'Misc activity', 'allow', 'XNklZwAAAAD1eAEAAAAAABAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc=', 'Open', 2, '{}', '{}'),
+(32, '2024-11-14 14:43:56', '2024-11-14 14:44:49', 4461, 'TCP', 'raw', 44, 'C2S', '39.109.197.40', 36051, '64.13.134.52', 161, 'unknown', '1:1418:19', 2, 'Attempted Information Leak', 'allow', NULL, 'Open', 8, '{\"country_code2\":\"SG\",\"location\":{\"lon\":103.8658,\"lat\":1.3856},\"city_name\":\"Singapore\",\"timezone\":\"Asia/Singapore\",\"country_name\":\"Singapore\",\"longitude\":103.8658,\"latitude\":1.3856,\"continent_code\":\"AS\",\"ip\":\"39.109.197.40\",\"postal_code\":\"80\",\"country_code3\":\"SG\"}', '{\"longitude\":-97.822,\"country_code2\":\"US\",\"latitude\":37.751,\"continent_code\":\"NA\",\"location\":{\"lon\":-97.822,\"lat\":37.751},\"ip\":\"64.13.134.52\",\"timezone\":\"America/Chicago\",\"country_name\":\"United States\",\"country_code3\":\"US\"}');
 
 --
 -- Table structure for table `user`
@@ -321,7 +355,8 @@ CREATE PROCEDURE aggregate(
     IN class_name varchar(100),
     IN action varchar(20),
     IN b64_data text,
-    IN geoip text
+    IN geoip_src text,
+    IN geoip_dst text
 )
 BEGIN
  
@@ -361,7 +396,8 @@ BEGIN
           action = action, 
           b64_data = b64_data,
           count = count + 1,
-          geoip = geoip
+          geoip_src = geoip_src,
+          geoip_dst = geoip_dst
       WHERE id = previous_id;
       
   ELSEIF previous_end_timestamp IS NULL 
@@ -384,11 +420,12 @@ BEGIN
           action = action, 
           b64_data = b64_data,
           count = count + 1,
-          geoip = geoip
+          geoip_src = geoip_src,
+          geoip_dst = geoip_dst
       WHERE id = previous_id;
   ELSE
-      INSERT INTO alerts (start_timestamp, end_timestamp,pkt_num, protocol, pkt_gen, pkt_len, direction, src_addr, src_port, dst_addr, dst_port, service, rule, priority, class, action, b64_data, count)
-      VALUES (cur_timestamp, cur_timestamp,pkt_num, protocol, pkt_gen, pkt_len, direction, src_addr, src_port, dst_addr, dst_port, service, rule, priority, class_name, action, b64_data, 1);
+      INSERT INTO alerts (start_timestamp, end_timestamp,pkt_num, protocol, pkt_gen, pkt_len, direction, src_addr, src_port, dst_addr, dst_port, service, rule, priority, class, action, b64_data, count, geoip_src, geoip_dst)
+      VALUES (cur_timestamp, cur_timestamp,pkt_num, protocol, pkt_gen, pkt_len, direction, src_addr, src_port, dst_addr, dst_port, service, rule, priority, class_name, action, b64_data, 1, geoip_src, geoip_dst);
 
   
   END IF;

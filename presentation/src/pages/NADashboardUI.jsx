@@ -47,7 +47,8 @@ function NADashboardUI() {
   const [error, setError] = useState(null);
 
   const [alerts, setAlerts] = useState([]);
-  const [mapIframe, setMapIframe] = useState('');
+  const [src_mapIframe, setSrcMapIframe] = useState('');
+  const [dst_mapIframe, setDstMapIframe] = useState('');
   const [alertsOverview, setAlertsOverview] = useState({
     critical: 0,
     high: 0,
@@ -151,7 +152,8 @@ function NADashboardUI() {
         })
         .then(response => {
             if (response.status === 200) {
-                setMapIframe(response.data.map);
+              setSrcMapIframe(response.data.src_map);
+              setDstMapIframe(response.data.dst_map);
             } else {
                 setError("No data available");
             }
@@ -316,7 +318,10 @@ function NADashboardUI() {
         </div>
         <div className="p-3">
         </div>
-        <div className="map-container" dangerouslySetInnerHTML={{ __html: mapIframe }}></div>
+        source geo locations
+        <div className="map-container" dangerouslySetInnerHTML={{ __html: src_mapIframe }}></div>
+        destination geo locations
+        <div className="map-container" dangerouslySetInnerHTML={{ __html: dst_mapIframe }}></div>
 
       </div>
       <BlockIP isOpen={isPrivacyModalOpen} closeModal={closePrivacyModal}/>
