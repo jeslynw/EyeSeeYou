@@ -1,12 +1,13 @@
-from flask import Blueprint, request, jsonify
-import pymysql
+from flask import Blueprint, request, jsonify, render_template_string
+import json
+import folium
+from folium.plugins import HeatMap
 from models.alerts import Alerts
 import dbAccess as db
 
 from flask_jwt_extended import get_jwt_identity
-from auth_decorators import token_required
-import subprocess
 
+from auth_decorators import token_required
 
 nadashboard_bp = Blueprint('nadashboard', __name__)
 
@@ -18,8 +19,14 @@ def fetch_dashboard():
         current_user = get_jwt_identity()
     
         overview = alert_overview()
-
         recent_alerts = get_recent_alerts()
+
+        src_locations = get_src_geoip_list()
+        dst_locations = get_dst_geoip_list()
+
+        src_map = create_heatmap(src_locations)
+        dst_map = create_heatmap(dst_locations)
+        
 
         list_recent_alerts = [
             {
@@ -27,16 +34,17 @@ def fetch_dashboard():
                 "src_addr": alert["src_addr"],
                 "dst_addr": alert["dst_addr"],
                 "class": alert["class"],
-                "priority": alert["priority"],
-                "status": alert["status"],
-                "prediction": alert["prediction"],
+                "priority": alert["priority"]
             } 
             for alert in recent_alerts
         ]
+
         return jsonify({
             "logged_in_as": current_user,
             "recent_alerts":list_recent_alerts,
-            "alert_overview": overview
+            "alert_overview": overview,
+            "src_map": src_map,
+            "dst_map": dst_map
         }), 200
     
 
@@ -46,7 +54,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
@@ -55,98 +63,94 @@ def alert_overview():
         "low" : low
     }
 
-
 def get_recent_alerts():
     alert = Alerts()
     alert_details = alert.get_search_alerts_details(priority='', class_='', src_addr='', dst_addr='', status='')
     return alert_details
 
+def get_src_geoip_list():
+    query = """SELECT DISTINCT geoip_src
+                FROM alerts
+                WHERE geoip_src IS NOT NULL
+                AND geoip_src <> '{}'"""
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+            if not result:
+                print("No geoip found")
+                return None
+            
+            geoip_list = []
+            for row in result:
+                try:
+                    geoip_data = json.loads(row[0])
+                    
+                    latitude = geoip_data.get('latitude')
+                    longitude = geoip_data.get('longitude')
+                    
+                    if latitude is not None and longitude is not None:
+                        geoip_list.append((latitude, longitude))
+                
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}")
+                    continue
+            return geoip_list
+    except Exception as e:
+        print(f"Get geoip error: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+def get_dst_geoip_list():
+    query = """SELECT DISTINCT geoip_dst
+                FROM alerts
+                WHERE geoip_dst IS NOT NULL
+                AND geoip_dst <> '{}'"""
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+            if not result:
+                print("No geoip found")
+                return None
+            
+            geoip_list = []
+            for row in result:
+                try:
+                    geoip_data = json.loads(row[0])
+                    
+                    latitude = geoip_data.get('latitude')
+                    longitude = geoip_data.get('longitude')
+                    
+                    if latitude is not None and longitude is not None:
+                        geoip_list.append((latitude, longitude))
+                
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}")
+                    continue
+            return geoip_list
+    except Exception as e:
+        print(f"Get geoip error: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
 
 
-# def run_iptables_command(command):
-#     try:
-#         result = subprocess.run(
-#             command,
-#             capture_output=True,
-#             text=True,
-#             check=True
-#         )
-#         return True, result.stdout
-#     except subprocess.CalledProcessError as e:
-#         return False, e.stderr
-
-# @nadashboard_bp.route('/nadashboard/block-ip', methods=['POST'])
-# def block_ip():
-#     data = request.json
-#     ip_address = data.get('ip')
-#     if not ip_address:
-#         return jsonify({'error': 'IP address is required'}), 400
-
-#     # Block incoming traffic
-#     command = [
-#         'sudo', 
-#         'iptables', 
-#         '-A', 
-#         'INPUT', 
-#         '-s', 
-#         ip_address, 
-#         '-j', 
-#         'DROP'
-#     ]
+def create_heatmap(locations):
+    """Embed a heatmap as an iframe on a page."""
+    m = folium.Map(location=[locations[0][0], locations[0][1]], zoom_start=15)
     
-#     success, output = run_iptables_command(command)
-#     if not success:
-#         return jsonify({'error': f'Failed to block IP: {output}'}), 500
+    HeatMap(locations).add_to(m)
     
-#     # Save rules
-#     success, output = run_iptables_command(['sudo', 'iptables-save'])
-#     if not success:
-#         return jsonify({'error': f'Failed to save rules: {output}'}), 500
+    m.get_root().width = "500px"
+    m.get_root().height = "400px"
+    iframe = m.get_root()._repr_html_()
 
-#     return jsonify({'message': f'IP {ip_address} blocked successfully'}), 200
-
-# @nadashboard_bp.route('/nadashboard/unblock-ip', methods=['POST'])
-# def unblock_ip():
-#     data = request.json
-#     ip_address = data.get('ip')
-#     if not ip_address:
-#         return jsonify({'error': 'IP address is required'}), 400
-
-#     command = [
-#         'sudo', 
-#         'iptables', 
-#         '-D',  # Delete rule
-#         'INPUT', 
-#         '-s', 
-#         ip_address, 
-#         '-j', 
-#         'DROP'
-#     ]
-    
-#     success, output = run_iptables_command(command)
-#     if not success:
-#         return jsonify({'error': f'Failed to unblock IP: {output}'}), 500
-    
-#     # Save rules
-#     success, output = run_iptables_command(['sudo', 'iptables-save'])
-#     if not success:
-#         return jsonify({'error': f'Failed to save rules: {output}'}), 500
-
-#     return jsonify({'message': f'IP {ip_address} unblocked successfully'}), 200
-
-# @nadashboard_bp.route('/nadashboard/list-blocked-ips', methods=['GET'])
-# def list_blocked_ips():
-#     command = [
-#         'sudo',
-#         'iptables',
-#         '-L',  # List rules
-#         'INPUT',
-#         '-n',  # Numeric output
-#         '--line-numbers'  # Show line numbers
-#     ]
-    
-#     success, output = run_iptables_command(command)
-#     if not success:
-#         return jsonify({'error': f'Failed to list rules: {output}'}), 500
-
-#     return jsonify({'rules': output}), 200
+    return iframe

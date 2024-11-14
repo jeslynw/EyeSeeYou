@@ -146,14 +146,14 @@ class Alerts:
 
     def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
         query = """
-                SELECT id, DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp, LOWER(protocol) AS protocol, src_addr, dst_addr, class, 
+                SELECT id, DATE_FORMAT(STR_TO_DATE(start_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as formatted_timestamp, LOWER(protocol) AS protocol, src_addr, dst_addr, class, 
                 CASE priority
                         WHEN 1 THEN 'Critical'
                         WHEN 2 THEN 'High'
                         WHEN 3 THEN 'Medium'
                         WHEN 4 THEN 'Low'
                         ELSE 'unknown'
-                    END AS priority, status
+                    END AS priority, status, DATE_FORMAT(STR_TO_DATE(end_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as end_timestamp
                 FROM alerts
                 WHERE `class` != "none"
             """
@@ -208,6 +208,7 @@ class Alerts:
                         'class': row[5],
                         'priority': row[6],
                         'status': row[7],
+                        'end_timestamp': row[8],
                         'prediction': 'N/A'  # Default prediction value for all entries
                     }
                     for row in result
@@ -318,17 +319,17 @@ class Alerts:
         query = """
                 SELECT UNIX_TIMESTAMP(
                         STR_TO_DATE(
-                            CONCAT(YEAR(CURRENT_DATE()), '/', timestamp), 
+                            CONCAT(YEAR(CURRENT_DATE()), '/', start_timestamp), 
                             '%Y/%m/%d-%H:%i:%s.%f'
                         )
                     ) AS unix_timestamp,
                     LOWER(protocol) AS protocol, 
                     src_port,
                     dst_port,
-                    timestamp as original_timestamp 
+                    start_timestamp as original_timestamp  -- Keep original for verification
                 FROM alerts
                 WHERE `class` != "none" AND protocol != 'icmp'
-                ORDER BY timestamp DESC
+                ORDER BY start_timestamp DESC
                 LIMIT 26
                 """
         

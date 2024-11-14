@@ -8,6 +8,12 @@ from flask_cors import CORS
 import getKey as gk
 from datetime import timedelta
 
+# send mail and generate OTP
+import smtplib
+from random import randint
+from flask_mail import Mail, Message
+# from mailbox import Message
+
 # import file
 from models.user import User
 from models.user_profile import UserProfile
@@ -35,6 +41,15 @@ from MachineLearning.FuturePrediction import predict_bp
 app = Flask(__name__)
 jwt = JWTManager(app)
 CORS(app, origins=['http://localhost:3000'])
+
+app.config['MAIL_SERVER'] = "smtp.gmail.com"
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = "eyeseeyoufyp@gmail.com"
+app.config['MAIL_PASSWORD'] = "fxjv puoa tdul zzwm"
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
 
 # custom way to get tokens
 def getkey():
@@ -66,6 +81,48 @@ app.config['SECRET_KEY'] = getkey()
 #         conn.close()
 #     return jsonify(data)
 
+def mask_email(email):
+    # Split email into username and domain parts
+    username, domain = email.split("@")
+    
+    # Mask part of the username except the first 3 characters
+    if len(username) > 2:
+        masked_username = username[:3] + "*" * (len(username) - 3)
+    else:
+        # if username is very short, use minimal masking
+        masked_username = username[0] + "*"
+    return masked_username + "@" + domain
+
+@app.route('/sendotp', methods=['POST'])
+def send_otp():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    email = User.get_email(username)
+    print(email)
+    otp = randint(100000, 999999)
+    User.update_otp(username, otp)
+
+    if not User.check_creds(username, password):
+        return jsonify({"message": "Incorrect username or password"}), 400
+
+    # Construct the email message
+    msg = Message(
+        'One-Time Password', 
+        sender = 'eyeseeyoufyp@gmail.com', 
+        recipients = [email])
+    msg.body = f'Your One-Time Password is {otp}'
+
+    try:
+        mail.send(msg)
+        print("success")
+        masked_email = mask_email(email)
+        return jsonify({"message": "OTP sent", "email": masked_email}), 200
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+        return jsonify({"message": "Invalid request"}), 400
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -75,12 +132,13 @@ def login():
     
     username = data.get('username')
     password = data.get('password')
+    otp = data.get('otp')
     
-    if User.authenticate(username, password):
+    if User.authenticate(username, password, otp):
         # token = token_expiration(username)
         user_id = User.get_id(username)
         profile_id = User.get_profile_id(username)
-        access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=10))
+        access_token = create_access_token(identity=user_id, expires_delta=timedelta(minutes=10))
         refresh_token = create_refresh_token(identity=user_id)
         # print(access_token)
         return jsonify(
@@ -95,11 +153,12 @@ def login():
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
+
 @app.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
     user_id = get_jwt_identity()
-    access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=20))
+    access_token = create_access_token(identity=user_id, expires_delta=timedelta(minutes=15))
     refresh_token = create_refresh_token(identity=user_id)
     # print(access_token)
     return jsonify(
