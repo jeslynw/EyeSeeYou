@@ -6,8 +6,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Link, useNavigate } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AlertPageOverview from "../components/AlertsPageOverview";
-import AlertsLogs from "../components/AlertsLogs";
-import SearchAlerts from "../components/SearchAlerts";
+import MAlertsLogs from "../components/MAlertsLogs";
+import MSearchAlerts from "../components/MSearchAlerts";
 import { checkIfTokenExpired } from "../App";
 
 function MAlerts() {
@@ -71,34 +71,56 @@ function MAlerts() {
     { path: "/malerts", name: "Alerts" },
   ];
 
-  useEffect(() => {
-    const access_token = sessionStorage.getItem("accesstoken");
-
-    const fetchData = () => {
-      axios
-        .get("http://127.0.0.1:5000/malerts", {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            const alertsOverview = response.data.alert_overview;
-            setAlertsOverview({
-              critical: alertsOverview.critical || 0,
-              high: alertsOverview.high || 0,
-              med: alertsOverview.med || 0,
-              low: alertsOverview.low || 0,
-            });
-            setAlerts(response.data.recent_alerts || []);
-          }
-        });
+    // search alerts box
+    const [showSearchPopUp, setShowSearchPopUp] = useState(false);
+    const toggleSearchPopUp = () => {
+      setShowSearchPopUp((prevState) => !prevState);
     };
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  
+    // State to track if the user is searching
+    const [isSearchActive, setIsSearchActive] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(null);
+  
+    // For fetching search results
+    const onSearchResults = (searchResults) => {
+      setSearchQuery(searchResults);
+      setIsSearchActive(true);
+    };
+  
+    useEffect(() => {
+      const access_token = sessionStorage.getItem("accesstoken");
+  
+      const fetchData = () => {
+        axios
+          .get("http://127.0.0.1:5000/malerts", {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              const alertsOverview = response.data.alert_overview;
+              setAlertsOverview({
+                critical: alertsOverview.critical || 0,
+                high: alertsOverview.high || 0,
+                med: alertsOverview.med || 0,
+                low: alertsOverview.low || 0,
+              });
+              if (response.data.recent_alerts == searchQuery || !isSearchActive){
+                setAlerts(response.data.recent_alerts || []);
+              } else {
+                setAlerts(searchQuery);
+              }
+            }
+          });
+      };
+      fetchData(); // Initial fetch
+  
+      const interval = setInterval(() => {
+        fetchData();
+      }, 5000); // Poll every 5 seconds
+      return () => clearInterval(interval);
+    }, [isSearchActive, searchQuery]);
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -142,6 +164,34 @@ function MAlerts() {
             <p className="pb-3 text-sm md:text-base">Alerts Reports</p>
             {/* <AlertsLogs alerts={alerts}/> */}
           </div>
+
+          <div className="py-4"></div>
+
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+              <p className="pb-3 text-sm md:text-base">Alerts Tables</p>
+              <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+                <div className="flex justify-between">
+
+                  <p className="text-sm md:text-base">Alerts Logs</p>
+
+                  <button
+                    onClick={toggleSearchPopUp}
+                    className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
+                    Search By
+                  </button>
+
+                </div>
+                
+                <MSearchAlerts
+                  isVisible={showSearchPopUp}
+                  onClose={toggleSearchPopUp}
+                  onSearchResults={onSearchResults}
+                />
+
+                <MAlertsLogs alerts={alerts} />
+
+              </div>
+            </div>
         </div>
 
         <div className="p-10"></div>

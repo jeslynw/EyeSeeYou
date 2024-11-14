@@ -202,7 +202,6 @@ def update_account():
     return jsonify(success), 200 
 
 
-
 app.register_blueprint(landingpage_bp)
 app.register_blueprint(feedback_bp)
 app.register_blueprint(trendingattacks_bp)

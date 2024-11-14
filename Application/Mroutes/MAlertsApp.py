@@ -4,7 +4,6 @@ from models.alerts import Alerts
 import dbAccess as db
 
 from flask_jwt_extended import get_jwt_identity
-
 from auth_decorators import token_required
 
 m_alerts_bp = Blueprint('malerts', __name__)
