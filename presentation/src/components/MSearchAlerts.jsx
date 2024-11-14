@@ -73,7 +73,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
 
     const access_token = sessionStorage.getItem("accesstoken");
     axios
-      .post("http://127.0.0.1:5000/naalerts/search", dataToSend, {
+      .post("http://127.0.0.1:5000/malerts/search", dataToSend, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },

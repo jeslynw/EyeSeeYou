@@ -19,28 +19,28 @@ function NAAlerts() {
 
   checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
 
-  // const access_token = sessionStorage.getItem("accesstoken");
+  const access_token = sessionStorage.getItem("accesstoken");
 
-  // if (access_token) {
-  //   console.log("Access found:", access_token);
-  //   axios
-  //     .get("http://127.0.0.1:5000/naalerts", {
-  //       headers: {
-  //         Authorization: `Bearer ${access_token}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         const user_id = response.data.logged_in_as;
-  //         console.log(`User: ${user_id}`);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching user info:", error);
-  //     });
-  // } else {
-  //   console.error("No token found. Please log in.");
-  // }
+  if (access_token) {
+    console.log("Access found:", access_token);
+    axios
+      .get("http://127.0.0.1:5000/naalerts", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          const user_id = response.data.logged_in_as;
+          console.log(`User: ${user_id}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user info:", error);
+      });
+  } else {
+    console.error("No token found. Please log in.");
+  }
 
   const { darkMode } = useTheme();
 
@@ -73,11 +73,6 @@ function NAAlerts() {
     low: 0,
   });
 
-  // const breadcrumbItems = [
-  //   { path: "/nadashboard", name: "Dashboard" },
-  //   { path: "/naalerts", name: "Alerts" },
-  // ];
-
   // search alerts box
   const [showSearchPopUp, setShowSearchPopUp] = useState(false);
   const toggleSearchPopUp = () => {
@@ -90,58 +85,9 @@ function NAAlerts() {
 
   // For fetching search results
   const onSearchResults = (searchResults) => {
-    setAlerts(searchResults);
     setSearchQuery(searchResults);
-    setIsSearchActive(true); // Mark that a search is active
+    setIsSearchActive(true);
   };
-
-  // useEffect(() => {
-  //   const access_token = sessionStorage.getItem("accesstoken");
-
-  //   // if (!accessToken || checkIfTokenExpired(accessToken)) {
-  //   //   navigate("/loginUI");
-  //   //   return;
-  //   // }
-
-  //   const eventSource = new EventSource(`http://127.0.0.1:5000/naalerts?token=${accessToken}`);
-
-  //   // const eventSource = new EventSource('http://127.0.0.1:5000/naalerts', {
-  //   //   headers: {
-  //   //       'Authorization': `Bearer ${access_token}`
-  //   //   }
-  //   //   });
-
-  //   if (eventSource.onopen) {
-  //     console.log("sse is open");
-  //   } else { console.log("error here")}
-
-  //   eventSource.onmessage = (event) => {
-  //     const data = JSON.parse(event.data);
-  //     console.log("Received SSE Data:", data);
-
-  //     if (data.alert_overview) {
-  //       setAlertsOverview({
-  //         critical: data.alert_overview.critical || 0,
-  //         high: data.alert_overview.high || 0,
-  //         med: data.alert_overview.med || 0,
-  //         low: data.alert_overview.low || 0,
-  //       });
-  //     }
-
-  //     if (data.alerts) {
-  //       setAlerts(data.alerts || []);
-  //     }
-  //   };
-
-  //   eventSource.onerror = (error) => {
-  //     console.error("SSE error:", error);
-  //     eventSource.close();
-  //   };
-
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, [isSearchActive, searchQuery]); // Reopen connection if search changes
 
   useEffect(() => {
     const access_token = sessionStorage.getItem("accesstoken");
@@ -162,11 +108,10 @@ function NAAlerts() {
               med: alertsOverview.med || 0,
               low: alertsOverview.low || 0,
             });
-            if (!isSearchActive) {
+            if (response.data.recent_alerts == searchQuery || !isSearchActive){
               setAlerts(response.data.recent_alerts || []);
             } else {
               setAlerts(searchQuery);
-              console.log(searchQuery);
             }
           }
         });
@@ -191,6 +136,7 @@ function NAAlerts() {
           <p className="text-2xl">ALERTS</p>
           <p className="text-base">{currentDate}</p>
         </div>
+
         {/* <div>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" color="primary" />}
@@ -243,6 +189,7 @@ function NAAlerts() {
               onClose={toggleSearchPopUp}
               onSearchResults={onSearchResults}
             />
+
             <AlertsLogs alerts={alerts} />
           </div>
         </div>

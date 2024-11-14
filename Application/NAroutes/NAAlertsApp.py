@@ -9,54 +9,6 @@ from auth_decorators import token_required
 
 naalerts_bp = Blueprint('naalerts', __name__)
 
-# #SSE
-# @naalerts_bp.route('/naalerts', methods=['GET'])
-# @token_required
-# def stream_alerts_sse():
-#     current_user = get_jwt_identity()
-
-#     def event_stream():
-#         while True:
-#             overview = alert_overview()
-#             top_threat_src = get_top_threat_src()
-#             top_threat_dest = get_top_threat_dest()
-#             trending_attacks = get_trending_attacks()
-#             recent_alerts = get_recent_alerts()
-
-#             list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
-#             list_top_threat_dest = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
-#             list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
-#             list_recent_alerts = [
-#                 {
-#                     "timestamp": alert["timestamp"],
-#                     "src_addr": alert["src_addr"],
-#                     "dst_addr": alert["dst_addr"],
-#                     "class": alert["class"],
-#                     "priority": alert["priority"],
-#                     "status": alert["status"]
-#                 } 
-#                 for alert in recent_alerts
-#             ]
-
-#             # Construct data to be sent
-#             data = json.dumps({
-#                 "logged_in_as": current_user,
-#                 "top_threat_src": list_top_threat_src,
-#                 "top_threat_dest": list_top_threat_dest,
-#                 "trending_attacks": list_trending_attacks,
-#                 "recent_alerts": list_recent_alerts,
-#                 "alert_overview": overview
-#             })
-
-#             # Send the data with SSE format
-#             yield f"data: {data}\n\n"
-
-#             # Wait for 5 seconds before sending the next batch of data
-#             time.sleep(5)
-
-#     return Response(event_stream(), content_type='text/event-stream')
-
-#polling
 @naalerts_bp.route('/naalerts', methods=['GET'])
 @token_required
 def fetch_dashboard():
