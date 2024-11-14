@@ -19,39 +19,40 @@
     }
   };
 
-  function AlertsLogs({ alerts }) {
-    const [updatedAlerts, setUpdatedAlerts] = useState(null);
-
-    const handleStatusChange = async (alertId, newStatus) => {
-      const access_token = sessionStorage.getItem("accesstoken");
-      const data = {
-        alertId: alertId,
-        status: newStatus,
+    function AlertsLogs({ alerts }) {
+      const [updatedAlerts, setUpdatedAlerts] = useState(null);
+      const handleStatusChange = async (alertId, newStatus) => {
+        const access_token = sessionStorage.getItem("accesstoken");
+        const data = {
+          alertId: alertId, // Send alertId
+          status: newStatus, // Send the selected new status
+        };
+    
+        axios
+          .post("http:///127.0.0.1:5000/naalerts/update_alert_status", data, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${access_token}`, // Include JWT token
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data.message); // Log success message
+    
+              // Update status on the dropdown box
+              setUpdatedAlerts((prevAlerts) =>
+                (prevAlerts || alerts).map((alert) =>
+                  alert.id === alertId ? { ...alert, status: newStatus } : alert
+                )
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating alert status:", error);
+          });
       };
-
-      try {
-        const response = await axios.post("http://localhost:5000/naalerts/update_alert_status", data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        });
-        
-        if (response.status === 200) {
-          // console.log(response.data.message);
-          setUpdatedAlerts((prevAlerts) =>
-            (prevAlerts || alerts).map((alert) =>
-              alert.id === alertId ? { ...alert, status: newStatus } : alert
-            )
-          );
-        }
-      } catch (error) {
-        console.error("Error updating alert status:", error);
-      }
-    };
-
-    const alertsToDisplay = updatedAlerts || alerts;
-    console.log("alertsToDisplay: ", alertsToDisplay);
+    
+      const alertsToDisplay = updatedAlerts || alerts;
 
     return (
       <div className="max-h-[380px] overflow-y-auto">
