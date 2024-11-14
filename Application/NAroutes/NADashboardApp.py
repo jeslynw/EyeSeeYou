@@ -5,8 +5,9 @@ from models.alerts import Alerts
 import dbAccess as db
 
 from flask_jwt_extended import get_jwt_identity
-
 from auth_decorators import token_required
+import subprocess
+
 
 nadashboard_bp = Blueprint('nadashboard', __name__)
 
@@ -29,7 +30,9 @@ def fetch_dashboard():
                 "src_addr": alert["src_addr"],
                 "dst_addr": alert["dst_addr"],
                 "class": alert["class"],
-                "priority": alert["priority"]
+                "priority": alert["priority"],
+                "status": alert["status"],
+                "prediction": alert["prediction"],
             } 
             for alert in recent_alerts
         ]
@@ -49,7 +52,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
@@ -113,3 +116,92 @@ def create_heatmap(locations):
     iframe = m.get_root()._repr_html_()
 
     return iframe
+
+
+# def run_iptables_command(command):
+#     try:
+#         result = subprocess.run(
+#             command,
+#             capture_output=True,
+#             text=True,
+#             check=True
+#         )
+#         return True, result.stdout
+#     except subprocess.CalledProcessError as e:
+#         return False, e.stderr
+
+# @nadashboard_bp.route('/nadashboard/block-ip', methods=['POST'])
+# def block_ip():
+#     data = request.json
+#     ip_address = data.get('ip')
+#     if not ip_address:
+#         return jsonify({'error': 'IP address is required'}), 400
+
+#     # Block incoming traffic
+#     command = [
+#         'sudo', 
+#         'iptables', 
+#         '-A', 
+#         'INPUT', 
+#         '-s', 
+#         ip_address, 
+#         '-j', 
+#         'DROP'
+#     ]
+    
+#     success, output = run_iptables_command(command)
+#     if not success:
+#         return jsonify({'error': f'Failed to block IP: {output}'}), 500
+    
+#     # Save rules
+#     success, output = run_iptables_command(['sudo', 'iptables-save'])
+#     if not success:
+#         return jsonify({'error': f'Failed to save rules: {output}'}), 500
+
+#     return jsonify({'message': f'IP {ip_address} blocked successfully'}), 200
+
+# @nadashboard_bp.route('/nadashboard/unblock-ip', methods=['POST'])
+# def unblock_ip():
+#     data = request.json
+#     ip_address = data.get('ip')
+#     if not ip_address:
+#         return jsonify({'error': 'IP address is required'}), 400
+
+#     command = [
+#         'sudo', 
+#         'iptables', 
+#         '-D',  # Delete rule
+#         'INPUT', 
+#         '-s', 
+#         ip_address, 
+#         '-j', 
+#         'DROP'
+#     ]
+    
+#     success, output = run_iptables_command(command)
+#     if not success:
+#         return jsonify({'error': f'Failed to unblock IP: {output}'}), 500
+    
+#     # Save rules
+#     success, output = run_iptables_command(['sudo', 'iptables-save'])
+#     if not success:
+#         return jsonify({'error': f'Failed to save rules: {output}'}), 500
+
+#     return jsonify({'message': f'IP {ip_address} unblocked successfully'}), 200
+
+# @nadashboard_bp.route('/nadashboard/list-blocked-ips', methods=['GET'])
+# def list_blocked_ips():
+#     command = [
+#         'sudo',
+#         'iptables',
+#         '-L',  # List rules
+#         'INPUT',
+#         '-n',  # Numeric output
+#         '--line-numbers'  # Show line numbers
+#     ]
+    
+#     success, output = run_iptables_command(command)
+#     if not success:
+#         return jsonify({'error': f'Failed to list rules: {output}'}), 500
+
+#     return jsonify({'rules': output}), 200

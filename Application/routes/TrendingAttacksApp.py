@@ -23,7 +23,7 @@ def fetch_trending_attacks():
     return jsonify({
         "logged_in_as": current_user,
         "trending_attacks": list_trending_attacks,
-        "future_prediction": future_prediction
+        "future_prediction": future_prediction,
     }), 200
     
 

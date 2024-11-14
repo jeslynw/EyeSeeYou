@@ -137,7 +137,11 @@ CREATE TABLE `feedback` (
 --
 
 INSERT INTO `feedback` (`feedback_id`, `user_id`, `rating`, `review`) VALUES
-(1, 1, 5, 'very nice');
+(1, 1, 5, "As a user of EyeSeeYou, I’m impressed with how easy it is to navigate the platform. The real-time dashboard keeps me updated on network activity, allowing me to quickly spot potential threats. I feel more secure knowing that I have access to actionable recommendations to mitigate risks effectively."),
+(2, 2, 5, "I recently started using EyeSeeYou, and I have to say, it's been pretty good. The real-time dashboard is intuitive and helps me keep an eye on network activity easily. I just wish it had a few more customization options to really tailor it to my needs."),
+(3, 2, 5, "EyeSeeYou has exceeded my expectations as a network security tool. The interface is user-friendly, and the real-time alerts keep me informed about any unusual activities. The recommendations for threat mitigation are practical and actionable, making it easier for us to enhance our security posture."),
+(4, 1, 4, "EyeSeeYou is a solid tool for network monitoring. I appreciate the real-time insights and recommendations it provides. If the user experience were a bit smoother, I would have rated it higher.");
+
 
 -- --------------------------------------------------------
 
