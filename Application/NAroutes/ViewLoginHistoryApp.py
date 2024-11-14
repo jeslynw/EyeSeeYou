@@ -10,18 +10,16 @@ viewloginhistory_bp = Blueprint('viewloginhistory', __name__)
 @viewloginhistory_bp.route('/loginhistory', methods=['GET'])
 @token_required
 def viewLoginHistory():
-    query = """SELECT * 
-                    FROM login_history
-                    ORDER BY timestamp DESC"""
+    query = """SELECT u.user_id, lh.timestamp, lh.status
+                    FROM login_history lh
+                    JOIN user u ON lh.user_id = u.user_id
+                    ORDER BY lh.timestamp DESC"""
             
     conn = db.get_connection()
     try:
         with conn.cursor() as cursor:
             cursor.execute(query)
             result = cursor.fetchall()
-            # if result is None:
-            #     print(f"No history")
-            #     return None
 
             login_history = [
                 {'username': row[0], 'timestamp': row[1], 'status': row[2]}
@@ -35,4 +33,3 @@ def viewLoginHistory():
     finally:
         if conn:
             conn.close()
-    
