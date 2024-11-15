@@ -184,7 +184,7 @@ class Alerts:
         # Build the final query
         if conditions:
             query += " AND " + " AND ".join(conditions)
-        query += " ORDER BY formatted_timestamp DESC"
+        query += " LIMIT 50"
             
         # print("Executing query:", query)
         # print("With parameters:", priority, class_, src_addr, dst_addr, status)

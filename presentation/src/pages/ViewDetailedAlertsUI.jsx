@@ -10,6 +10,7 @@ import AlertsLogs from "../components/AlertsLogs";
 import SearchAlerts from "../components/SearchAlerts";
 import { checkIfTokenExpired } from "../App";
 
+
 function NAAlerts() {
   const navigate = useNavigate();
   // redirect to login page if no access token

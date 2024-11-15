@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AlertsStatusPieChart from './AlertsStatusPieChart';
 
 function AlertPageOverview({alert}) {
 
@@ -118,6 +119,7 @@ function AlertPageOverview({alert}) {
           <div className="col-span-4 border border-[#e7e7e7] dark:border-gray-700 shadow-md rounded-xl px-4 py-4 bg-gray-50 dark:bg-[#2f3541]">
               <div className="">
                 <p className='pl-4'>Alerts Pie Chart</p>
+                <AlertsStatusPieChart />
               </div> 
           </div>
 
