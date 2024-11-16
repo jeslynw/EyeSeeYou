@@ -20,58 +20,72 @@
   };
 
     function AlertsLogs({ alerts }) {
-      const [updatedAlerts, setUpdatedAlerts] = useState(null);
-      const handleStatusChange = async (alertId, newStatus) => {
-        const access_token = sessionStorage.getItem("accesstoken");
-        const data = {
-          alertId: alertId, // Send alertId
-          status: newStatus, // Send the selected new status
-        };
-    
-        axios
-          .post("http:///127.0.0.1:5000/naalerts/update_alert_status", data, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${access_token}`, // Include JWT token
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              console.log(response.data.message); // Log success message
-    
-              // Update status on the dropdown box
-              setUpdatedAlerts((prevAlerts) =>
-                (prevAlerts || alerts).map((alert) =>
-                  alert.id === alertId ? { ...alert, status: newStatus } : alert
-                )
-              );
-            }
-          })
-          .catch((error) => {
-            console.error("Error updating alert status:", error);
-          });
-      };
-    
-      const alertsToDisplay = updatedAlerts || alerts;
+      const [alertStatus, setAlertStatus] = useState(
+    alerts.reduce((acc, alert) => {
+      acc[alert.id] = alert.status; // Map alert IDs to their initial statuses
+      return acc;
+    }, {})
+  );
 
+  const handleStatusChange = async (alertId, newStatus) => {
+    const access_token = sessionStorage.getItem("accesstoken");
+    const data = {
+      alertId: alertId, // Send alertId
+      status: newStatus, // Send the selected new status
+    };
+
+    // Optimistically update the status in local state
+    setAlertStatus((prevStatus) => ({
+      ...prevStatus,
+      [alertId]: newStatus,
+    }));
+
+    try {
+      const response = await axios.post(
+        "http://34.124.131.244:5000/naalerts/update_alert_status",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`, // Include JWT token
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Status updated successfully:", response.data);
+      }
+    } catch (error) {
+      console.error("Error updating alert status:", error);
+
+      // Revert the status in case of failure
+      setAlertStatus((prevStatus) => ({
+        ...prevStatus,
+        [alertId]: alerts.find((alert) => alert.id === alertId).status,
+      }));
+    }
+  };
+    
     return (
-      <div className="max-h-[380px] overflow-y-auto">
+      <div className="max-h-[550px] overflow-y-auto">
         <Table className="min-w-full">
           <Table.Head className="sticky top-0">
             <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Timestamp</Table.HeadCell>
+            <Table.HeadCell className='bg-slate-200 dark:bg-gray-700'>End Timestamp</Table.HeadCell>
             <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Source IP Address</Table.HeadCell>
             <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Destination IP Address</Table.HeadCell>
             <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Threat Name</Table.HeadCell>
-            <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Priority</Table.HeadCell>
+            <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Severity</Table.HeadCell>
             <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Status</Table.HeadCell>
             <Table.HeadCell className="bg-slate-200 dark:bg-gray-700"></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {alertsToDisplay.map((alert) => {
+            {alerts.map((alert) => {
               const { label, color } = getPriorityStyle(alert.priority);
               return (
                 <Table.Row key={alert.id} className="bg-slate-100 dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>{alert.timestamp}</Table.Cell>
+                  <Table.Cell>{alert.end_timestamp}</Table.Cell>
                   <Table.Cell>{alert.src_addr}</Table.Cell>
                   <Table.Cell>{alert.dst_addr}</Table.Cell>
                   <Table.Cell>{alert.class}</Table.Cell>
@@ -82,7 +96,7 @@
                   </Table.Cell>
                   <Table.Cell>
                     <select
-                      value={alert.status || "Unknown"}
+                      value={alertStatus[alert.id]}
                       onChange={(e) => handleStatusChange(alert.id, e.target.value)}
                       className="rounded-lg text-sm">
                       <option value="Open">Open</option>

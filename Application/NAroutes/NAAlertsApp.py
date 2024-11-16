@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, Response
 import pymysql
 from models.alerts import Alerts
+from models.notification import Notification
 import dbAccess as db
 import time
 import json
@@ -20,8 +21,8 @@ def fetch_dashboard():
     trending_attacks = get_trending_attacks()
     recent_alerts = get_recent_alerts()
     critical_alerts = get_popup()
+    status = get_status()
     
-
     list_top_threat_src = [{"source_address": alert[0], "count_source_address": alert[1]} for alert in top_threat_src]
     list_top_threat_dest = [{"dest_address": alert[0], "count_dest_address": alert[1]} for alert in top_threat_dest]
     list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
@@ -35,8 +36,16 @@ def fetch_dashboard():
             "priority": alert["priority"],
             "status": alert["status"],
             "prediction": alert["prediction"],
+            "end_timestamp": alert["end_timestamp"]
         } 
         for alert in recent_alerts
+    ]
+    list_status = [
+        {
+            'id': alert["id"],
+            'status': alert["status"]
+        } 
+        for alert in status
     ]
 
     return jsonify({
@@ -46,8 +55,13 @@ def fetch_dashboard():
         "trending_attacks": list_trending_attacks,
         "recent_alerts":list_recent_alerts,
         "alert_overview": overview,
-        "critical_alerts":critical_alerts
+        "critical_alerts":critical_alerts,
+        "status":list_status
     }), 200
+
+def get_status():
+    status = Alerts.get_status()
+    return status
 
 def alert_overview():
     crit = Alerts.get_critical_priority()["critical_count"]
@@ -66,8 +80,8 @@ def alert_overview():
 
 
 def get_popup():
-    alert = Alerts.get_popup_alert()
-    return alert
+    popups = Notification.get_notification()
+    return popups
 
 def get_recent_alerts():
     alert = Alerts()

@@ -10,7 +10,7 @@ viewloginhistory_bp = Blueprint('viewloginhistory', __name__)
 @viewloginhistory_bp.route('/loginhistory', methods=['GET'])
 @token_required
 def viewLoginHistory():
-    query = """SELECT u.user_id, lh.timestamp, lh.status
+    query = """SELECT u.username, lh.timestamp, lh.status
                     FROM login_history lh
                     JOIN user u ON lh.user_id = u.user_id
                     ORDER BY lh.timestamp DESC"""

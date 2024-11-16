@@ -29,10 +29,9 @@ function LandingPage() {
   }
 
   const [feedback, setFeedback] = useState('');
-  console.log("feedback:   ", feedback)
 
   useEffect(()=>{
-      axios.get('http://127.0.0.1:5000/', {
+      axios.get('http://34.124.131.244:5000/', {
           headers: {
               'Content-Type': 'application/json'
           }
@@ -108,7 +107,6 @@ function LandingPage() {
         {/* title & subtitle */}
         <div className="w-full h-full max-h-full max-w-full px-8 lg:px-0 backdrop-blur-sm pointer-events-none">
           <div className="flex justify-center items-center text-center pointer-events-none">
-            {/* h-[calc(100vh-100px)]  */}
             <div className='mt-14'>
               <p className='text-white text-[40px] font-semibold'>
                 Unlock Complete Network Visibility With <br/> EyeSeeYou Web-Based IDS
@@ -143,77 +141,84 @@ function LandingPage() {
             ))}
           </div>
 
-          <div className='mt-36 pointer-events-none'></div>
-
           {/* features */}
-          <div className='text-white px-8 lg:px-5'> 
-            <p className='flex justify-center text-center text-white text-3xl font-semibold'>Explore The Power Behind Network Security</p>
-
-            <div className='mt-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-12 gap-6'>
-              <div className='text-[#1c6485]  p-8 bg-[#74B1B9] rounded-xl'>
-                <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 20.293l-4.75-4.75a7.5 7.5 0 1 0-1.414 1.414L19.586 21l1.414-1.414zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="#1c6485"/>
-                </svg>
-                <p className='mt-3 text-lg font-semibold'>Signature-based Detection</p>
-                <p className='mt-2 text-sm'>Identifies known threats by comparing network traffic against a database of predefined attack signatures.</p>
-              </div>  
-
-              <div className='text-[#9ecbd1] p-8 bg-[#40656A] rounded-xl'>
-                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-                </svg>
-                <p className='mt-3 text-lg font-semibold'>Traffic Monitoring</p>
-                <p className='mt-2 text-sm'>Proactively detect and stop threats by continuously analyzing network traffic for suspicious activity.</p>
+          <section id='keyFeatures'>
+          <div className='pt-36 pointer-events-none'></div>
+            <div className='text-white px-8 lg:px-5'> 
+              <div className='flex justify-center'>
+                <h1 className="text-white text-4xl font-semibold pb-8">
+                  Explore The Power Behind <span className="text-[#8f8f8f]">EyeSeeYou</span>
+                </h1>
               </div>
+              <div className='mt-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-12 gap-6'>
+                <div className='text-[#1c6485]  p-8 bg-[#74B1B9] rounded-xl'>
+                  <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 20.293l-4.75-4.75a7.5 7.5 0 1 0-1.414 1.414L19.586 21l1.414-1.414zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="#1c6485"/>
+                  </svg>
+                  <p className='mt-3 text-lg font-semibold'>Signature-based Detection</p>
+                  <p className='mt-2 text-sm'>Identifies known threats by comparing network traffic against a database of predefined attack signatures.</p>
+                </div>  
 
-              <div className='text-[#184452]  p-8 bg-[#289EAE] rounded-xl'>  
-                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#184452">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                </svg>
-                <p className='mt-3 text-lg font-semibold'>Events Detection</p>
-                <p className='mt-2 text-sm'>Gains deep insights into network behavior with detailed event logging and analysis.</p>
-              </div>
+                <div className='text-[#9ecbd1] p-8 bg-[#40656A] rounded-xl'>
+                  <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                  </svg>
+                  <p className='mt-3 text-lg font-semibold'>Traffic Monitoring</p>
+                  <p className='mt-2 text-sm'>Proactively detect and stop threats by continuously analyzing network traffic for suspicious activity.</p>
+                </div>
 
-              <div className='text-[#184452] p-8 bg-[#289EAE] rounded-xl'>
-                <svg className='w-12 h-12' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#184452">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                <div className='text-[#184452]  p-8 bg-[#289EAE] rounded-xl'>  
+                <svg class="w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#184452">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.5A2.493 2.493 0 0 1 7.51 20H7.5a2.468 2.468 0 0 1-2.4-3.154 2.98 2.98 0 0 1-.85-5.274 2.468 2.468 0 0 1 .92-3.182 2.477 2.477 0 0 1 1.876-3.344 2.5 2.5 0 0 1 3.41-1.856A2.5 2.5 0 0 1 12 5.5m0 13v-13m0 13a2.493 2.493 0 0 0 4.49 1.5h.01a2.468 2.468 0 0 0 2.403-3.154 2.98 2.98 0 0 0 .847-5.274 2.468 2.468 0 0 0-.921-3.182 2.477 2.477 0 0 0-1.875-3.344A2.5 2.5 0 0 0 14.5 3 2.5 2.5 0 0 0 12 5.5m-8 5a2.5 2.5 0 0 1 3.48-2.3m-.28 8.551a3 3 0 0 1-2.953-5.185M20 10.5a2.5 2.5 0 0 0-3.481-2.3m.28 8.551a3 3 0 0 0 2.954-5.185"/>
                 </svg>
-                <p className='mt-3 text-lg font-semibold'>Alerts Notification</p>
-                <p className='mt-2 text-sm'>Stays informed with real-time alerts that instantly notify you of potential threats, allowing for rapid response.</p>
-              </div>
+                  <p className='mt-3 text-lg font-semibold'>Machine Learning</p>
+                  <p className='mt-2 text-sm'>Provides deep insights into network behavior, analyzing patterns and detecting anomalies to enable proactive threat detection.</p>
+                </div>
 
-              <div className='text-[#1c6485]  p-8 bg-[#74B1B9] rounded-xl'>
-                <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 12l4 4 8-8 4 4" stroke="#1c6485" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20 20H4" stroke="#1c6485" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <p className='mt-3 text-lg font-semibold'>Trending Attacks</p>
-                <p className='mt-2 text-sm'>Highlights real-time patterns and frequencies of emerging threats, stay ahead of evolving attacks to better protect your network.</p>
-              </div>
+                <div className='text-[#184452] p-8 bg-[#289EAE] rounded-xl'>
+                  <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 3.03v.568c0 .334.148.65.405.864l1.068.89c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 0 1-1.161.886l-.143.048a1.107 1.107 0 0 0-.57 1.664c.369.555.169 1.307-.427 1.605L9 13.125l.423 1.059a.956.956 0 0 1-1.652.928l-.679-.906a1.125 1.125 0 0 0-1.906.172L4.5 15.75l-.612.153M12.75 3.031a9 9 0 0 0-8.862 12.872M12.75 3.031a9 9 0 0 1 6.69 14.036m0 0-.177-.529A2.25 2.25 0 0 0 17.128 15H16.5l-.324-.324a1.453 1.453 0 0 0-2.328.377l-.036.073a1.586 1.586 0 0 1-.982.816l-.99.282c-.55.157-.894.702-.8 1.267l.073.438c.08.474.49.821.97.821.846 0 1.598.542 1.865 1.345l.215.643m5.276-3.67a9.012 9.012 0 0 1-5.276 3.67m0 0a9 9 0 0 1-10.275-4.835M15.75 9c0 .896-.393 1.7-1.016 2.25" />
+                  </svg>
+                  <p className='mt-3 text-lg font-semibold'>Geolocation</p>
+                  <p className='mt-2 text-sm'>Pinpoints the origin of network traffic by associating IP addresses with specific geographic locations, such as cities or countries.</p>
+                </div>
 
-              <div className='text-[#9ecbd1] p-8 bg-[#40656A] rounded-xl'>
-                <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4V12L16 14" stroke="#9ecbd1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 21C6.48 21 2 16.52 2 12S6.48 3 12 3s10 4.48 10 9-4.48 9-10 9z" stroke="#9ecbd1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <p className='mt-3 text-lg font-semibold'>Log In History</p>
-                <p className='mt-2 text-sm'>Monitors user access by tracking successful and failed login attempts to identify potential unauthorized access.</p>
+                <div className='text-[#1c6485]  p-8 bg-[#74B1B9] rounded-xl'>
+                  <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 12l4 4 8-8 4 4" stroke="#1c6485" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20 20H4" stroke="#1c6485" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <p className='mt-3 text-lg font-semibold'>Trending Attacks</p>
+                  <p className='mt-2 text-sm'>Highlights real-time patterns and frequencies of emerging threats, stay ahead of evolving attacks to better protect your network.</p>
+                </div>
+
+                <div className='text-[#9ecbd1] p-8 bg-[#40656A] rounded-xl'>
+                  <svg className='w-12 h-12' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4V12L16 14" stroke="#9ecbd1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 21C6.48 21 2 16.52 2 12S6.48 3 12 3s10 4.48 10 9-4.48 9-10 9z" stroke="#9ecbd1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <p className='mt-3 text-lg font-semibold'>Log In History</p>
+                  <p className='mt-2 text-sm'>Monitors user access by tracking successful and failed login attempts to identify potential unauthorized access.</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className='pt-16 pointer-events-none'></div>
+            <div className='pt-16 pointer-events-none'></div>
+          </section>
 
           {/* User feedback */}
-          <FeedbackContainer feedback={feedback}/>
+          <section id='feedback'>
+            <div className='pt-16 pointer-events-none'></div>
+            <FeedbackContainer feedback={feedback}/>
+            <div className='pt-16 pointer-events-none'></div>
+          </section>
 
-          <div className='pt-16 pointer-events-none'></div>
 
           {/* pricing plan */}
           <section id='pricingPlan'>
+            <div className='pt-16 pointer-events-none'></div>
             <div className='text-white px-8 lg:px-5'> 
-              <p className='flex justify-center text-center text-white text-3xl font-semibold'>Pricing Plans</p>
-              <div className='mt-14'>
+              <p className='flex justify-center text-center text-white text-4xl font-semibold'>Pricing Plans</p>
+              <div className='pt-14'>
                 <PricingPlan/>
               </div>
             </div>

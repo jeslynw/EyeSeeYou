@@ -35,7 +35,7 @@ const MSidebar = ({ isOpen, toggleSidebar }) => {
     const confirmLogout = () => {
         sessionStorage.removeItem('accesstoken');
         sessionStorage.removeItem('refreshtoken');
-        console.log("Logging out...");
+        // console.log("Logging out...");
         setOpenPopUp(false);
         navigate('/');
     };

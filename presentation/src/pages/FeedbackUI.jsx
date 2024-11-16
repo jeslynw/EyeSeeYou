@@ -8,27 +8,26 @@ import { checkIfTokenExpired } from "../App";
 
 function FeedbackPage() {
   const navigate = useNavigate();
-
   const { darkMode } = useTheme();
   const [value, setValue] = React.useState(0);
   const [user_id, setUserId] = useState(null);
   const [review, setReview] = useState("");
   const [returnMsg, setReturnMsg] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const access_token = sessionStorage.getItem("accesstoken");
 
   useEffect(() => {
-    // redirect to login page if no access token
+    // Redirect to login page if no access token
     if (!sessionStorage.getItem("accesstoken")) {
       navigate("/loginUI");
     }
 
-    checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
-
+    checkIfTokenExpired(access_token);
 
     if (access_token) {
       axios
-        .get("http://127.0.0.1:5000/feedback", {
+        .get("http://34.124.131.244:5000/feedback", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -48,9 +47,15 @@ function FeedbackPage() {
     }
   }, [access_token]);
 
-  // handle submit button
+  // Handle submit button
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (value === 0) {
+      setReturnMsg("Please select a rating.");
+      setIsSuccess(false);
+      return;
+    }
 
     const feedbackData = {
       user_id: sessionStorage.getItem("user_id"),
@@ -59,22 +64,21 @@ function FeedbackPage() {
     };
 
     axios
-      .post("http://127.0.0.1:5000/feedback", feedbackData, {
+      .post("http://34.124.131.244:5000/feedback", feedbackData, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       })
       .then((response) => {
-        //clear fields and log(or show) result
         setValue(0);
         setReview("");
         setReturnMsg("Feedback submitted successfully!");
+        setIsSuccess(true);
       })
       .catch((error) => {
         console.error("Error submitting feedback:", error);
-        setReturnMsg(
-          "Error submitting feedback. Unable to submit a review only without valid rating."
-        );
+        setReturnMsg("Error submitting feedback. Please provide a valid rating.");
+        setIsSuccess(false);
       });
   };
 
@@ -85,14 +89,12 @@ function FeedbackPage() {
       <div
         className="flex flex-col min-h-screen bg-[#f4f4f4] dark:bg-[#1C1D1F] text-black dark:text-white px-4 md:px-8 lg:px-12 pb-0"
         style={{ minHeight: "calc(100vh - 60px)" }}>
-        {/* Feedback text */}
         <div className="flex mt-4 mb-4">
           <p className="text-2xl">FEEDBACK</p>
         </div>
 
         <div className="flex items-center justify-center">
           <form action="">
-            {/* Container */}
             <div className="w-full max-w-4xl bg-white dark:bg-[#252628] border-2 border-[#e7e7e7] dark:border-[#353535] text-black dark:text-white rounded-xl shadow-lg dark:shadow-[#353535]">
               <div className="px-4 py-8 md:px-6 md:py-8 lg:px-10 lg:py-12">
                 <p className="text-xl md:text-2xl text-center flex justify-center">
@@ -114,7 +116,13 @@ function FeedbackPage() {
 
                 {/* Return Message */}
                 {returnMsg && (
-                  <div className="text-red-500 text-sm text-center mt-2">{returnMsg}</div>
+                  <div
+                    className={`text-sm text-center mt-2 ${
+                      isSuccess ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {returnMsg}
+                  </div>
                 )}
 
                 {/* Text area */}
@@ -134,8 +142,9 @@ function FeedbackPage() {
             <div className="flex justify-end mt-4">
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none transition duration-300 "
-                type="submit">
+                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none transition duration-300"
+                type="submit"
+              >
                 Submit
               </button>
             </div>

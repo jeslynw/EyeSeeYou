@@ -11,27 +11,13 @@ import bg from '../images/bg.jpg'
 // flowbite
 import { Button, Card, Label, TextInput } from "flowbite-react";
 
-
 function LoginUI() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
+  const [otpMessage, setOtpMessage] = useState("");
   const [profileId, setProfileId] = useState('')
-
-  // const [otp, setOtp] = useState(['', '', '', '', '', '']);
-
-  // const handleChange = (index, value) => {
-  //   // Update the OTP array
-  //   const newOtp = [...otp];
-  //   newOtp[index] = value.slice(0, 1); // Only allow one character
-  //   setOtp(newOtp);
-
-  //   // Move focus to the next input
-  //   if (value && index < 3) {
-  //     document.getElementById(`otp-${index + 1}`).focus();
-  //   }
-  // };
 
   const navigate = useNavigate();
   const navigateLandingPage = () => {
@@ -41,13 +27,16 @@ function LoginUI() {
   // handle login button
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent form submission
-    if (!username || !password){
-      displayErrorMessage();
+    setError(""); // clear existing error message
+    setOtpMessage("verifying...");
+    if (!username || !password || !otp) {
+      setError("Please fill in all fields.");
+      setOtpMessage("");
       return;
     }
 
     try {      
-      const response = await axios.post('http://127.0.0.1:5000/login', {
+      const response = await axios.post('http://34.124.131.244:5000/login', {
         username: username,
         password: password,
         otp: otp,
@@ -59,48 +48,63 @@ function LoginUI() {
       });
 
       if (response.status === 200 && response.data.message === "Login successful") {
-        sessionStorage.setItem('accesstoken', response.data.token.access);
-        sessionStorage.setItem('refreshtoken', response.data.token.refresh);
-        sessionStorage.setItem('userrole', response.data.profileId);
+        sessionStorage.setItem("accesstoken", response.data.token.access);
+        sessionStorage.setItem("refreshtoken", response.data.token.refresh);
+        sessionStorage.setItem("userrole", response.data.profileId);
 
-        setProfileId(response.data.profileId)
-        redirectToDashboard(response.data.profileId)
-        console.log("inside dashboard")
+        setProfileId(response.data.profileId);
+        redirectToDashboard(response.data.profileId);
+      } else if (response.data.message === "Invalid OTP") {
+        setError("The OTP entered is incorrect.");
+        setOtpMessage("");
       } else {
-        displayErrorMessage()
+        setError("Incorrect login credentials. Please try again.");
+        setOtpMessage("");
       }
     } catch (error) {
-      console.error('An error occurred:', error);
+      console.error("An error occurred:", error);
       setError("Login failed. Please try again.");
+      setOtpMessage("");
     }
   };
 
   const sendOtp = async (event) => {
     event.preventDefault(); // Prevent form submission
-    if (!username || !password){
-      displayErrorMessage();
+    setError("");
+    setOtpMessage("Sending...");
+    if (!username || !password) {
+      setError("Please enter your username and password first.");
+      setOtpMessage("");
       return;
     }
 
-    try {      
-      const response = await axios.post('http://127.0.0.1:5000/sendotp', {
-        username: username,
-        password: password,
-        // otp: otp
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
+    try {
+      const response = await axios.post(
+        "http://34.124.131.244:5000/sendotp",
+        {
+          username: username,
+          password: password,
+          // otp: otp
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
+
+      if (response.status === 200 && response.data.message === "OTP sent") {
+        setOtpMessage(`OTP has been sent to ${response.data.email}`);
+      } else {
+        setError(`${response.data.message}`);
+        setOtpMessage("");
+      }
     } catch (error) {
-      console.error('An error occurred:', error);
-      setError("Login failed. Please try again.");
+      console.error("An error occurred:", error);
+      setError("Incorrect username or password. Please try again.");
+      setOtpMessage("");
     }
   };
-
-  function displayErrorMessage(){
-    setError("Incorrect username or password");
-  }
 
   function redirectToDashboard(profileId){
     if (profileId === 1){
@@ -163,39 +167,25 @@ function LoginUI() {
                         
                         className='w-2/3'
                       />
-                      <button onClick={sendOtp} className='ml-3 text-sm bg-[#fff7f7] text-black'>Send OTP</button>        
+                      <Button
+                        onClick={sendOtp}
+                        className="ml-3 w-1/3 text-sm bg-[#ffffff] enabled:hover:bg-[#ffffff] text-black hover:text-[#0e7490] enabled:outline-gray-300">
+                        Send OTP
+                      </Button>    
                     </div>    
                   </div>
-
-
-                  {/* <div className='flex flex-col items-center justify-center h-screen'>
-                    <div className='flex space-x-2'>
-                      {otp.map((value, index) => (
-                        <input
-                          key={index}
-                          id={`otp-${index}`} // Unique ID for each input
-                          type='text'
-                          maxLength={1} // Only allow 1 character
-                          value={value}
-                          onChange={(e) => handleChange(index, e.target.value)}
-                          className='w-12 h-12 text-center border border-gray-300 rounded focus:outline-none focus:border-blue-500'
-                        />
-                      ))}
-                    </div>
-                    <button
-                      type='button'
-                      onClick={() => alert(`OTP entered: ${otp.join('')}`)} // Example action on button click
-                      className='mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-                    >
-                      Send OTP
-                    </button>
-                  </div> */}
 
                   {/* Error Message */}
                   {error && (
                     <div className="text-red-500 text-sm text-center mt-2">
                       {error}
-                    </div>
+                    </div>  
+                  )}
+
+
+                  {/* OTP Sent Message */}
+                  {otpMessage && (
+                    <div className="text-blue-500 text-sm text-center mt-2">{otpMessage}</div>
                   )}
 
                   <Button type="submit" className='mt-4'>Log In</Button>

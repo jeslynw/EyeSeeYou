@@ -1,9 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import { Link } from "react-router-dom";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import axios from "axios";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
@@ -22,7 +19,7 @@ function TrendingAttacksUI() {
     const access_token = sessionStorage.getItem('accesstoken');
 
     if (access_token) {
-        axios.get('http://127.0.0.1:5000/loginhistory', {
+        axios.get('http://34.124.131.244:5000/loginhistory', {
         headers: {
             'Authorization': `Bearer ${access_token}`
         }
@@ -30,7 +27,6 @@ function TrendingAttacksUI() {
         .then(response => {
         if (response.status === 200) {
               const user_id = response.data.logged_in_as;
-            //   console.log(`User: ${user_id}`);
         }
         })
         .catch(error => {
@@ -56,49 +52,12 @@ function TrendingAttacksUI() {
 
     const [prevData, setPrevData] = useState([]);
     const tableRef = useRef(null);
-    // useEffect(() => {
-    //     const access_token = sessionStorage.getItem('accesstoken');
-
-    //     const fetchData = () => {
-    //         axios.get('http://127.0.0.1:5000/natrendingattacks', {
-    //             headers: {
-    //                 'Authorization': `Bearer ${access_token}`
-    //             }
-    //         })
-    //         .then(response => {
-    //             if (response.status === 200) {
-    //                 //  trending attacks data
-    //                 // const alertClasses = response.data.trending_attacks.map(alert => alert.class);
-    //                 // const classCounts = response.data.trending_attacks.map(alert => alert.count);
-    //                 // setTrendAttackCategory(alertClasses);
-    //                 // setTrendAttackData([{ data: classCounts }]);
-    //                 // console.log('attackcategory', trendAttackCategory)
-    //                 // console.log("attackcount", trendAttackData)
-
-    //                 setPrevData(trendAttackCategory);
-    //                 setTrendAttackCategory(response.data.trending_attacks);
-    //             } else {
-    //                 setError('No data available');
-    //             }
-    //             const temp = response.data.alert_classes;
-    //             console.log("Alert classes:", temp);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching threat info:', error);
-    //             setError('Error fetching data');
-    //         });
-    //     } 
-    //     fetchData();
-    //     const interval = setInterval(fetchData, 5000);
-
-    //     return () => clearInterval(interval);
-    // }, []);
 
     useEffect(() => {
         const access_token = sessionStorage.getItem('accesstoken');
     
         const fetchData = () => {
-            axios.get('http://127.0.0.1:5000/trendingattacks', {
+            axios.get('http://34.124.131.244:5000/trendingattacks', {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -141,13 +100,6 @@ function TrendingAttacksUI() {
     // Calculate the confidence level to percentage
     const formattedConfidence = (confidenceLevel * 100).toFixed(2);
 
-
-    // const breadcrumbItems = [
-    //     {path: '/mdashboard', name:'Dashboard'},
-    //     {path: '/trendingattacks', name: "Trending Attacks"}
-    // ]
-
-    
     return (
         <div className={darkMode ? 'dark' : ''}>
             <Header />  
@@ -158,22 +110,6 @@ function TrendingAttacksUI() {
                     <p className="text-2xl">TRENDING ATTACKS</p>
                     <p className="text-base">{currentDate}</p>
                 </div>
-                {/* <div>
-                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
-                    {breadcrumbItems.map((item) => (
-                        <Link
-                        className='text-[#6b7280] dark:text-[#ffffff79] text-base font-light'
-                        to = {item.path}
-                        underline="hover"
-                        onClick = {item.onClick}
-                        color="inherit"
-                        >
-                            <p>{item.name}</p>
-                        </Link>
-                    
-                    ))}
-                    </Breadcrumbs>
-                </div> */}
                 
                 <div className="py-2"></div>
 
@@ -185,15 +121,9 @@ function TrendingAttacksUI() {
 
                     {/* Bar Chart */}
                     <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
-                        <p className="pb-5 text-sm md:text-base">Trending Attacks Bar Chart</p>
-                        <div className="pb-4 px-8">
-                            {/* <TrendingAttacks trendAttackCategory={trendAttackCategory} trendAttackData={trendAttackData} width={1000} height={380} /> */}
-                            {/* <iframe src="http://localhost:5601/goto/140a3ac0-94de-11ef-a0c8-f3e2108b99c7" height="600" width="800"></iframe>*/}
-                            <iframe src="http://localhost:5601/goto/140a3ac0-94de-11ef-a0c8-f3e2108b99c7"
-                                height="500"
-                                width="100%"
-                            >
-                            </iframe>
+                        <p className="pb-5 text-sm md:text-base">Trending Attacks</p>
+                        <div className="pb-4">
+                            <iframe src="http://34.124.131.244:5601/goto/c36331b0-a286-11ef-8421-e7ccdb026c72" height="400" width="100%"></iframe>
                         </div>
                     </div>
 
