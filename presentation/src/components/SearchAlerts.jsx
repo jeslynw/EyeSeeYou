@@ -73,7 +73,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
 
     const access_token = sessionStorage.getItem("accesstoken");
     axios
-      .post("http://127.0.0.1:5000/naalerts/search", dataToSend, {
+      .post("http://34.124.131.244:5000/naalerts/search", dataToSend, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -102,7 +102,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
 
   return (
     <div
-      className={`bg-gray-200 rounded-lg max-w-fit mx-auto transition-all duration-300 ease-in-out ml-auto mr-0 mb-4 transform ${
+      className={`bg-[#d6dce1] dark:bg-[#343333] rounded-lg max-w-fit mx-auto transition-all duration-300 ease-in-out ml-auto mr-0 mb-4 transform ${
         isVisible ? "max-h-[1000px] p-6 opacity-100" : "max-h-0 opacity-0"
       }`}>
       <form onSubmit={handleSubmit}>
@@ -166,49 +166,49 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
 
         {/* Type */}
         <div className="mb-4">
-          <label className="block text-lg font-medium mb-2">Threat Type</label>
+          <label className="block text-lg font-medium mb-2 text-black dark:text-white">Threat Type</label>
           <div className="relative">
             <input
               type="text"
               name="type"
               value={formData.type}
               onChange={handleInputChange}
-              className="w-full border rounded-md p-2 pl-10"
+              className="w-full border rounded-md p-2 pl-10 text-black"
               placeholder="Enter threat type"
             />
-            <span className="absolute inset-y-0 left-2 flex items-center">🔍</span>
+            <span className="absolute inset-y-0 left-2 flex items-center text-black">🔍</span>
           </div>
         </div>
 
         {/* Source Address */}
         <div className="mb-4">
-          <label className="block text-lg font-medium mb-2">Source IP Address</label>
+          <label className="block text-lg font-medium mb-2 text-black dark:text-white">Source IP Address</label>
           <div className="relative">
             <input
               type="text"
               name="src_addr"
               value={formData.src_addr}
               onChange={handleInputChange}
-              className="w-full border rounded-md p-2 pl-10"
+              className="w-full border rounded-md p-2 pl-10 text-black"
               placeholder="Enter source IP address"
             />
-            <span className="absolute inset-y-0 left-2 flex items-center">🔍</span>
+            <span className="absolute inset-y-0 left-2 flex items-center text-black">🔍</span>
           </div>
         </div>
 
         {/* Destination Address */}
         <div className="mb-4">
-          <label className="block text-lg font-medium mb-2">Destination IP Address</label>
+          <label className="block text-lg font-medium mb-2 text-black dark:text-white">Destination IP Address</label>
           <div className="relative">
             <input
               type="text"
-              name="dst_adddr"
+              name="dst_addr"
               value={formData.dst_addr}
               onChange={handleInputChange}
-              className="w-full border rounded-md p-2 pl-10"
-              placeholder="Enter destination IP address"
+              className="w-full border rounded-md p-2 pl-10 text-black"
+              placeholder="Enter source IP address"
             />
-            <span className="absolute inset-y-0 left-2 flex items-center">🔍</span>
+            <span className="absolute inset-y-0 left-2 flex items-center text-black">🔍</span>
           </div>
         </div>
 
@@ -272,7 +272,7 @@ const SearchAlerts = ({ isVisible, onClose, onSearchResults }) => {
 
         {/* Submit Button */}
         <div className="text-right">
-          <button type="submit" className=" bg-gray-500 text-white px-4 py-2 rounded-md">
+          <button type="submit" className="bg-[#ffffff] dark:bg-[#ffffff1c] text-black dark:text-white px-4 py-2 rounded-md">
             Apply
           </button>
         </div>

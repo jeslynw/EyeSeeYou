@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Link, useNavigate } from "react-router-dom";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AlertPageOverview from "../components/AlertsPageOverview";
 import AlertsLogs from "../components/AlertsLogs";
 import SearchAlerts from "../components/SearchAlerts";
@@ -23,9 +21,8 @@ function NAAlerts() {
   const access_token = sessionStorage.getItem("accesstoken");
 
   if (access_token) {
-    console.log("Access found:", access_token);
     axios
-      .get("http://127.0.0.1:5000/naalerts", {
+      .get("http://34.124.131.244:5000/naalerts", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -33,7 +30,6 @@ function NAAlerts() {
       .then((response) => {
         if (response.status === 200) {
           const user_id = response.data.logged_in_as;
-          console.log(`User: ${user_id}`);
         }
       })
       .catch((error) => {
@@ -95,7 +91,7 @@ function NAAlerts() {
 
     const fetchData = () => {
       axios
-        .get("http://127.0.0.1:5000/naalerts", {
+        .get("http://34.124.131.244:5000/naalerts", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -109,14 +105,29 @@ function NAAlerts() {
               med: alertsOverview.med || 0,
               low: alertsOverview.low || 0,
             });
-            if (response.data.recent_alerts == searchQuery || !isSearchActive){
+            
+            const datas = response.data.recent_alerts;
+
+            // console.log("reponse data ",datas);
+            // console.log("search query", searchQuery);
+            
+            const normalizedQuery = JSON.stringify(searchQuery);
+            const normalizedResponse = JSON.stringify(response.data.recent_alerts);
+
+            if (normalizedQuery == normalizedResponse){
               setAlerts(response.data.recent_alerts || []);
-            } else {
+              setIsSearchActive(false);
+            }
+            else if(!isSearchActive){
+              setAlerts(response.data.recent_alerts || []);
+            }
+            else {
               setAlerts(searchQuery);
             }
           }
         });
     };
+
     fetchData(); // Initial fetch
 
     const interval = setInterval(() => {
@@ -124,9 +135,6 @@ function NAAlerts() {
     }, 5000); // Poll every 5 seconds
     return () => clearInterval(interval);
   }, [isSearchActive, searchQuery]);
-
-
-  console.log("alerts: ", alerts)
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -137,23 +145,6 @@ function NAAlerts() {
           <p className="text-2xl">ALERTS</p>
           <p className="text-base">{currentDate}</p>
         </div>
-
-        {/* <div>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" color="primary" />}
-            aria-label="breadcrumb">
-            {breadcrumbItems.map((item) => (
-              <Link
-                className="text-[#6b7280] dark:text-[#ffffff79] text-base font-light"
-                to={item.path}
-                underline="hover"
-                onClick={item.onClick}
-                color="inherit">
-                <p>{item.name}</p>
-              </Link>
-            ))}
-          </Breadcrumbs>
-        </div> */}
 
         <div className="py-2"></div>
 
@@ -166,15 +157,8 @@ function NAAlerts() {
 
           <div className="py-4"></div>
 
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
-            <p className="pb-5 text-sm md:text-base">Threat Map</p>
-            <div className="p-[300px]"></div>
-          </div>
-
-          <div className="py-4"></div>
-
           {/* Alerts Logs */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+          <div className="relative border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
             <div className="flex justify-between">
               <p className="text-sm md:text-base">Alerts Logs</p>
               <button
@@ -185,17 +169,20 @@ function NAAlerts() {
             </div>
 
             {/* Search PopUp */}
-            <SearchAlerts
-              isVisible={showSearchPopUp}
-              onClose={toggleSearchPopUp}
-              onSearchResults={onSearchResults}
-            />
+            <div className="overflow-x-auto mt-4">
+              <AlertsLogs alerts={alerts} />
+            </div>
 
-            <AlertsLogs alerts={alerts} />
+            <div className={`absolute top-16 right-6 w-full z-10 ${showSearchPopUp ? "block" : "hidden"}`}>
+              <SearchAlerts
+                isVisible={showSearchPopUp}
+                onClose={toggleSearchPopUp}
+                onSearchResults={onSearchResults}
+              />
+            </div>
           </div>
         </div>
-
-        <div className="p-10"></div>
+        <div className="py-52"></div>
       </div>
     </div>
   );

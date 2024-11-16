@@ -11,9 +11,8 @@ const BasicPlanDisabling = ({ children }) => {
   useEffect(() => {
     const access_token = sessionStorage.getItem("accesstoken");
     if (access_token) {
-      console.log("Access found: ", access_token);
       axios
-        .get("http://127.0.0.1:5000/viewaccountdetails", {
+        .get("http://34.124.131.244:5000/viewaccountdetails", {
           headers: {
             Authorization: `Bearer ${access_token}`,
             "Content-Type": "application/json",
@@ -62,9 +61,6 @@ const BasicPlanDisabling = ({ children }) => {
       </div>
     );
   }
-
-  console.log("plan type: ", currentUser.plan_type); // debug
-
   // if user is on premium plan, display content normally
   return children;
 };

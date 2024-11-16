@@ -30,7 +30,8 @@ def fetch_dashboard():
             "dst_addr": alert["dst_addr"],
             "class": alert["class"],
             "priority": alert["priority"],
-            "status": alert["status"]
+            "status": alert["status"],
+            "end_timestamp": alert["end_timestamp"]
         } 
         for alert in recent_alerts
     ]
