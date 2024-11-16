@@ -14,6 +14,7 @@ import FeedbackPage from "./pages/FeedbackUI";
 import TrendingAttacksUI from "./pages/ViewTrendingAttacksUI";
 import BasicPlanDisabling from "./components/BasicPlanDisabling";
 import Geolocation from "./components/Geolocation";
+import AlertNotification from "./components/AlertNotification";
 
 import MLayout from "./components/MLayout";
 import MDashboardUI from "./pages/MDashboardUI";
@@ -76,20 +77,26 @@ function App() {
     };
   }, [nav]);
 
-  // Fetch notifications
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:5000/alerts");
-        setNotifications(response.data.alerts);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
+  // // Fetch notifications
+  // useEffect(() => {
+  //   const access_token = sessionStorage.getItem('accesstoken');
+  //   const fetchNotifications = async () => {
 
-    const intervalId = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(intervalId);
-  }, []);
+  //     try {
+  //       const response = await axios.get("http://127.0.0.1:5000/alerts", {
+  //         headers: {
+  //           'Authorization': `Bearer ${access_token}`
+  //         }
+  //       });
+  //       setNotifications(response.data.alerts);
+  //     } catch (error) {
+  //       console.error("Error fetching notifications:", error);
+  //     }
+  //   };
+
+  //   const intervalId = setInterval(fetchNotifications, 10000);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const handleCloseNotification = (id) => {
     setNotifications((prevNotifications) =>
@@ -107,7 +114,7 @@ function App() {
           <Route
             element={
               <ProtectedRoute allowedRoles={["1"]}>
-                <Layout />
+                <Layout /><AlertNotification />
               </ProtectedRoute>
             }
           >

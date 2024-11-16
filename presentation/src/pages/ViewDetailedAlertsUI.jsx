@@ -180,7 +180,7 @@ function NAAlerts() {
   }, [isSearchActive, searchQuery]);
 
 
-  console.log("alerts: ", alerts)
+  // console.log("alerts: ", alerts)
 
   return (
     <div className={darkMode ? "dark" : ""}>

@@ -56,8 +56,8 @@ class User:
                 
                 #check if the provided password matches the stored hashed password
                 if (bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))):
-                    print(f"Authenticate: username={username}, login successful")
-                    User.log_login_attempt(username, 'Successful Login')
+                    print(f"Authenticate: username={username}, valid creds, checking otp")
+                    # User.log_login_attempt(username, 'Successful Login')  #not logged in yet, dont log
                     return True
                 else:
                     print(f"Authenticate: username={username}, incorrect password")

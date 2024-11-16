@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 
 function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Start with sidebar close
+  console.log('HI');
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify, Response
 import pymysql
 from models.alerts import Alerts
+from models.notification import Notification
 import dbAccess as db
 import time
 import json
 from flask_jwt_extended import get_jwt_identity
 from auth_decorators import token_required
+
 
 naalerts_bp = Blueprint('naalerts', __name__)
 
@@ -114,8 +116,8 @@ def alert_overview():
 
 
 def get_popup():
-    alert = Alerts.get_popup_alert()
-    return alert
+    popups = Notification.get_notification()
+    return popups
 
 def get_recent_alerts():
     alert = Alerts()

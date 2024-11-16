@@ -51,7 +51,7 @@
     };
 
     const alertsToDisplay = updatedAlerts || alerts;
-    console.log("alertsToDisplay: ", alertsToDisplay);
+    // console.log("alertsToDisplay: ", alertsToDisplay);
 
     return (
       <div className="max-h-[380px] overflow-y-auto">

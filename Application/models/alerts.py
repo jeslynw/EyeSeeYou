@@ -102,47 +102,6 @@ class Alerts:
             if conn:
                 conn.close()
 
-    # def get_alerts_details():
-    #     query = """
-    #             SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%m/%d-%H:%i:%s.%f'), '%m/%d %H:%i:%s') AS formatted_timestamp, src_addr, dst_addr, class, 
-    #             CASE priority
-    #                     WHEN 1 THEN 'Critical'
-    #                     WHEN 2 THEN 'High'
-    #                     WHEN 3 THEN 'Medium'
-    #                     WHEN 4 THEN 'Low'
-    #                     ELSE 'unknown'
-    #                 END AS priority, status
-    #             FROM alerts
-    #             WHERE `class` != "none"
-    #             ORDER BY formatted_timestamp DESC
-    #             """
-        
-    #     conn = db.get_connection()
-    #     try:
-    #         with conn.cursor() as cursor:
-    #             cursor.execute(query)
-    #             result = cursor.fetchall()
-    #             if not result:
-    #                 print(f"No alerts found")
-    #                 return []
-    #             alerts = [
-    #                 {
-    #                     'timestamp': row[0],
-    #                     'src_addr': row[1],
-    #                     'dst_addr': row[2],
-    #                     'class': row[3],
-    #                     'priority': row[4],
-    #                     'status': row[5]
-    #                 }
-    #                 for row in result
-    #             ]
-    #             return alerts
-    #     except Exception as e:
-    #         print(f"Get alert details error: {e}")
-    #         return []
-    #     finally:
-    #         if conn:
-    #             conn.close()
 
     # def get_features2():
         # query = """
@@ -215,6 +174,47 @@ class Alerts:
         #     if conn:
         #         conn.close()
 
+    def get_alerts_details():
+        query = """
+                SELECT timestamp AS formatted_timestamp, src_addr, dst_addr, class, 
+                CASE priority
+                        WHEN 1 THEN 'Critical'
+                        WHEN 2 THEN 'High'
+                        WHEN 3 THEN 'Medium'
+                        WHEN 4 THEN 'Low'
+                        ELSE 'unknown'
+                    END AS priority, status
+                FROM alerts
+                WHERE `class` != "none"
+                ORDER BY formatted_timestamp DESC
+                """
+        
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+                if not result:
+                    print(f"No alerts found")
+                    return []
+                alerts = [
+                    {
+                        'timestamp': row[0],
+                        'src_addr': row[1],
+                        'dst_addr': row[2],
+                        'class': row[3],
+                        'priority': row[4],
+                        'status': row[5]
+                    }
+                    for row in result
+                ]
+                return alerts
+        except Exception as e:
+            print(f"Get alert details error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
 
     def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
         query = """

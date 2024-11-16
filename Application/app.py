@@ -17,6 +17,7 @@ from flask_mail import Mail, Message
 # import file
 from models.user import User
 from models.user_profile import UserProfile
+from models.notification import Notification
 
 import dbAccess as db
 import pymysql
@@ -187,6 +188,7 @@ def view_account():
     }), 200
 
 
+
 @app.route('/updateaccountdetails', methods=['POST'])
 @token_required
 def update_account():
@@ -203,6 +205,7 @@ def update_account():
 
 
 
+# app.register_blueprint(landingpage_bp)
 app.register_blueprint(landingpage_bp)
 app.register_blueprint(feedback_bp)
 app.register_blueprint(trendingattacks_bp)
