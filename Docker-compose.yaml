@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: ./Application
+      dockerfile: Dockerfile.api
+    image: eyeseeyou/eyeseeyou-fyp-api
+    env_file:
+      - ./Application/.flaskenv
+      - ./Application/api_secret.txt
+    environment:
+      PMA_HOST: "host.docker.internal" # to refer to the host machine from inside the container   
+      PMA_PORT: "3306"             
+      PMA_PASSWORD: ""   
+    ports:
+      - "5000:5000"     
+
+
+  client:
+    build:
+      context: ./presentation
+      dockerfile: Dockerfile.client
+    image: eyeseeyou/eyeseeyou-fyp-client
+    ports:
+      - "8080:80"
+
+secrets:
+  gcp_service_account:
+    file: ./server/servicekey_googlecloud.json

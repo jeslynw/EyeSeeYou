@@ -34,7 +34,10 @@ def fetch_dashboard():
                 "src_addr": alert["src_addr"],
                 "dst_addr": alert["dst_addr"],
                 "class": alert["class"],
-                "priority": alert["priority"]
+                "priority": alert["priority"],
+                "status": alert["status"],
+                "prediction": alert["prediction"],
+                "end_timestamp": alert["end_timestamp"]
             } 
             for alert in recent_alerts
         ]
@@ -145,12 +148,12 @@ def get_dst_geoip_list():
 
 def create_heatmap(locations):
     """Embed a heatmap as an iframe on a page."""
-    m = folium.Map(location=[locations[0][0], locations[0][1]], zoom_start=15)
+    m = folium.Map(location=[locations[0][0], locations[0][1]], zoom_start=2)
     
     HeatMap(locations).add_to(m)
     
-    m.get_root().width = "500px"
-    m.get_root().height = "400px"
+    m.get_root().width = "540px"
+    m.get_root().height = "660px"
     iframe = m.get_root()._repr_html_()
 
     return iframe

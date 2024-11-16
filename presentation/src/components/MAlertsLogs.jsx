@@ -25,7 +25,7 @@ const getPriorityStyle = (priority) => {
     if (access_token) {
       // console.log('Access found:', access_token);
       axios
-        .get("http://127.0.0.1:5000/malerts", {
+        .get("http://34.124.131.244:5000/malerts", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -43,14 +43,14 @@ const getPriorityStyle = (priority) => {
     const alertsToDisplay = alerts;
 
   return (
-    <div className="max-h-[380px] overflow-y-auto">
+    <div className="max-h-[550px] overflow-y-auto">
       <Table className="min-w-full">
         <Table.Head className="sticky top-0">
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Timestamp</Table.HeadCell>
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Source IP Address</Table.HeadCell>
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Destination IP Address</Table.HeadCell>
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Threat Name</Table.HeadCell>
-          <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Priority</Table.HeadCell>
+          <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Severity</Table.HeadCell>
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Status</Table.HeadCell>
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700"></Table.HeadCell>
         </Table.Head>

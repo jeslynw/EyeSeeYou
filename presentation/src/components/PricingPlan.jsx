@@ -6,28 +6,28 @@ function PricingPlan() {
             'namePlan': 'Basic Plan', 
             'price': 0, 
             'month': '',
-            'include': ['Network Overview', 'Threat Detection', 'Real Time Monitoring'], 
-            'limited': ['Alerts Overview', 'Events Overview', 'Threat Analysis', 'Attack Trends'], 
-            'notIncluded': ['Events Management', 'Alerts Management', 'Management Insights']
+            'include': ['1 account', 'Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alert Notifications'], 
+            'limited': ['Alerts Overview', 'Threat Analysis', 'Attack Trends'], 
+            'notIncluded': ['Alerts Management', 'Management Insights']
         },
         {
-            'namePlan': '1-Months Plan', 
+            'namePlan': '1-Month Plan', 
             'price': 80, 
             'month': '/month',
-            'include': ['Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alerts Overview', 'Events Overview', 'Threat Analysis', 'Attack Trends', 'Events Management', 'Alerts Management', 'Management Insights']
+            'include': ['Up to 10 accounts', 'Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alert Notifications', 'Alerts Overview', 'Threat Analysis', 'Attack Trends', 'Alerts Management', 'Management Insights']
         },
-        {
-            'namePlan': '6-Months Plan', 
-            'price': 460, 
-            'month': '/6 months',
-            'include': ['Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alerts Overview', 'Events Overview', 'Threat Analysis', 'Attack Trends', 'Events Management', 'Alerts Management', 'Management Insights']
-        },
-        {
-            'namePlan': '12-Months Plan', 
-            'price': 900, 
-            'month': '/12 months',
-            'include': ['Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alerts Overview', 'Events Overview', 'Threat Analysis', 'Attack Trends', 'Events Management', 'Alerts Management', 'Management Insights']
-        }
+        // {
+        //     'namePlan': '6-Months Plan', 
+        //     'price': 460, 
+        //     'month': '/6 month',
+        //     'include': ['Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alert Notifications', 'Alerts Overview', 'Threat Analysis', 'Attack Trends', 'Alerts Management', 'Management Insights']
+        // },
+        // {
+        //     'namePlan': '12-Months Plan', 
+        //     'price': 900, 
+        //     'month': '/12 month',
+        //     'include': ['Network Overview', 'Threat Detection', 'Real Time Monitoring', 'Alert Notifications', 'Alerts Overview', 'Threat Analysis', 'Attack Trends', 'Alerts Management', 'Management Insights']
+        // }
     ]
 
     const Tooltip = ({ title, children }) => {
@@ -74,7 +74,7 @@ function PricingPlan() {
                         <path fillRule="evenodd" d="M10 3a7 7 0 100 14 7 7 0 000-14zm-1 10a1 1 0 112-0 1 1 0 01-2 0zm1-6a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                 );
-                title = 'Not Included Feature';
+                title = 'Not Included';
             }
     
             return (
@@ -87,9 +87,9 @@ function PricingPlan() {
     };
 
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-12 gap-6 px-8 lg:px-5'>
+        <div className='flex items-center space-x-10 mx-12 gap-10 px-8 lg:px-5 justify-center'>
             {pricingPlan.map((plan, index) => (
-                <div key={index} className="relative w-64 bg-transparent border-[1px] border-[#ffffff3f] text-white p-6 rounded-lg overflow-hidden hover:shadow-lg hover:shadow-[#00bfff]">
+                <div key={index} className="relative w-[300px] bg-transparent border-[1px] border-[#ffffff3f] text-white p-6 rounded-lg overflow-hidden hover:shadow-lg hover:shadow-[#00bfff]">
                     {/* Larger light corner effects */}
                     <div  
                         className="absolute top-0 left-0 w-28 h-32" 

@@ -3,9 +3,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import { Link } from "react-router-dom";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Table } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import { checkIfTokenExpired } from "../App";
@@ -28,13 +25,13 @@ function NALogInHistory() {
     useEffect(() => {
         const fetchLoginHistory = async () => {
             if (access_token) {
-                // console.log('Access found:', access_token);
                 try {
-                    const response = await axios.get('http://127.0.0.1:5000/loginhistory', {
+                    const response = await axios.get('http://34.124.131.244:5000/loginhistory', {
                         headers: { Authorization: `Bearer ${access_token}` },
                     });
                     if (response.status === 200) {
                         setLoginHistory(response.data);
+                        console.log(response)
                     }
                 } catch (error) {
                     console.error('Error fetching login history:', error);
@@ -67,12 +64,6 @@ function NALogInHistory() {
     return () => clearInterval(timerId);
     }, []);
 
-
-    // const breadcrumbItems = [
-    //     { path: '/nadashboard', name: 'Dashboard' },
-    //     { path: '/naloginhistory', name: 'Log In History' },
-    // ];
-
     return (
         <div className={`${darkMode ? 'dark' : ''}`}>
             <Header />
@@ -81,20 +72,6 @@ function NALogInHistory() {
                     <p className="text-2xl">LOG IN HISTORY</p>
                     <p className="text-base">{currentDate}</p>
                 </div>
-                {/* <div>
-                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" color="primary" />} aria-label="breadcrumb">
-                        {breadcrumbItems.map((item) => (
-                            <Link
-                                key={item.path}
-                                className="text-[#6b7280] dark:text-[#ffffff79] text-base font-light"
-                                to={item.path}
-                                underline="hover"
-                            >
-                                {item.name}
-                            </Link>
-                        ))}
-                    </Breadcrumbs>
-                </div> */}
 
                 <div className="py-2"></div>
 

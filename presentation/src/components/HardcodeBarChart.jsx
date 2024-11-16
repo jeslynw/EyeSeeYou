@@ -139,7 +139,7 @@ class HardcodeBarChart extends Component  {
               series={this.state.series}
               type="bar"
               width="320"  // Set the width here
-              height="180" // Set the height here
+              height="220" // Set the height here
             />
           </div>
         </div>

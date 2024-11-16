@@ -30,8 +30,8 @@ class_labels2 = ["SAFE", "ATTACK"]
 
 def scan_attack(miscActivityData):
     data = pd.DataFrame(miscActivityData)
-    print("DataFrame Columns:", data.columns)
-    print("Protocols in data:", data["proto"].unique())
+    # print("DataFrame Columns:", data.columns)
+    # print("Protocols in data:", data["proto"].unique())
 
     data['src_addr'] = data['src_addr'].apply(lambda x: int(ipaddress.IPv4Address(x)))
     data['dst_addr'] = data['dst_addr'].apply(lambda x: int(ipaddress.IPv4Address(x)))

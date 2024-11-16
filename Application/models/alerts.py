@@ -102,19 +102,91 @@ class Alerts:
             if conn:
                 conn.close()
 
-    def get_alerts_details():
+    def get_open_status():
+            query = "SELECT COUNT(*) as open_count FROM alerts where status = 'Open'"
+            conn = db.get_connection()
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result is None:
+                        print(f"No alerts with open status found")
+                        return None
+                    return {
+                        'open_count' : result[0]
+                    }
+            except Exception as e:
+                print(f"Get open status count error: {e}")
+                return None
+            finally:
+                if conn:
+                    conn.close()
+
+    def get_inprogress_status():
+        query = "SELECT COUNT(*) as inprogress_count FROM alerts where status = 'In Progress'"
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"No alerts with in progress status found")
+                    return None
+                return {
+                    'inprogress_count' : result[0]
+                }
+        except Exception as e:
+            print(f"Get in progress status count error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_resolved_status():
+        query = "SELECT COUNT(*) as resolved_count FROM alerts where status = 'Resolved'"
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"No alerts with resolved status found")
+                    return None
+                return {
+                    'resolved_count' : result[0]
+                }
+        except Exception as e:
+            print(f"Get resolved status count error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_falsepositive_status():
+        query = "SELECT COUNT(*) as falsepositive_count FROM alerts where status = 'False Positive'"
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"No alerts with false positive status found")
+                    return None
+                return {
+                    'falsepositive_count' : result[0]
+                }
+        except Exception as e:
+            print(f"Get false positive status count error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_status():
         query = """
-                SELECT DATE_FORMAT(STR_TO_DATE(timestamp, '%m/%d-%H:%i:%s.%f'), '%m/%d %H:%i:%s') AS formatted_timestamp, src_addr, dst_addr, class, 
-                CASE priority
-                        WHEN 1 THEN 'Critical'
-                        WHEN 2 THEN 'High'
-                        WHEN 3 THEN 'Medium'
-                        WHEN 4 THEN 'Low'
-                        ELSE 'unknown'
-                    END AS priority, status
+                SELECT id, status
                 FROM alerts
                 WHERE `class` != "none"
-                ORDER BY formatted_timestamp DESC
                 """
         
         conn = db.get_connection()
@@ -127,18 +199,14 @@ class Alerts:
                     return []
                 alerts = [
                     {
-                        'timestamp': row[0],
-                        'src_addr': row[1],
-                        'dst_addr': row[2],
-                        'class': row[3],
-                        'priority': row[4],
-                        'status': row[5]
+                        'id': row[0],
+                        'status': row[1]
                     }
                     for row in result
                 ]
                 return alerts
         except Exception as e:
-            print(f"Get alert details error: {e}")
+            print(f"Get status error: {e}")
             return []
         finally:
             if conn:
@@ -155,7 +223,8 @@ class Alerts:
                         ELSE 'unknown'
                     END AS priority, status, DATE_FORMAT(STR_TO_DATE(end_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as end_timestamp
                 FROM alerts
-                WHERE `class` != "none"
+                WHERE `class` != 'none'
+                
             """
         
         params = []
@@ -184,7 +253,7 @@ class Alerts:
         # Build the final query
         if conditions:
             query += " AND " + " AND ".join(conditions)
-        query += " ORDER BY formatted_timestamp DESC"
+        query += "ORDER BY formatted_timestamp DESC LIMIT 50"
             
         # print("Executing query:", query)
         # print("With parameters:", priority, class_, src_addr, dst_addr, status)
@@ -242,7 +311,7 @@ class Alerts:
                 return feature
 
         except Exception as e:
-            print(f"Get alert details error: {e}")
+            print(f"Get alert details error2: {e}")
             return []
         finally:
             if conn:
@@ -318,15 +387,13 @@ class Alerts:
     # First concat current year with timestamp to make it complete
         query = """
                 SELECT UNIX_TIMESTAMP(
-                        STR_TO_DATE(
-                            CONCAT(YEAR(CURRENT_DATE()), '/', start_timestamp), 
-                            '%Y/%m/%d-%H:%i:%s.%f'
-                        )
-                    ) AS unix_timestamp,
+                STR_TO_DATE(start_timestamp, '%Y-%m-%d %H:%i:%s')
+                ) AS unix_timestamp,
+                    
                     LOWER(protocol) AS protocol, 
                     src_port,
                     dst_port,
-                    start_timestamp as original_timestamp  -- Keep original for verification
+                    start_timestamp as original_timestamp 
                 FROM alerts
                 WHERE `class` != "none" AND protocol != 'icmp'
                 ORDER BY start_timestamp DESC
@@ -350,9 +417,7 @@ class Alerts:
                         # Try with previous year if current year fails
                         alternative_query = f"""
                             SELECT UNIX_TIMESTAMP(
-                                STR_TO_DATE(
-                                    CONCAT(YEAR(CURRENT_DATE()) - 1, '/', %s), 
-                                    '%Y/%m/%d-%H:%i:%s.%f'
+                                STR_TO_DATE(start_timestamp, '%Y-%m-%d %H:%i:%s')
                                 )
                             )
                             """
@@ -378,7 +443,8 @@ class Alerts:
     def get_features2():
         query = """
                 SELECT
-                    DATE_FORMAT(STR_TO_DATE(timestamp, '%%m/%%d-%%H:%%i:%%s.%%f'), '%%m/%%d %%H:%%i:%%s') AS formatted_timestamp,
+                    DATE_FORMAT(STR_TO_DATE(start_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as formatted_timestamp,
+                    
                     LOWER(protocol) AS protocol,
                     src_addr,
                     dst_addr
@@ -407,7 +473,7 @@ class Alerts:
                 return feature
                 
         except Exception as e:
-            print(f"Get alert details error: {e}")
+            print(f"Get alert details error3: {e}")
             return []
         finally:
             if conn:

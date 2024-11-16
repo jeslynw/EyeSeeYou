@@ -29,7 +29,7 @@ function FeedbackContainer({ feedback }) {
   return (
     <div className="bg-gray-100 px-10 pt-16 pb-16">
       <div className="text-center mb-6">
-        <h1 className="text-4xl font-bold pb-8">
+        <h1 className="text-4xl font-semibold pb-8">
           See what <span className="text-[#26baff]">others</span> are saying.
         </h1>
       </div>
