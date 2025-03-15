@@ -58,7 +58,8 @@ function AlertsLogs({ alerts }) {
     <div className="max-h-[380px] overflow-y-auto">
       <Table className="min-w-full">
         <Table.Head className="sticky top-0">
-          <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Timestamp</Table.HeadCell>
+          <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">Start Timestamp</Table.HeadCell>
+          <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">End Timestamp</Table.HeadCell>
           <Table.HeadCell className="bg-slate-200 dark:bg-gray-700">
             Source IP Address
           </Table.HeadCell>
@@ -74,7 +75,8 @@ function AlertsLogs({ alerts }) {
             const { label, color } = getPriorityStyle(alert.priority);
             return (
               <Table.Row key={index} className="bg-slate-100 dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell>{alert.timestamp}</Table.Cell>
+                <Table.Cell>{alert.start_timestamp}</Table.Cell>
+                <Table.Cell>{alert.end_timestamp}</Table.Cell>
                 <Table.Cell>{alert.src_addr}</Table.Cell>
                 <Table.Cell>{alert.dst_addr}</Table.Cell>
                 <Table.Cell>{alert.class}</Table.Cell>

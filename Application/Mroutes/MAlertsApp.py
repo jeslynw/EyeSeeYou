@@ -26,7 +26,8 @@ def fetch_dashboard():
     list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
     list_recent_alerts = [
         {
-            "timestamp": alert["timestamp"],
+            "start_timestamp": alert["start_timestamp"],
+            "end_timestamp": alert["end_timestamp"],
             "src_addr": alert["src_addr"],
             "dst_addr": alert["dst_addr"],
             "class": alert["class"],
@@ -61,8 +62,9 @@ def alert_overview():
     }
 
 def get_recent_alerts():
-    alert_details = Alerts.get_search_alerts_details(self=Alerts, priority='', class_='', src_addr='', dst_addr='', status='')
-    return alert_details 
+    alert = Alerts()
+    alert_details = alert.get_search_alerts_details(priority='', class_='', src_addr='', dst_addr='', status='')
+    return alert_details
 
 def get_trending_attacks():
     query = """SELECT class, COUNT(*) as count

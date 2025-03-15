@@ -74,7 +74,8 @@ def fetch_dashboard():
     list_recent_alerts = [
         {
             "id": alert["id"],
-            "timestamp": alert["timestamp"],
+            "start_timestamp": alert["start_timestamp"],
+            "end_timestamp": alert["end_timestamp"],
             "src_addr": alert["src_addr"],
             "dst_addr": alert["dst_addr"],
             "class": alert["class"],
