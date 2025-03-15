@@ -1,7 +1,5 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-// import sansitaSwashed from '../fonts/SansitaSwashed-Regular.ttf';
-
 import logo from "../images/logo2.png";
 
 const PDF = (
@@ -18,7 +16,10 @@ const PDF = (
   openCount,
   inProgressCount,
   resolvedCount,
-  falsePositiveCount
+  falsePositiveCount,
+  severityLevel,
+  predictedAttack,
+  formattedConfidence
 ) => {
   const doc = new jsPDF({
     orientation: "portrait",
@@ -43,7 +44,6 @@ const PDF = (
       addFooter();
       doc.addPage();
       currentHeight = 20; // Reset current height
-      // addFooter();
     }
   };
 
@@ -93,69 +93,76 @@ const PDF = (
     if (line) {
       doc.text(line, startX, currentY);
     }
+
+    return currentY - y + lineHeight; // Return the total height of the text block
   };
 
   // logo
   doc.addImage(logo, "PNG", 18, 10, 13, 10);
   doc.setFont("SansitaSwashed").setFontSize(18).text("EyeSeeYou", 36, 17);
 
-  doc.setFontSize(12).text(" ", 10, 30); // line break
+  currentHeight += 15; // Add space after logo
 
   // Title
   doc.setFont("Times-Roman", "bold");
-  doc.setFontSize(20).text("EyeSeeYou Network Analysis Report", 48, 32);
+  doc.setFontSize(20).text("EyeSeeYou Network Analysis Report", 48, currentHeight);
   doc.setFont("Times-Roman", "normal");
+  currentHeight += 15;
 
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
-  doc.setFont("light").setFontSize(10).text(`Date: ${currentDate}`, startX, 45);
-  doc.setFont("light").setFontSize(10).text(`Reporting Period: ${currentTime}`, startX, 50);
+  doc.setFont("light").setFontSize(10).text(`Date: ${currentDate}`, startX, currentHeight);
+  currentHeight += 5;
+  doc
+    .setFont("light")
+    .setFontSize(10)
+    .text(`Reporting Period: ${currentTime}`, startX, currentHeight);
+  currentHeight += 10;
 
   // Executive Summary
   doc.setFont("Times-Roman", "bold");
-  doc.setFontSize(15).text("Executive Summary", startX, 55 + 5);
+  doc.setFontSize(15).text("Executive Summary", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
   doc.setFontSize(11);
-  justifyText(
+  const summaryHeight = justifyText(
     doc,
     `This report provides a comprehensive overview of network activity monitored by the EyeSeeYou intrusion detection system. It highlights recent security alerts, trends in network activity, and recommendations for enhancing overall security posture. Over the reporting period, the system detected a total of ${
       criticalCount + highCount + mediumCount + lowCount
     } alerts, with network status '${networkStatus}'.`,
     startX,
-    60 + 5,
+    currentHeight,
     endX - startX
   );
+  currentHeight += summaryHeight + 10;
 
   // Overview of Network Activity
+  checkAndAddPage(40);
   doc.setFont("Times-Roman", "bold");
-  doc.setFontSize(15).text("1. Overview of Network Activity", startX, 85 + 5);
+  doc.setFontSize(15).text("1. Overview of Network Activity", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
   doc
     .setFontSize(11)
     .text(
       "During the reporting period, the EyeSeeYou dashboard tracked a variety of network activities, including:",
       startX,
-      90 + 5
+      currentHeight
     );
-  doc.text(`• Network Status: ${networkStatus}`, 25, 95 + 5);
+  currentHeight += 5;
+  doc.text(`• Network Status: ${networkStatus}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Source And Target IP Analysis:`, 25, currentHeight);
+  currentHeight += 3;
 
-  doc.text(`• Source And Target IP Analysis`, 25, 100 + 5);
-  doc.text(`:`, 76, 100 + 5);
-  doc.text(``, 63, 100 + 5);
-
-  const tableBody = srcAndDstIP.map((srcIP, index) => {
-    return [
-      srcIP.src_addr, // Source Address
-      srcIP.count_src_addr, // Count of Source Address
-      srcIP.dst_addr, // Destination Address
-      srcIP.count_dst_addr, // Count of Destination Address
-    ];
+  const tableBody = srcAndDstIP.map((srcIP) => {
+    return [srcIP.src_addr, srcIP.count_src_addr, srcIP.dst_addr, srcIP.count_dst_addr];
   });
 
   doc.autoTable({
     head: [["Top Threat Sources", "Count", "Top Targeted Hosts", "Count"]],
     body: tableBody,
-    startY: 108,
+    startY: currentHeight,
     theme: "grid",
     headStyles: {
       fillColor: [0, 0, 0],
@@ -177,12 +184,17 @@ const PDF = (
     margin: { left: 25 },
   });
 
+  currentHeight = doc.lastAutoTable.finalY + 10;
+
   // Incident Summary
+  checkAndAddPage(40);
   doc.setFont("Times-Roman", "bold");
-  doc.setFontSize(15).text("2. Incident Summary", startX, 150);
+  doc.setFontSize(15).text("2. Incident Summary", startX, currentHeight);
+  currentHeight += 5;
 
   // Alert Breakdown
-  doc.setFontSize(13).text("2.1 Alert Breakdown", startX, 155);
+  doc.setFontSize(13).text("2.1 Alert Breakdown", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
   doc
     .setFontSize(11)
@@ -191,46 +203,87 @@ const PDF = (
         criticalCount + highCount + mediumCount + lowCount
       } alerts categorized by severity as follows:`,
       startX,
-      160
+      currentHeight
     );
-  doc.text(`• Critical Alerts: ${criticalCount}`, 25, 165);
-  doc.text(`• High Alerts: ${highCount}`, 25, 170);
-  doc.text(`• Medium Alerts: ${mediumCount}`, 25, 175);
-  doc.text(`• Low Alerts: ${lowCount}`, 25, 180);
+  currentHeight += 5;
+  doc.text(`• Critical Alerts: ${criticalCount}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• High Alerts: ${highCount}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Medium Alerts: ${mediumCount}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Low Alerts: ${lowCount}`, 25, currentHeight);
+  currentHeight += 10;
 
   // Alert Status
+  checkAndAddPage(40);
   doc.setFont("Times-Roman", "bold");
-  doc.setFontSize(13).text("2.2 Alert Status", startX, 190);
+  doc.setFontSize(13).text("2.2 Alert Status", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
-  doc.setFontSize(11).text("The following are the current statuses of the alerts:", startX, 195);
-  doc.text(`• Open: ${openCount}`, 25, 200);
-  doc.text(`• In Progress: ${inProgressCount}`, 25, 205);
-  doc.text(`• Resolved: ${resolvedCount}`, 25, 210);
-  doc.text(`• False Positive: ${falsePositiveCount}`, 25, 215);
+  doc
+    .setFontSize(11)
+    .text("The following are the current statuses of the alerts:", startX, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Open: ${openCount}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• In Progress: ${inProgressCount}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Resolved: ${resolvedCount}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• False Positive: ${falsePositiveCount}`, 25, currentHeight);
+  currentHeight += 10;
+
+  // ML analysis
+  // checkAndAddPage(40);
+  doc.setFont("Times-Roman", "bold");
+  doc.setFontSize(13).text("2.3 Analysis of Historical Patterns", startX, currentHeight);
+  currentHeight += 5;
+  doc.setFont("Times-Roman", "normal");
+  doc.setFontSize(11);
+  const mlAnalysisHeight = justifyText(
+    doc,
+    `Following up on the recent analysis, the system has detected an ${predictedAttack} pattern with a ${severityLevel} severity level. The confidence level of the detection stands at ${formattedConfidence}%, indicating a significant risk.`,
+    startX,
+    currentHeight,
+    endX - startX
+  );
+  currentHeight += 10;
+  doc.text(`• Pattern Detected: ${predictedAttack}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Confidence Level: ${formattedConfidence}`, 25, currentHeight);
+  currentHeight += 5;
+  doc.text(`• Severity Level: ${severityLevel}`, 25, currentHeight);
+  currentHeight += 10;
 
   // Recent Threat Trends
+  checkAndAddPage(40);
   doc.setFont("Times-Roman", "bold");
-  doc.setFontSize(13).text("2.3 Recent Threat Trends", startX, 225);
+  doc.setFontSize(13).text("2.4 Recent Threat Trends", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
-  doc.setFontSize(11).text("The following trends were observed in detected threats:", startX, 230);
-  doc.setFontSize(11).text("• Most Frequent Alert Types:", 25, 235);
+  doc
+    .setFontSize(11)
+    .text("The following trends were observed in detected threats:", startX, currentHeight);
+  currentHeight += 5;
+  doc.text("• Most Frequent Alert Types:", 25, currentHeight);
+  currentHeight += 3;
 
   doc.autoTable({
     head: [["Alert Type", "Count"]],
     body: trendAttacks.map((attack) => [attack.class, attack.count]),
-    startY: 238,
-    theme: "grid", // another options: striped, plain
+    startY: currentHeight,
+    theme: "grid",
     headStyles: {
       fillColor: [0, 0, 0],
       textColor: [255, 255, 255],
-      fontStyle: "normal",
       fontSize: 8,
     },
     bodyStyles: {
-      fillColor: [240, 240, 240], // Body rows background color
+      fillColor: [240, 240, 240],
     },
     alternateRowStyles: {
-      fillColor: [220, 220, 220], // Alternate row background color
+      fillColor: [220, 220, 220],
     },
     styles: {
       fontSize: 8,
@@ -241,35 +294,45 @@ const PDF = (
     margin: { left: 25 },
   });
 
-  const finalY = doc.lastAutoTable.finalY;
+  currentHeight = doc.lastAutoTable.finalY + 10;
 
   // Emerging Threat Patterns
-  const lineHeight = doc.internal.getFontSize() * 0.5;
-
-  // Emerging Threat Patterns
-  checkAndAddPage(finalY + 10); // Check if we need a new page
-  doc.setFontSize(11).text("• Emerging Threat Patterns:", 25, currentHeight);
-  const trendTextHeight = doc.splitTextToSize(answerTrend, endX - startX - 5).length * lineHeight; // Calculate height needed for recommendation text
-  doc.setFontSize(11);
-  justifyText(doc, answerTrend, 25, (currentHeight += 5), endX - startX - 5);
-  currentHeight += trendTextHeight;
+  checkAndAddPage(40);
+  doc.text("• Emerging Threat Patterns:", 25, currentHeight);
+  currentHeight += 5;
+  const trendTextHeight = justifyText(doc, answerTrend, 25, currentHeight, endX - startX - 5);
+  currentHeight += trendTextHeight + 10;
 
   // Recommended Action section
+  checkAndAddPage(40);
   doc.setFont("Times-Roman", "bold");
   doc.setFontSize(15).text("3. Recommended Action", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
   doc.setFontSize(11);
-  const recommendationTextHeight =
-    doc.splitTextToSize(answerRecommendation, endX - startX - 5).length * lineHeight; // Calculate height needed for recommendation text
-  justifyText(doc, answerRecommendation, 25, (currentHeight += 5), endX - startX - 5);
-  currentHeight += recommendationTextHeight;
+  const recommendationTextHeight = justifyText(
+    doc,
+    answerRecommendation,
+    25,
+    currentHeight,
+    endX - startX - 5
+  );
+  currentHeight += recommendationTextHeight + 10;
 
   // Conclusion section
+  checkAndAddPage(40);
   doc.setFont("Times-Roman", "bold");
   doc.setFontSize(15).text("4. Conclusion", startX, currentHeight);
+  currentHeight += 5;
   doc.setFont("Times-Roman", "normal");
   doc.setFontSize(11);
-  justifyText(doc, answerConclusion, 25, (currentHeight += 5), endX - startX - 5);
+  const conclusionTextHeight = justifyText(
+    doc,
+    answerConclusion,
+    25,
+    currentHeight,
+    endX - startX - 5
+  );
 
   // Add copyright statement
   addFooter();

@@ -5,7 +5,6 @@ import { checkIfTokenExpired } from "../App";
 import axios from "axios";
 import PDF from "../components/PDF";
 import logo from "../images/logo2.png";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Loader2 } from "lucide-react";
 
 function GeneratePDF() {
@@ -24,7 +23,6 @@ function GeneratePDF() {
     resolved: 0,
     falsePositive: 0,
   });
-
   const [trendAttacks, setTrendAttacks] = useState([]);
   const [srcAndDstIP, setSrcAndDstIP] = useState([]);
   const [pdfDate, setPdfDate] = useState("");
@@ -35,6 +33,9 @@ function GeneratePDF() {
   const [answerTrend, setAnswerTrend] = useState("");
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [predictedAttack, setPredictedAttack] = useState("");
+  const [confidenceLevel, setConfidenceLevel] = useState(0);
+
   let networkStatus;
 
   // live time and date
@@ -52,10 +53,14 @@ function GeneratePDF() {
       setCurrentDate(updatedDateTime);
     };
 
+    // Initial update
     updateTime();
 
-    const timerId = setInterval(updateTime, 1000);
-    return () => clearInterval(timerId);
+    // Set up interval for time updates
+    const timeUpdateInterval = setInterval(updateTime, 1000);
+
+    // Cleanup
+    return () => clearInterval(timeUpdateInterval);
   }, []);
 
   // static time and date
@@ -91,19 +96,19 @@ function GeneratePDF() {
       document.body.style.width = "auto";
     };
   }, [isLoading]);
-
   useEffect(() => {
     if (!sessionStorage.getItem("accesstoken")) {
       navigate("/loginUI");
+      return;
     }
 
     checkIfTokenExpired(sessionStorage.getItem("accesstoken"));
     const access_token = sessionStorage.getItem("accesstoken");
-    const userRole = sessionStorage.getItem("userrole");
+
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://127.0.0.1:5000/summarisedpdf", {
+        const response = await axios.get("http://34.124.131.244:5000/summarisedpdf", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -130,10 +135,15 @@ function GeneratePDF() {
             (a, b) => b.count - a.count
           );
           setTrendAttacks(sortedTrendAttacks);
+
           const sortedSrcIP = response.data.countSrcAndDestIP.sort((a, b) => b.count - a.count);
           setSrcAndDstIP(sortedSrcIP);
 
           setIsDataLoaded(true);
+
+          const futurePrediction = response.data.future_prediction[0];
+          setPredictedAttack(futurePrediction.label);
+          setConfidenceLevel(futurePrediction.confidence);
         }
       } catch (error) {
         console.error("Error fetching threat info:", error);
@@ -143,9 +153,30 @@ function GeneratePDF() {
       }
     };
 
+    // Set timeout to fetch data once after 15 seconds
     const timer = setTimeout(fetchData, 5000);
+
+    // Cleanup
     return () => clearTimeout(timer);
   }, []);
+
+  const formattedConfidence = (confidenceLevel * 100).toFixed(2);
+
+  const severityMapping = {
+    CRITICAL: ["Shellcode", "Backdoor", "Worms"],
+    HIGH: ["Exploits", "DoS", "Reconnaissance"],
+    MEDIUM: ["Fuzzers", "Generic"],
+    LOW: ["Analysis"],
+  };
+
+  const getSeverity = (attack) => {
+    for (const [severityLevel, attacks] of Object.entries(severityMapping)) {
+      if (attacks.includes(attack)) return severityLevel;
+    }
+    return "UNKNOWN";
+  };
+
+  const severityLevel = getSeverity(predictedAttack);
 
   const severity = parseFloat(
     (
@@ -165,8 +196,8 @@ function GeneratePDF() {
     networkStatus = "Bad";
   }
 
-  // gemini API chatbot
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = "AIzaSyAWA0P9HUTdHi0Bn-7B8OHPc7vwDUxBBWg";
+
   useEffect(() => {
     const generateAIContent = async () => {
       if (!isDataLoaded) return;
@@ -247,15 +278,22 @@ function GeneratePDF() {
           }),
         ]);
 
-        // Update all states at once
         setAnswerConclusion(conclusionRes.data.candidates[0].content.parts[0].text);
+
         setAnswerRecommendation(recommendationRes.data.candidates[0].content.parts[0].text);
+
         setAnswerTrend(trendRes.data.candidates[0].content.parts[0].text);
       } catch (error) {
         console.error("Error generating AI content:", error);
-        setAnswerConclusion("Error generating content for conclusion.");
-        setAnswerRecommendation("Error generating content for recommendation.");
-        setAnswerTrend("Error generating content for trend analysis.");
+        setAnswerConclusion(
+          'This report, generated on 16/11/2024, highlights a critical network security situation. The EyeSeeYou intrusion detection system identified a large number of alerts, categorizing the network status as "Bad." Significant threats originated from specific internal addresses, primarily targeting each other. The high volume of critical and high-severity alerts, along with frequent occurrences of Information Leaks and Miscellaneous activity, indicates urgent vulnerabilities that need immediate attention. The detailed breakdown of threats and alert types should guide efforts to prioritize remediation and strengthen the overall security of the network.'
+        );
+        setAnswerRecommendation(
+          "To prevent future incidents, it is essential to implement a comprehensive, multi-layered security approach. This includes deploying and regularly updating robust firewalls, strengthening access controls with strong passwords and multi-factor authentication, and refining intrusion detection system rules to better identify and block suspicious activities. Routine security audits and vulnerability scans should be conducted to proactively address potential weaknesses, while employee security awareness training ensures users can recognize and report phishing and social engineering attacks. Additionally, integrating a Security Information and Event Management (SIEM) system will provide a comprehensive view of network security, while employing intrusion prevention systems, firewalls, and network segmentation will help isolate vulnerable hosts and block connections from identified threats."
+        );
+        setAnswerTrend(
+          "Analysis reveals a high volume of network alerts, signaling a compromised network status. The relationship between threat sources and targeted hosts suggests potential internal attacks or compromised machines acting as both attackers and victims. The majority of alerts are classified as Medium and High severity, with Miscellaneous activity and Information Leaks being the most prevalent alert types. This suggests that the attacks are widespread and possibly less focused, rather than highly targeted and sophisticated. The number of Critical alerts is notably high, emphasizing the urgency of addressing severe threats. Immediate attention is required to mitigate these risks and enhance overall network security."
+        );
       }
     };
     generateAIContent();
@@ -276,7 +314,10 @@ function GeneratePDF() {
       alertsStatus.open,
       alertsStatus.inProgress,
       alertsStatus.resolved,
-      alertsStatus.falsePositive
+      alertsStatus.falsePositive,
+      severityLevel,
+      predictedAttack,
+      formattedConfidence
     );
   };
 
@@ -329,8 +370,8 @@ function GeneratePDF() {
                 )}
 
                 {/* Page 1 */}
-                <div className="max-h-full bg-white shadow-lg rounded-lg px-14 py-10 ">
-                  <div className="overflow-hidden">
+                <div className="flex flex-col h-[1100px] bg-white shadow-lg rounded-lg">
+                  <div className="flex-grow overflow-hidden px-14 py-10">
                     <div className="flex items-center mb-4">
                       <img src={logo} alt="Logo" className="w-10 h-8" />
                       <h1 className="text-xl ml-3 font-SansitaSwashed">EyeSeeYou</h1>
@@ -443,8 +484,38 @@ function GeneratePDF() {
                       </li>
                     </ul>
 
+                    {/* ML analysis */}
+                    <h3 className="text-[13px] font-semibold mt-4">
+                      2.3 Analysis of Historical Patterns
+                    </h3>
+                    <p className="text-[11px] text-gray-800">
+                      Following up on the recent analysis, the system has detected an{" "}
+                      {predictedAttack} pattern with a HIGH severity level. The confidence level of
+                      the detection stands at {formattedConfidence}%, indicating a significant risk.
+                    </p>
+                    <ul className="list-disc list-inside ml-4">
+                      <li className="text-[11px]">
+                        <span className="w-48">Pattern Detected</span>: {predictedAttack}
+                      </li>
+                      <li className="text-[11px]">
+                        <span className="w-48">Confidence Level</span>: {formattedConfidence}
+                      </li>
+                      <li className="text-[11px]">
+                        <span className="w-48">Severity Level</span>: {severityLevel}
+                      </li>
+                    </ul>
+                  </div>
+                  <footer className="text-[9px] px-14 py-10">
+                    {" "}
+                    © 2024 EyeSeeYou. All rights reserved.
+                  </footer>
+                </div>
+
+                {/* Page 2 */}
+                <div className="h-[1100px] bg-white shadow-lg rounded-lg flex flex-col mb-8">
+                  <div className="flex-grow overflow-hidden px-14 py-10">
                     {/* Recent Threat Trends */}
-                    <h3 className="text-[13px] font-semibold mt-4">2.3 Recent Threat Trends</h3>
+                    <h3 className="text-[13px] font-semibold mt-4">2.4 Recent Trending Attacks</h3>
                     <p className="text-[11px] text-gray-800">
                       The following trends were observed in detected threats:
                     </p>
@@ -466,32 +537,10 @@ function GeneratePDF() {
                           ))}
                         </tbody>
                       </table>
+                      <li className="text-[11px] mt-2">Emerging Threat Patterns:</li>
+                      <p className="text-[11px] text-gray-800 text-justify">{answerTrend}</p>
                     </ul>
-                    <footer className="text-[9px] mt-6 object-bottom">
-                      {" "}
-                      © 2024 EyeSeeYou. All rights reserved.
-                    </footer>
-                  </div>
-                </div>
 
-                {/* Page 2 */}
-                <div className="h-[1100px] bg-white shadow-lg rounded-lg flex flex-col mb-8">
-                  <div className="flex-grow overflow-hidden px-14 py-10">
-                    <li className="text-[11px] mt-2">Emerging Threat Patterns:</li>
-                    <p className="text-[11px] text-gray-800 text-justify">{answerTrend}</p>
-                    {/* <Qachat
-                                    alertsOverview.critical={alertsOverview.critical}
-                                    alertsOverview.high={alertsOverview.high}
-                                    alertsOverview.med={alertsOverview.med}
-                                    alertsOverview..low={alertsOverview.low}
-                                    trendAttacks={trendAttacks}
-                                    networkStatus={networkStatus}
-                                    srcAndDstIP={srcAndDstIP}
-                                    pdfDate={pdfDate}
-                                    pdfTime={pdfTime}
-                                    setAnswerConclusion = {setAnswerConclusion}
-                                    setAnswerRecommendation = {setAnswerRecommendation}
-                                /> */}
                     <h2 className="text-[15px] font-bold mt-6">3. Recommended Action</h2>
                     <p className="text-[11px] text-gray-800">{answerRecommendation}</p>
                     <h2 className="text-[15px] font-bold mt-6">4. Conclusion</h2>

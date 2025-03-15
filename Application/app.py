@@ -14,6 +14,9 @@ from random import randint
 from flask_mail import Mail, Message
 # from mailbox import Message
 
+# deployment
+from waitress import serve
+
 # import file
 from models.user import User
 from models.user_profile import UserProfile
@@ -27,7 +30,6 @@ from routes.FeedbackApp import feedback_bp
 # NA Routes
 from NAroutes.NADashboardApp import nadashboard_bp
 from NAroutes.NAAlertsApp import naalerts_bp
-# from NAroutes.NATrendingAttacksApp import natrendingattacks_bp
 from NAroutes.ViewLoginHistoryApp import viewloginhistory_bp
 
 # M routes
@@ -35,12 +37,14 @@ from Mroutes.MDashboardApp import m_dashboard_bp
 from Mroutes.MAlertsApp import m_alerts_bp
 from Mroutes.MSummarisedPDFApp import m_summarisedpdf_bp
 
+from routes.LandingPageApp import landingpage_bp
 from routes.TrendingAttacksApp import trendingattacks_bp
 from MachineLearning.FuturePrediction import predict_bp
 
 app = Flask(__name__)
 jwt = JWTManager(app)
-CORS(app, origins=['http://localhost:3000'])
+CORS(app)
+
 
 app.config['MAIL_SERVER'] = "smtp.gmail.com"
 app.config['MAIL_PORT'] = 587
@@ -57,29 +61,6 @@ def getkey():
     return gk.get_key(filename, '=')
 
 app.config['SECRET_KEY'] = getkey()
-
-# def token_expiration(username):
-#     return jwt.encode({'username': username, 'exp': str(datetime.now(timezone.utc) + timedelta(minutes=30))}, app.config['SECRET_KEY']
-
-
-# debugging
-# @app.route('/data', methods=['GET'])
-# def get_data():
-    
-#     query = "SELECT * FROM user"
-    
-#     conn = db.get_connection()
-#     cursor = conn.cursor()
-#     try:    
-#         cursor.execute(query)
-#         data = cursor.fetchall()
-#     except pymysql.connect.Error as err:
-#         print(err)
-#         return jsonify({"error": "Error in fetching data"})
-#     finally:
-#         cursor.close()
-#         conn.close()
-#     return jsonify(data)
 
 def mask_email(email):
     # Split email into username and domain parts
@@ -110,7 +91,7 @@ def send_otp():
     # Construct the email message
     msg = Message(
         'One-Time Password', 
-        sender = 'eyeseeyoufyp@gmail.com',
+        sender = 'eyeseeyoufyp@gmail.com', 
         recipients = [email])
     msg.body = f'Your One-Time Password is {otp}'
 
@@ -135,12 +116,10 @@ def login():
     otp = data.get('otp')
     
     if User.authenticate(username, password, otp):
-        # token = token_expiration(username)
         user_id = User.get_id(username)
         profile_id = User.get_profile_id(username)
-        access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=10))
+        access_token = create_access_token(identity=user_id, expires_delta=timedelta(minutes=10))
         refresh_token = create_refresh_token(identity=user_id)
-        print(access_token)
         return jsonify(
             {'message': 'Login successful',
             'token': {
@@ -153,13 +132,13 @@ def login():
     else:
         return make_response('Unable to verify', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
+
 @app.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
     user_id = get_jwt_identity()
-    access_token = create_access_token(identity=user_id, expires_delta=timedelta(seconds=20))
+    access_token = create_access_token(identity=user_id, expires_delta=timedelta(minutes=15))
     refresh_token = create_refresh_token(identity=user_id)
-    print(access_token)
     return jsonify(
         {"accesstoken": access_token,
          "refreshtoken": refresh_token}
@@ -200,18 +179,17 @@ def update_account():
         data.get('email'))
     return jsonify(success), 200 
 
+@app.route('/loginhistory2', methods=['GET'])
+@token_required
+def go_to_login_history():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
-# @app.route('/loginhistory', methods=['GET'])
-# @token_required
-# def go_to_login_history():
-#     current_user = get_jwt_identity()
-#     return jsonify(logged_in_as=current_user), 200
-
+app.register_blueprint(landingpage_bp)
 app.register_blueprint(feedback_bp)
 app.register_blueprint(trendingattacks_bp)
 app.register_blueprint(nadashboard_bp)
 app.register_blueprint(naalerts_bp)
-# app.register_blueprint(natrendingattacks_bp)
 app.register_blueprint(m_dashboard_bp)
 app.register_blueprint(m_summarisedpdf_bp)
 app.register_blueprint(m_alerts_bp)
@@ -219,4 +197,4 @@ app.register_blueprint(predict_bp)
 app.register_blueprint(viewloginhistory_bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    serve(app, host='0.0.0.0', port=5000)

@@ -6,7 +6,7 @@ app = Flask(__name__)
 def get_connection():
     return pymysql.connect(
     host='34.124.131.244',
-    port=3306,  # Specify the new port here
+    port=3306, 
     user='root',
     password='eyeseeyou',
     db='eyeseeyou'

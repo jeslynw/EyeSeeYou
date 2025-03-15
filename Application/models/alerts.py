@@ -1,4 +1,5 @@
 import dbAccess as db
+from MachineLearning.AttackPrediction import scan_attack
 
 class Alerts:
     def get_all_alerts():
@@ -181,24 +182,81 @@ class Alerts:
             if conn:
                 conn.close()
 
+    def get_status():
+        query = """
+                SELECT id, status
+                FROM alerts
+                WHERE `class` != "none"
+                """
+        
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+                if not result:
+                    print(f"No alerts found")
+                    return []
+                alerts = [
+                    {
+                        'id': row[0],
+                        'status': row[1]
+                    }
+                    for row in result
+                ]
+                return alerts
+        except Exception as e:
+            print(f"Get status error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
 
     def get_search_alerts_details(self, priority, class_, src_addr, dst_addr, status):
         query = """
-                SELECT id, start_timestamp, end_timestamp, src_addr, dst_addr, class, 
+                SELECT id, DATE_FORMAT(STR_TO_DATE(start_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as formatted_timestamp, LOWER(protocol) AS protocol, src_addr, dst_addr, class, 
                 CASE priority
                         WHEN 1 THEN 'Critical'
                         WHEN 2 THEN 'High'
                         WHEN 3 THEN 'Medium'
                         WHEN 4 THEN 'Low'
                         ELSE 'unknown'
-                    END AS priority, status
+                    END AS priority, status, DATE_FORMAT(STR_TO_DATE(end_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as end_timestamp
                 FROM alerts
-                WHERE `class` != "none"
+                WHERE `class` != 'none'
+                
             """
         
-        # if user input exists in respective fields, add that statement to the query
         params = []
         conditions = []
+
+        if priority:
+            conditions.append("priority IN (%s)" % ', '.join(['%s'] * len(priority)))
+            params.extend(priority)
+
+        if class_:
+            conditions.append("`class` LIKE %s")
+            params.append(f"%{class_}%")
+
+        if src_addr:
+            conditions.append("src_addr LIKE %s")
+            params.append(f"%{src_addr}%")
+
+        if dst_addr:
+            conditions.append("dst_addr LIKE %s")
+            params.append(f"%{dst_addr}%")
+
+        if status:
+            conditions.append("status IN (%s)" % ', '.join(['%s'] * len(status)))
+            params.extend(status)
+
+        # Build the final query
+        if conditions:
+            query += " AND " + " AND ".join(conditions)
+        query += "ORDER BY formatted_timestamp DESC LIMIT 50"
+            
+        # print("Executing query:", query)
+        # print("With parameters:", priority, class_, src_addr, dst_addr, status)
 
         conn = db.get_connection()
         try:
@@ -208,48 +266,82 @@ class Alerts:
                 if not result:
                     print(f"No alerts found")
                     return []
-                alerts = [
+                                
+                feature = [
                     {
                         'id': row[0],
-                        'start_timestamp': row[1],
-                        'end_timestamp': row[2],
+                        'timestamp': row[1],
+                        'proto': row[2],
                         'src_addr': row[3],
                         'dst_addr': row[4],
                         'class': row[5],
                         'priority': row[6],
-                        'status': row[7]
+                        'status': row[7],
+                        'end_timestamp': row[8],
+                        'prediction': 'N/A'  # Default prediction value for all entries
                     }
                     for row in result
-                ]
-                return alerts
+                ]           
+                
+                # Extracting data only for 'Misc activity' class to run ML predictions
+                misc_indices = []  # Keep track of indices of Misc activity entries
+                miscActivityData = []
+                
+                for idx, row in enumerate(feature):
+                    if row['class'] == 'Misc activity':
+                        misc_indices.append(idx)
+                        miscActivityData.append({
+                            'proto': row['proto'],
+                            'src_addr': row['src_addr'],
+                            'dst_addr': row['dst_addr']
+                        })
+
+                # Run ML model predictions if there's data to predict on
+                if miscActivityData:
+                    predictions = scan_attack(miscActivityData)
+                    # print("predictions: ", predictions)
+
+                    # Update only the prediction field, keeping the original class unchanged
+                    for misc_idx, prediction in zip(misc_indices, predictions):
+                        feature[misc_idx]['prediction'] = prediction['label']
+
+                # Return all entries with predictions
+                # print("\nfeature : ", feature)  
+
+                return feature
+
         except Exception as e:
-            print(f"Get alert details error: {e}")
+            print(f"Get alert details error2: {e}")
             return []
         finally:
             if conn:
                 conn.close()
 
-    def get_critical_alert():
+    def get_popup_alert():
         query = """
-                SELECT class
+                SELECT class,   
                 CASE priority
-                    WHEN 2 THEN 'Critical'
-                    END AS priority
+                    WHEN 1 THEN 'Critical'
+                    WHEN 2 THEN 'High'
+                END AS priority
                 FROM alerts 
-                where priority = 2
+                where priority IN (1, 2)
+                ORDER BY id DESC
                 """
         conn = db.get_connection()
         try:
             with conn.cursor() as cursor:
                 cursor.execute(query)
-                result = cursor.fetchone()
+                result = cursor.fetchall()
                 if result is None:
                     print(f"No low alerts found")
                     return None
-                return {
-                    'class' : result[0],
-                    'critical': result[1]
-                }
+                
+                notifications = [{
+                    "class": result[0],
+                    "critical": result[1]
+                }]
+                return notifications
         except Exception as e:
             print(f"Get critical alert error: {e}")
             return None
@@ -295,18 +387,16 @@ class Alerts:
     # First concat current year with timestamp to make it complete
         query = """
                 SELECT UNIX_TIMESTAMP(
-                        STR_TO_DATE(
-                            CONCAT(YEAR(CURRENT_DATE()), '/', timestamp), 
-                            '%Y/%m/%d-%H:%i:%s.%f'
-                        )
-                    ) AS unix_timestamp,
+                STR_TO_DATE(start_timestamp, '%Y-%m-%d %H:%i:%s')
+                ) AS unix_timestamp,
+                    
                     LOWER(protocol) AS protocol, 
                     src_port,
                     dst_port,
-                    timestamp as original_timestamp  -- Keep original for verification
+                    start_timestamp as original_timestamp 
                 FROM alerts
                 WHERE `class` != "none" AND protocol != 'icmp'
-                ORDER BY timestamp DESC
+                ORDER BY start_timestamp DESC
                 LIMIT 26
                 """
         
@@ -327,9 +417,7 @@ class Alerts:
                         # Try with previous year if current year fails
                         alternative_query = f"""
                             SELECT UNIX_TIMESTAMP(
-                                STR_TO_DATE(
-                                    CONCAT(YEAR(CURRENT_DATE()) - 1, '/', %s), 
-                                    '%Y/%m/%d-%H:%i:%s.%f'
+                                STR_TO_DATE(start_timestamp, '%Y-%m-%d %H:%i:%s')
                                 )
                             )
                             """
@@ -347,6 +435,45 @@ class Alerts:
                 
         except Exception as e:
             print(f"Get alert details error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def get_features2():
+        query = """
+                SELECT
+                    DATE_FORMAT(STR_TO_DATE(start_timestamp, '%%Y-%%m-%%d %%H:%%i:%%s'), '%%m/%%d %%H:%%i:%%s') as formatted_timestamp,
+                    
+                    LOWER(protocol) AS protocol,
+                    src_addr,
+                    dst_addr
+                FROM alerts
+                WHERE `class` != "none"
+                ORDER BY formatted_timestamp DESC
+                """
+        
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+                if not result:
+                    print(f"No alerts found")
+                    return []
+                
+                feature = [
+                    {
+                        'proto': row[1],
+                        'src_addr': row[2],
+                        'dst_addr': row[3]
+                    }
+                    for row in result
+                ]                
+                return feature
+                
+        except Exception as e:
+            print(f"Get alert details error3: {e}")
             return []
         finally:
             if conn:

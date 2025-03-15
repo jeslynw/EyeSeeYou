@@ -38,7 +38,7 @@ class User:
         finally:
             if conn:
                 conn.close()
-    
+
     def check_creds(username, password):
         query = "SELECT password FROM user WHERE username = %s"
         values = (username,)
@@ -57,7 +57,7 @@ class User:
                 #check if the provided password matches the stored hashed password
                 if (bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))):
                     print(f"Authenticate: username={username}, login successful")
-                    User.log_login_attempt(username, 'Successful Login')
+                    # User.log_login_attempt(username, 'Successful Login')
                     return True
                 else:
                     print(f"Authenticate: username={username}, incorrect password")
@@ -70,6 +70,7 @@ class User:
         finally:
             if conn:
                 conn.close()
+    
     
     def clear_otp(username):
         query = "UPDATE user SET otp = NULL WHERE user_id = %s"
@@ -109,6 +110,45 @@ class User:
 
     def get_email(username):
         query = "SELECT email FROM user WHERE username = %s"
+        values = (username,)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+                result = cursor.fetchone()
+                if result is None:
+                    print(f"Get by id: username={username}, no user found")
+                    return None
+                return result[0]
+        except Exception as e:
+            print(f"Get by id error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    # Change OTP
+    def update_otp(username, otp):
+        hashed_otp = bcrypt.hashpw(str(otp).encode('utf-8'),bcrypt.gensalt())
+        query = "UPDATE user SET otp = %s WHERE username = %s"
+        values = (hashed_otp, username)
+        conn = db.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(query, values)
+            conn.commit()
+            return True
+        except:
+            print("Error updating user")
+            return False
+        finally:
+            if conn:
+                conn.close()
+
+
+
+    def get_profile_id(username):
+        query = "SELECT profile_id FROM user WHERE username = %s"
         values = (username,)
         conn = db.get_connection()
         try:
@@ -233,16 +273,31 @@ class User:
                 conn.close()
 
     def log_login_attempt(username, status):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        query = "INSERT INTO login_history (username, timestamp, status) VALUES (%s, %s, %s)"
-        values = (username, timestamp, status)
         conn = db.get_connection()
 
+        select_query = "SELECT user_id from user WHERE username = %s"
+        select_values = (username,)
+
+        conn = db.get_connection()
         try:
             with conn.cursor() as cursor:
-                cursor.execute(query, values)
-                conn.commit()
+                cursor.execute(select_query, select_values)
+                result = cursor.fetchone()
+                user_id = result[0]
+                
+                timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                
+                # Insert the login attempt into the login_history table using user_id
+                insert_query = "INSERT INTO login_history (user_id, timestamp, status) VALUES (%s, %s, %s)"
+                insert_values = (user_id, timestamp, status)
+                
+                with conn.cursor() as cursor:
+                    cursor.execute(insert_query, insert_values)
+                    conn.commit()
+                    
+                print(f"Login attempt for user {username} (user_id: {user_id}) logged successfully.")
+                
         except Exception as e:
             print(f"Error logging login attempt: {e}")
         finally:

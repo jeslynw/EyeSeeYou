@@ -4,7 +4,6 @@ from models.alerts import Alerts
 import dbAccess as db
 
 from flask_jwt_extended import get_jwt_identity
-
 from auth_decorators import token_required
 
 m_alerts_bp = Blueprint('malerts', __name__)
@@ -32,7 +31,8 @@ def fetch_dashboard():
             "dst_addr": alert["dst_addr"],
             "class": alert["class"],
             "priority": alert["priority"],
-            "status": alert["status"]
+            "status": alert["status"],
+            "end_timestamp": alert["end_timestamp"]
         } 
         for alert in recent_alerts
     ]
@@ -52,7 +52,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,

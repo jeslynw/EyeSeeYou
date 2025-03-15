@@ -6,6 +6,7 @@ from auth_decorators import token_required
 
 from models.alerts import Alerts
 from models.trending_attack import TrendingAttacK
+from MachineLearning.FuturePrediction import future_predict
 
 m_summarisedpdf_bp = Blueprint('summarisedpdf', __name__)
 
@@ -20,13 +21,15 @@ def fetch_data():
     countSrcAndDestIP = count_src_dest_ip()
     listCountSrcAndDestIP = [{"src_addr": row['src_addr'], "count_src_addr": row['count_src_addr'], 'dst_addr': row['dst_addr'], 'count_dst_addr': row['count_dst_addr']} for row in countSrcAndDestIP]
     list_trending_attacks = [{"class": row[0], "count": row[1]} for row in trending_attacks]
+    future_prediction = future_predict()
 
     return jsonify({
         "logged_in_as": current_user,
         "alert_overview": overview,
         "alert_status": status,
         "list_trending_attacks": list_trending_attacks,
-        "countSrcAndDestIP": listCountSrcAndDestIP
+        "countSrcAndDestIP": listCountSrcAndDestIP,
+        "future_prediction": future_prediction,
     }), 200
     
 def alert_overview():
@@ -36,7 +39,7 @@ def alert_overview():
     med = Alerts.get_medium_priority()["medium_count"]
     low = Alerts.get_low_priority()["low_count"]
 
-    print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
+    # print(f"Critical: {crit}, High: {high}, Medium: {med}, Low: {low}")
 
     return {
         "critical" : crit,
@@ -61,7 +64,7 @@ def alert_status():
     }
 
 def get_trending_attacks():
-    trend = TrendingAttacK.trending_attacks()
+    trend = TrendingAttacK.limited_trending_attacks()
     return trend
 
 def count_src_dest_ip():

@@ -13,6 +13,8 @@ presentation/coverage
 # production
 presentation/build
 presentation/.env
+presentation/pnpm-lock.yaml
+presentation/api_secret.txt
 
 # misc
 .DS_Store
@@ -25,10 +27,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+
 #backend
 **/__pycache__
 Application/env
 Application/api_secret.txt
 Application/.venv
+Application/wslenv
+Application/Miniconda3-latest-Linux-x86_64.sh
 
 # Application/dbAccess.py

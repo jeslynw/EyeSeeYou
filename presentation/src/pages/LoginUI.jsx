@@ -12,26 +12,12 @@ import bg from "../images/bg.jpg";
 import { Button, Card, Label, TextInput } from "flowbite-react";
 
 function LoginUI() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [otp, setOtp] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [otp, setOtp] = useState('')
+  const [error, setError] = useState('')
   const [otpMessage, setOtpMessage] = useState("");
-  const [profileId, setProfileId] = useState("");
-
-  // const [otp, setOtp] = useState(['', '', '', '', '', '']);
-
-  // const handleChange = (index, value) => {
-  //   // Update the OTP array
-  //   const newOtp = [...otp];
-  //   newOtp[index] = value.slice(0, 1); // Only allow one character
-  //   setOtp(newOtp);
-
-  //   // Move focus to the next input
-  //   if (value && index < 3) {
-  //     document.getElementById(`otp-${index + 1}`).focus();
-  //   }
-  // };
+  const [profileId, setProfileId] = useState('')
 
   const navigate = useNavigate();
   const navigateLandingPage = () => {
@@ -49,19 +35,15 @@ function LoginUI() {
       return;
     }
 
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/login",
-        {
-          username: username,
-          password: password,
-          otp: otp,
-          profileId: profileId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+    try {      
+      const response = await axios.post('http://34.124.131.244:5000/login', {
+        username: username,
+        password: password,
+        otp: otp,
+        profileId: profileId
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
         }
       );
 
@@ -89,7 +71,7 @@ function LoginUI() {
   const sendOtp = async (event) => {
     event.preventDefault(); // Prevent form submission
     setError("");
-    setOtpMessage("verifying...");
+    setOtpMessage("Sending...");
     if (!username || !password) {
       setError("Please enter your username and password first.");
       setOtpMessage("");
@@ -98,7 +80,7 @@ function LoginUI() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/sendotp",
+        "http://34.124.131.244:5000/sendotp",
         {
           username: username,
           password: password,
@@ -133,109 +115,83 @@ function LoginUI() {
   }
 
   return (
-    <div className="bg-">
-      {/* login section */}
-      <div className="relative">
-        <div class="bg-cover bg-center h-screen">
-          <img src={bg} alt="Background" className="w-full h-full object-cover absolute inset-0" />
-        </div>
-
-        <div className="absolute inset-0 flex flex-col justify-center items-center">
-          <p className="flex justify-center text-center text-white text-3xl font-semibold">
-            Ready To Secure Your Network?
-          </p>
-          <Card className="max-w-md w-full mt-14 bg-white border border-[#4F4F4F]">
-            <form className="flex flex-col gap-4" onSubmit={handleLogin}>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="username" value="Username" className="text-black" />
-                </div>
-                <TextInput
-                  id="username"
-                  type="text"
-                  placeholder="Enter username"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Password" className="text-black" />
-                </div>
-                <TextInput
-                  id="password"
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <div className=" mb-2 block">
-                  <Label htmlFor="otp" value="OTP" className="text-black" />
-                </div>
-                <div className="flex w-full">
-                  <TextInput
-                    id="otp"
-                    type="otp"
-                    placeholder="Enter OTP"
-                    value={otp}
-                    onChange={(event) => setOtp(event.target.value)}
-                    className="w-2/3"
-                  />
-                  <Button
-                    onClick={sendOtp}
-                    className="ml-3 w-1/3 text-sm bg-[#ffffff] enabled:hover:bg-[#ffffff] text-black hover:text-[#0e7490]">
-                    Send OTP
-                  </Button>
-                </div>
-              </div>
-
-              {/* <div className='flex flex-col items-center justify-center h-screen'>
-                    <div className='flex space-x-2'>
-                      {otp.map((value, index) => (
-                        <input
-                          key={index}
-                          id={`otp-${index}`} // Unique ID for each input
-                          type='text'
-                          maxLength={1} // Only allow 1 character
-                          value={value}
-                          onChange={(e) => handleChange(index, e.target.value)}
-                          className='w-12 h-12 text-center border border-gray-300 rounded focus:outline-none focus:border-blue-500'
-                        />
-                      ))}
+    <div className='bg-'>
+        {/* login section */}
+        <div className='relative' >
+          <div class="bg-cover bg-center h-screen" >
+            <img src={bg} alt="Background" className="w-full h-full object-cover absolute inset-0" />
+          </div>
+          
+          <div className="absolute inset-0 flex flex-col justify-center items-center">
+              <p className='flex justify-center text-center text-white text-3xl font-semibold'>Ready To Secure Your Network?</p>
+              <Card className="max-w-md w-full mt-14 bg-white border border-[#4F4F4F]">
+                <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+                  <div>
+                    <div className="mb-2 block">
+                      <Label htmlFor="username" value="Username" className='text-black'/>
                     </div>
-                    <button
-                      type='button'
-                      onClick={() => alert(`OTP entered: ${otp.join('')}`)} // Example action on button click
-                      className='mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-                    >
-                      Send OTP
-                    </button>
-                  </div> */}
+                    <TextInput
+                      id = "username"
+                      type="text"
+                      placeholder="Enter username"
+                      value={username}
+                      onChange={(event) => setUsername(event.target.value)}
+                      required
+                    />              
+                  </div>
+                  <div>
+                    <div className="mb-2 block">
+                      <Label htmlFor="password1" value="Password" className='text-black'/>
+                    </div>
+                    <TextInput
+                      id = "password"
+                      type="password"
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required
+                    />              
+                  </div>
+                  <div>
+                    <div className=" mb-2 block">
+                      <Label htmlFor="otp" value="OTP" className='text-black'/>
+                    </div>
+                    <div className='flex w-full'>
+                      <TextInput
+                        id = "otp"
+                        type="otp"
+                        placeholder="Enter OTP"
+                        value={otp}
+                        onChange={(event) => setOtp(event.target.value)}
+                        
+                        className='w-2/3'
+                      />
+                      <Button
+                        onClick={sendOtp}
+                        className="ml-3 w-1/3 text-sm bg-[#ffffff] enabled:hover:bg-[#ffffff] text-black hover:text-[#0e7490] enabled:outline-gray-300">
+                        Send OTP
+                      </Button>    
+                    </div>    
+                  </div>
 
-              {/* Error Message */}
-              {error && <div className="text-red-500 text-sm text-center mt-2">{error}</div>}
+                  {/* Error Message */}
+                  {error && (
+                    <div className="text-red-500 text-sm text-center mt-2">
+                      {error}
+                    </div>  
+                  )}
 
-              {/* OTP Sent Message */}
-              {otpMessage && (
-                <div className="text-blue-500 text-sm text-center mt-2">{otpMessage}</div>
-              )}
 
-              {/* Login Button */}
-              <Button type="submit" className="mt-4">
-                Log In
-              </Button>
-              <Button
-                onClick={navigateLandingPage}
-                className="bg-[#aaaaaa] enabled:hover:bg-[#8b8b8b]">
-                Cancel
-              </Button>
-            </form>
-          </Card>
-        </div>
+                  {/* OTP Sent Message */}
+                  {otpMessage && (
+                    <div className="text-blue-500 text-sm text-center mt-2">{otpMessage}</div>
+                  )}
+
+                  <Button type="submit" className='mt-4'>Log In</Button>
+                  <Button onClick={navigateLandingPage} className='bg-[#aaaaaa] enabled:hover:bg-[#8b8b8b]'>Cancel</Button>
+                </form>
+            </Card>
+          </div>
       </div>
     </div>
   );

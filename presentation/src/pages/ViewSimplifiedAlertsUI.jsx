@@ -2,22 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useTheme } from "../components/ThemeProvider";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Link, useNavigate } from "react-router-dom";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import AlertPageOverview from "../components/AlertsPageOverview";
-import AlertsLogs from "../components/AlertsLogs";
-import SearchAlerts from "../components/SearchAlerts";
+import MAlertsLogs from "../components/MAlertsLogs";
+import MSearchAlerts from "../components/MSearchAlerts";
 import { checkIfTokenExpired } from "../App";
+import AlertsStatusPieChart from '../components/AlertsStatusPieChart';
+import AlertsStatusLineChart from "../components/AlertsStatusLineChart";
 
 function MAlerts() {
-  //debugging for user
   const access_token = sessionStorage.getItem("accesstoken");
   const refresh_token = sessionStorage.getItem("refreshtoken");
   if (access_token) {
-    // console.log('Access found:', access_token);
     axios
-      .get("http://127.0.0.1:5000/malerts", {
+      .get("http://34.124.131.244:5000/malerts", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -25,7 +21,6 @@ function MAlerts() {
       .then((response) => {
         if (response.status === 200) {
           const user_id = response.data.logged_in_as;
-          // console.log(`User: ${user_id}`);
         }
       })
       .catch((error) => {
@@ -71,34 +66,72 @@ function MAlerts() {
     { path: "/malerts", name: "Alerts" },
   ];
 
-  useEffect(() => {
-    const access_token = sessionStorage.getItem("accesstoken");
-
-    const fetchData = () => {
-      axios
-        .get("http://127.0.0.1:5000/malerts", {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            const alertsOverview = response.data.alert_overview;
-            setAlertsOverview({
-              critical: alertsOverview.critical || 0,
-              high: alertsOverview.high || 0,
-              med: alertsOverview.med || 0,
-              low: alertsOverview.low || 0,
-            });
-            setAlerts(response.data.recent_alerts || []);
-          }
-        });
+    // search alerts box
+    const [showSearchPopUp, setShowSearchPopUp] = useState(false);
+    const toggleSearchPopUp = () => {
+      setShowSearchPopUp((prevState) => !prevState);
     };
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  
+    // State to track if the user is searching
+    const [isSearchActive, setIsSearchActive] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(null);
+  
+    // For fetching search results
+    const onSearchResults = (searchResults) => {
+      setSearchQuery(searchResults);
+      setIsSearchActive(true);
+      // console.log("searchQuery: ", searchQuery)
+    };
+  
+    useEffect(() => {
+      const access_token = sessionStorage.getItem("accesstoken");
+  
+      const fetchData = () => {
+        axios
+          .get("http://34.124.131.244:5000/malerts", {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              const alertsOverview = response.data.alert_overview;
+              setAlertsOverview({
+                critical: alertsOverview.critical || 0,
+                high: alertsOverview.high || 0,
+                med: alertsOverview.med || 0,
+                low: alertsOverview.low || 0,
+              });
+              
+              const datas = response.data.recent_alerts;
+  
+              // console.log("reponse data ",datas);
+              // console.log("search query", searchQuery);
+              
+              const normalizedQuery = JSON.stringify(searchQuery);
+              const normalizedResponse = JSON.stringify(response.data.recent_alerts);
+  
+              if (normalizedQuery == normalizedResponse){
+                setAlerts(response.data.recent_alerts || []);
+                setIsSearchActive(false);
+              }
+              else if(!isSearchActive){
+                setAlerts(response.data.recent_alerts || []);
+              }
+              else {
+                setAlerts(searchQuery);
+              }
+            }
+          });
+      };
+  
+      fetchData(); // Initial fetch
+  
+      const interval = setInterval(() => {
+        fetchData();
+      }, 5000); // Poll every 5 seconds
+      return () => clearInterval(interval);
+    }, [isSearchActive, searchQuery]);
 
   return (
     <div className={darkMode ? "dark" : ""}>
@@ -109,42 +142,49 @@ function MAlerts() {
           <p className="text-2xl">ALERTS</p>
           <p className="text-base">{currentDate}</p>
         </div>
-        <div>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" color="primary" />}
-            aria-label="breadcrumb">
-            {breadcrumbItems.map((item) => (
-              <Link
-                className="text-[#6b7280] dark:text-[#ffffff79] text-base font-light"
-                to={item.path}
-                underline="hover"
-                onClick={item.onClick}
-                color="inherit">
-                <p>{item.name}</p>
-              </Link>
-            ))}
-          </Breadcrumbs>
-        </div>
 
         <div className="py-2"></div>
 
         <div className="w-full">
           {/* Overall Alerts */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <p className="pb-3 text-sm md:text-base">Alerts Status</p>
-            {/* <AlertPageOverview alert={alertsOverview} /> */}
+          <div className="grid grid-cols-1 sm:grid-cols-1">
+            <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
+              <p>Alerts Status</p>
+                <div className="flex justify-center gap-36">
+                  <AlertsStatusPieChart width={400}/>
+                  <AlertsStatusLineChart width={400}/>
+                </div>
+            </div>
           </div>
 
           <div className="py-4"></div>
 
-          {/* Alerts Logs */}
-          <div className="border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl px-4 py-4 bg-white dark:bg-transparent">
-            <p className="pb-3 text-sm md:text-base">Alerts Reports</p>
-            {/* <AlertsLogs alerts={alerts}/> */}
+          <div className="relative border border-[#e7e7e7] dark:border-[#353535] shadow-md rounded-xl p-6 bg-white dark:bg-[#252628]">
+            <div className="flex justify-between">
+
+            <p className="text-sm md:text-base">Alerts Logs</p>
+              <button
+                onClick={toggleSearchPopUp}
+                className="flex items-center h-9 pl-2 pr-2 border border-[#e7e7e7] dark:border-[#353535] bg-transparent hover:bg-slate-200 dark:hover:bg-[#444] rounded-md">
+                Search By
+              </button>
+            </div>
+
+            {/* Search PopUp */}
+            <div className="overflow-x-auto mt-4">
+              <MAlertsLogs alerts={alerts} />
+            </div>
+
+            <div className={`absolute top-16 right-6 w-full z-10 ${showSearchPopUp ? "block" : "hidden"}`}>
+              <MSearchAlerts
+                isVisible={showSearchPopUp}
+                onClose={toggleSearchPopUp}
+                onSearchResults={onSearchResults}
+              />
+            </div>
           </div>
         </div>
-
-        <div className="p-10"></div>
+        <div className="py-52"></div>
       </div>
     </div>
   );
