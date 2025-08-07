@@ -1,6 +1,8 @@
 # 👁️‍🗨️ EyeSeeYou 
 **Real-Time Network Traffic Monitoring & Intrusion Detection Dashboard**
+
 EyeSeeYou is a web-based dashboard system designed to help organizations monitor, analyze, and respond to network traffic anomalies in real time. Built with both network administrators and  management in mind, it provides technical insights and high-level summaries in an intuitive and visually engaging interface.
+
 
 ---
 
@@ -16,6 +18,7 @@ EyeSeeYou is a web-based dashboard system designed to help organizations monitor
 - 📈 **Interactive Charts & Graphs**
 - 🚨 **Instant Alert Notifications**
 - 📄 **Report Generation (Downloadable PDF)**
+
 
 ---
 
@@ -33,6 +36,7 @@ EyeSeeYou is a web-based dashboard system designed to help organizations monitor
 
 ### 🗄️ Database
 - MySQL, ElasticSearch
+
 
 ---
 
